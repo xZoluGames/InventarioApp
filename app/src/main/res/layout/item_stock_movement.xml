@@ -6,62 +6,75 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="@dimen/padding_small"
+    android:padding="12dp"
     android:gravity="center_vertical">
 
-    <!-- Movement Type Icon -->
-    <ImageView
-        android:id="@+id/ivMovementType"
-        android:layout_width="@dimen/icon_medium"
-        android:layout_height="@dimen/icon_medium"
-        android:padding="@dimen/padding_small"
-        android:background="@drawable/bg_circle"
-        android:src="@drawable/ic_add"
-        android:contentDescription="@null"
-        tools:backgroundTint="@color/success_light"
-        tools:tint="@color/success" />
+    <!-- Icon Background -->
+    <FrameLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp">
+
+        <View
+            android:id="@+id/viewIconBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_circle" />
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_arrow_up"
+            app:tint="@android:color/white" />
+
+    </FrameLayout>
 
     <!-- Movement Info -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginStart="12dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvMovementType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Body"
-            tools:text="Entrada de stock" />
+            android:textAppearance="?textAppearanceBodyMedium"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            tools:text="Entrada de Stock" />
 
         <TextView
-            android:id="@+id/tvMovementReason"
+            android:id="@+id/tvReason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-            android:textColor="?attr/colorOnSurfaceVariant"
+            android:layout_marginTop="2dp"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_secondary"
             tools:text="Compra a proveedor" />
 
         <TextView
-            android:id="@+id/tvMovementDate"
+            android:id="@+id/tvDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="15/12/2024 14:30" />
+            android:layout_marginTop="2dp"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_hint"
+            tools:text="25/12/2024 14:30" />
 
     </LinearLayout>
 
-    <!-- Quantity Change -->
+    <!-- Quantity -->
     <TextView
-        android:id="@+id/tvMovementQuantity"
+        android:id="@+id/tvQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Inventario.Title"
+        android:textAppearance="?textAppearanceTitleMedium"
         android:textStyle="bold"
-        tools:text="+25"
+        tools:text="+10"
         tools:textColor="@color/success" />
 
 </LinearLayout>

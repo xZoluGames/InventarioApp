@@ -1,7 +1,9 @@
 package com.inventario.py.data.local.entity
 
+import com.inventario.py.utils.CurrencyUtils
+
 /**
- * ARCHIVO DE TIPOS FALTANTES - CORREGIDO
+ * ARCHIVO DE TIPOS Y EXTENSIONES - CORREGIDO
  */
 
 // ==================== ENUMS ====================
@@ -10,7 +12,11 @@ enum class UserRole {
     OWNER,
     ADMIN,
     SELLER,
-    VIEWER
+    VIEWER;
+    
+    companion object {
+        val EMPLOYEE = SELLER // Alias para compatibilidad
+    }
 }
 
 enum class PaymentMethod {
@@ -19,14 +25,34 @@ enum class PaymentMethod {
     TRANSFER,
     CREDIT,
     QR,
-    MIXED
+    MIXED;
+    
+    companion object {
+        fun fromString(value: String): PaymentMethod {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                CASH
+            }
+        }
+    }
 }
 
 enum class SaleStatus {
     PENDING,
     COMPLETED,
     CANCELLED,
-    REFUNDED
+    REFUNDED;
+    
+    companion object {
+        fun fromString(value: String): SaleStatus {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                PENDING
+            }
+        }
+    }
 }
 
 enum class StockFilter {
@@ -71,7 +97,17 @@ enum class MovementType {
     ADJUSTMENT,
     SALE,
     RETURN,
-    TRANSFER
+    TRANSFER;
+    
+    companion object {
+        fun fromString(value: String): MovementType {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                ADJUSTMENT
+            }
+        }
+    }
 }
 
 // ==================== SEALED CLASSES ====================
@@ -97,9 +133,19 @@ data class ProductWithVariants(
     val variants: List<ProductVariantEntity> = emptyList()
 ) {
     val id: String get() = product.id
+    val name: String get() = product.name
     val totalStock: Int
         get() = if (variants.isNotEmpty()) variants.sumOf { it.stock } else product.totalStock
     val hasVariants: Boolean get() = variants.isNotEmpty()
+    val salePrice: Long get() = product.salePrice
+    val purchasePrice: Long get() = product.purchasePrice
+    val imageUrl: String? get() = product.imageUrl
+    val barcode: String? get() = product.barcode
+    val identifier: String get() = product.identifier
+    val categoryId: String? get() = product.categoryId
+    val lowStockThreshold: Int get() = product.lowStockThreshold
+    val minStock: Int get() = product.lowStockThreshold
+    val isActive: Boolean get() = product.isActive
 }
 
 data class SaleWithDetails(
@@ -193,7 +239,7 @@ val SaleEntity.discount: Long get() = this.totalDiscount
 
 // Para StockMovementEntity
 val StockMovementEntity.movementType: MovementType 
-    get() = try { MovementType.valueOf(this.type) } catch (e: Exception) { MovementType.ADJUSTMENT }
+    get() = MovementType.fromString(this.type)
 
 // Para UserEntity
 val UserEntity.name: String get() = this.fullName
@@ -201,6 +247,15 @@ val UserEntity.name: String get() = this.fullName
 // Para ProductEntity
 val ProductEntity.category: String? get() = this.categoryId
 val ProductEntity.minStock: Int get() = this.lowStockThreshold
+
+// ==================== FORMAT EXTENSIONS ====================
+
+/**
+ * Extensiones de formato para usar en todo el proyecto
+ */
+fun Long.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
+fun Int.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
+fun Double.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
 
 // ==================== CONVERSION FUNCTIONS ====================
 
@@ -244,3 +299,9 @@ fun StockMovementEntity.toStockMovement() = StockMovement(
 fun List<StockMovementEntity>.toStockMovements() = this.map { it.toStockMovement() }
 fun List<ProductVariantEntity>.toProductVariants() = this.map { it.toProductVariant() }
 fun List<SaleItemEntity>.toSaleItems() = this.map { it.toSaleItem() }
+
+// ==================== HELPER FUNCTIONS ====================
+
+fun String.toPaymentMethod(): PaymentMethod = PaymentMethod.fromString(this)
+fun String.toSaleStatus(): SaleStatus = SaleStatus.fromString(this)
+fun String.toMovementType(): MovementType = MovementType.fromString(this)

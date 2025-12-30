@@ -226,7 +226,7 @@ class SalesFragment : Fragment(), RefreshableFragment {
     }
 
     private fun showCancelDialog(sale: SaleEntity) {
-        if (sale.status != SaleStatus.COMPLETED) {
+        if (sale.status != SaleStatus.COMPLETED.name) {
             Snackbar.make(binding.root, getString(R.string.cannot_cancel_sale), Snackbar.LENGTH_SHORT).show()
             return
         }

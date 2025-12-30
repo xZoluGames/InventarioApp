@@ -5,83 +5,175 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_small"
-    app:cardBackgroundColor="@color/card_background"
-    app:cardCornerRadius="@dimen/corner_medium"
-    app:cardElevation="@dimen/elevation_small">
+    android:layout_marginHorizontal="@dimen/margin_medium"
+    android:layout_marginVertical="@dimen/margin_small"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="2dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/padding_medium">
 
-        <!-- Sale Number -->
-        <TextView
-            android:id="@+id/tv_sale_number"
-            android:layout_width="wrap_content"
+        <!-- Header Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_medium"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="#00000024"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Date & Time -->
-        <TextView
-            android:id="@+id/tv_sale_date"
-            android:layout_width="wrap_content"
+            <!-- Sale ID -->
+            <TextView
+                android:id="@+id/tvSaleId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                tools:text="#00001234" />
+
+            <!-- Status Indicator -->
+            <View
+                android:id="@+id/statusIndicator"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_stock_badge" />
+
+            <!-- Total Amount -->
+            <TextView
+                android:id="@+id/tvTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
+                tools:text="Gs. 450.000" />
+
+        </LinearLayout>
+
+        <!-- Date and Time Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_hint"
-            android:textSize="@dimen/text_small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="15/01/2024 14:30"/>
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Items Count -->
-        <TextView
-            android:id="@+id/tv_items_count"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/text_hint" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="25/12/2024" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_time"
+                app:tint="@color/text_hint" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="14:30" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Payment Method Icon -->
+            <ImageView
+                android:id="@+id/ivPaymentMethod"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_cash"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvPaymentMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="Efectivo" />
+
+        </LinearLayout>
+
+        <!-- Item Count Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_tiny"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_small"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_sale_number"
-            tools:text="5 artículos"/>
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <!-- Payment Method Chip -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_payment"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvItemCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="3 productos" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvSeller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_hint"
+                tools:text="Vendedor: Juan" />
+
+        </LinearLayout>
+
+        <!-- Expandable Details Section -->
+        <LinearLayout
+            android:id="@+id/layoutDetails"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_tiny"
-            app:chipMinHeight="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_items_count"
-            tools:text="Efectivo"/>
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-        <!-- Total -->
-        <TextView
-            android:id="@+id/tv_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Price"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Gs. 250.000"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
 
-        <!-- Sold By -->
-        <TextView
-            android:id="@+id/tv_sold_by"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_hint"
-            android:textSize="@dimen/text_tiny"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_sale_date"
-            tools:text="Vendido por: María"/>
+            <TextView
+                android:id="@+id/tvItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="• Producto 1 x2\n• Producto 2 x1" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

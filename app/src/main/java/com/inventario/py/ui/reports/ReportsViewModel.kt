@@ -200,7 +200,7 @@ class ReportsViewModel @Inject constructor(
         salesRepository.getSalesByDateRange(period.start, period.end)
             .first()
             .let { sales ->
-                val completedSales = sales.filter { it.status == SaleStatus.COMPLETED }
+                val completedSales = sales.filter { it.status == SaleStatus.COMPLETED.name }
                 
                 // Calcular estadísticas
                 val totalSales = completedSales.sumOf { it.totalAmount }

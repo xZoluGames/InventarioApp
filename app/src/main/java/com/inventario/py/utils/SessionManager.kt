@@ -8,6 +8,9 @@ import com.google.gson.Gson
 import com.inventario.py.data.local.entity.UserEntity
 import com.inventario.py.data.local.entity.UserRole
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,6 +36,10 @@ class SessionManager @Inject constructor(
     
     private val gson = Gson()
     
+    // StateFlow para el usuario actual
+    private val _currentUserFlow = MutableStateFlow<UserEntity?>(null)
+    val currentUserFlow: Flow<UserEntity?> = _currentUserFlow.asStateFlow()
+    
     private val prefs: SharedPreferences by lazy {
         try {
             val masterKey = MasterKey.Builder(context)
@@ -49,6 +56,11 @@ class SessionManager @Inject constructor(
         } catch (e: Exception) {
             context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         }
+    }
+    
+    init {
+        // Cargar usuario al inicio
+        _currentUserFlow.value = getCurrentUser()
     }
     
     // ==================== AUTH TOKEN ====================
@@ -117,6 +129,8 @@ class SessionManager @Inject constructor(
             putBoolean(KEY_IS_LOGGED_IN, true)
             apply()
         }
+        // Actualizar el Flow
+        _currentUserFlow.value = user
     }
     
     fun getCurrentUser(): UserEntity? {
@@ -169,6 +183,7 @@ class SessionManager @Inject constructor(
     
     fun clearSession() {
         prefs.edit().clear().apply()
+        _currentUserFlow.value = null
     }
     
     fun logout() {

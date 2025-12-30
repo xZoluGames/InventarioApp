@@ -5,122 +5,133 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/margin_small"
-    style="@style/Widget.Inventario.CardView.Outlined">
+    android:layout_marginBottom="@dimen/margin_small"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_medium"
-        android:gravity="center_vertical">
+        android:padding="@dimen/padding_medium">
 
         <!-- Product Image -->
-        <ImageView
-            android:id="@+id/ivProductImage"
-            android:layout_width="@dimen/image_small"
-            android:layout_height="@dimen/image_small"
-            android:src="@drawable/ic_placeholder_product"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProduct"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/product_image" />
+            app:shapeAppearanceOverlay="@style/RoundedCorner"
+            tools:src="@drawable/placeholder_product" />
 
         <!-- Product Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginHorizontal="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvProductName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Inventario.Body"
-                android:textStyle="bold"
-                android:maxLines="2"
                 android:ellipsize="end"
-                tools:text="Coca Cola 500ml" />
+                android:maxLines="2"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="@color/text_primary"
+                tools:text="Producto de ejemplo" />
 
             <TextView
-                android:id="@+id/tvVariant"
+                android:id="@+id/tvVariantName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="2dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
                 android:visibility="gone"
-                tools:visibility="visible"
-                tools:text="Variante: Grande" />
+                tools:text="Color: Rojo"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tvUnitPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                tools:text="₲ 8.000 c/u" />
+                android:layout_marginTop="4dp"
+                android:textAppearance="?textAppearanceBodyMedium"
+                android:textColor="@color/primary"
+                tools:text="Gs. 150.000" />
+
+            <!-- Stock Warning -->
+            <TextView
+                android:id="@+id/tvStockWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="4dp"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/warning"
+                android:visibility="gone"
+                app:drawableStartCompat="@drawable/ic_warning"
+                app:drawableTint="@color/warning"
+                tools:text="Stock bajo: 3 unidades"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <!-- Quantity and Actions -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <!-- Quantity Controls -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDecrease"
                     style="@style/Widget.Material3.Button.IconButton.Outlined"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    app:icon="@drawable/ic_remove"
-                    app:iconSize="18dp" />
+                    app:icon="@drawable/ic_minus"
+                    app:iconSize="18dp"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/tvQuantity"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.Inventario.Title"
+                    android:textAppearance="?textAppearanceTitleMedium"
+                    android:textColor="@color/text_primary"
                     tools:text="2" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIncrease"
-                    style="@style/Widget.Material3.Button.IconButton.Outlined"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    app:icon="@drawable/ic_add"
+                    app:icon="@drawable/ic_plus"
                     app:iconSize="18dp" />
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <!-- Total and Delete -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="end">
-
+            <!-- Subtotal -->
             <TextView
                 android:id="@+id/tvSubtotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Inventario.Price"
-                android:textColor="?attr/colorPrimary"
-                tools:text="₲ 16.000" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelete"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/remove"
-                android:textColor="@color/error"
-                app:icon="@drawable/ic_delete"
-                app:iconTint="@color/error"
-                app:iconSize="16dp" />
+                android:layout_marginTop="8dp"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
+                tools:text="Gs. 300.000" />
 
         </LinearLayout>
 

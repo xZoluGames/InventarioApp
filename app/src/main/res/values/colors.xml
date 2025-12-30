@@ -80,4 +80,14 @@
 
     <!-- Additional Colors -->
     <color name="colorSurfaceVariant">#E7E0EC</color>
+
+
+
+
+
+    <!-- Otros -->
+
+
+    <!-- Stock colors -->
+    <color name="stock_in">#4CAF50</color>
 </resources>

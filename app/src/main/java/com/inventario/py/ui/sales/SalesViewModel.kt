@@ -253,7 +253,7 @@ class CartViewModel @Inject constructor(
                     discount = state.discount,
                     totalAmount = state.total,
                     paymentMethod = state.selectedPaymentMethod,
-                    status = SaleStatus.COMPLETED,
+                    status = SaleStatus.COMPLETED.name,
                     soldBy = userId,
                     createdAt = System.currentTimeMillis()
                 )
@@ -431,12 +431,12 @@ class SalesHistoryViewModel @Inject constructor(
 
         // Filtrar por estado
         state.statusFilter?.let { status ->
-            filtered = filtered.filter { it.status == status }
+            filtered = filtered.filter { it.status == status.name }
         }
 
         // Filtrar por método de pago
         state.paymentMethodFilter?.let { method ->
-            filtered = filtered.filter { it.paymentMethod == method }
+            filtered = filtered.filter { it.paymentMethod == method.name }
         }
 
         return filtered.sortedByDescending { it.createdAt }
@@ -458,7 +458,7 @@ class SalesHistoryViewModel @Inject constructor(
     }
 
     fun getStatistics(): SalesStatistics {
-        val filtered = _uiState.value.filteredSales.filter { it.status == SaleStatus.COMPLETED }
+        val filtered = _uiState.value.filteredSales.filter { it.status == SaleStatus.COMPLETED.name }
         return SalesStatistics(
             totalSales = filtered.sumOf { it.totalAmount },
             totalTransactions = filtered.size,

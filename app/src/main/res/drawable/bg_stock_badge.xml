@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- bg_stock_badge.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@color/stock_critical"/>
-    <corners android:radius="@dimen/corner_small"/>
+    android:shape="oval">
+    <solid android:color="@color/success" />
+    <size
+        android:width="12dp"
+        android:height="12dp" />
 </shape>

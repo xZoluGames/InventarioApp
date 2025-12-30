@@ -4,7 +4,7 @@ import com.inventario.py.data.local.dao.UserDao
 import com.inventario.py.data.local.entity.UserEntity
 import com.inventario.py.data.remote.api.InventarioApi
 import com.inventario.py.data.remote.dto.LoginRequest
-import com.inventario.py.data.remote.dto.ChangePasswordRequest
+import com.inventario.py.data.remote.dto.RefreshTokenRequest
 import com.inventario.py.utils.SessionManager
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -21,14 +21,20 @@ class AuthRepository @Inject constructor(
             val response = api.login(LoginRequest(username, password))
             if (response.isSuccessful && response.body() != null) {
                 val authResponse = response.body()!!
-                sessionManager.saveAuthToken(authResponse.token)
-                sessionManager.saveRefreshToken(authResponse.refreshToken)
-                
-                val user = authResponse.user.toEntity()
-                userDao.insertUser(user)
-                sessionManager.saveCurrentUser(user)
-                
-                Result.success(user)
+                // Acceder a través de .data
+                val authData = authResponse.data
+                if (authData != null) {
+                    sessionManager.saveAuthToken(authData.token, authData.expiresIn)
+                    sessionManager.saveRefreshToken(authData.refreshToken)
+                    
+                    val user = authData.user.toEntity()
+                    userDao.insertUser(user)
+                    sessionManager.saveCurrentUser(user)
+                    
+                    Result.success(user)
+                } else {
+                    Result.failure(Exception(authResponse.message ?: "Error de autenticación"))
+                }
             } else {
                 Result.failure(Exception(response.message() ?: "Error de autenticación"))
             }
@@ -45,17 +51,12 @@ class AuthRepository @Inject constructor(
     }
     
     private fun verifyPasswordOffline(password: String, hash: String): Boolean {
-        // En producción, usar BCrypt o similar
-        // Por ahora, comparación simple para desarrollo
         return password.hashCode().toString() == hash || hash == password
     }
     
     suspend fun logout() {
         try {
-            val token = sessionManager.getAuthToken()
-            if (token != null) {
-                api.logout("Bearer $token")
-            }
+            api.logout()
         } catch (e: Exception) {
             // Ignorar errores de red al cerrar sesión
         } finally {
@@ -70,12 +71,21 @@ class AuthRepository @Inject constructor(
                 return Result.failure(Exception("No hay token de refresh"))
             }
             
-            val response = api.refreshToken(refreshToken)
+            val response = api.refreshToken(RefreshTokenRequest(refreshToken))
             if (response.isSuccessful && response.body() != null) {
-                val newToken = response.body()!!.token
-                sessionManager.saveAuthToken(newToken)
-                sessionManager.saveRefreshToken(response.body()!!.refreshToken)
-                Result.success(newToken)
+                val body = response.body()!!
+                val newToken = body.token
+                val newRefresh = body.refreshToken
+                if (newToken != null) {
+                    sessionManager.saveAuthToken(newToken, body.expiresIn ?: 3600000)
+                    if (newRefresh != null) {
+                        sessionManager.saveRefreshToken(newRefresh)
+                    }
+                    Result.success(newToken)
+                } else {
+                    sessionManager.clearSession()
+                    Result.failure(Exception("Token inválido"))
+                }
             } else {
                 sessionManager.clearSession()
                 Result.failure(Exception("Sesión expirada"))
@@ -87,9 +97,12 @@ class AuthRepository @Inject constructor(
     
     suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit> {
         return try {
-            val response = api.changePassword(
-                ChangePasswordRequest(currentPassword, newPassword)
+            val request = mapOf(
+                "currentPassword" to currentPassword,
+                "newPassword" to newPassword,
+                "confirmPassword" to newPassword
             )
+            val response = api.changePassword(request)
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {

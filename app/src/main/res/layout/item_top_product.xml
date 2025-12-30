@@ -6,81 +6,90 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="@dimen/padding_small"
+    android:padding="12dp"
     android:gravity="center_vertical">
 
-    <!-- Ranking Number -->
-    <TextView
-        android:id="@+id/tvRanking"
-        android:layout_width="@dimen/icon_medium"
-        android:layout_height="@dimen/icon_medium"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.Inventario.Title"
-        android:textColor="?attr/colorPrimary"
-        android:textStyle="bold"
-        tools:text="1" />
+    <!-- Rank Badge -->
+    <FrameLayout
+        android:layout_width="32dp"
+        android:layout_height="32dp">
+
+        <View
+            android:id="@+id/viewRankBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_circle" />
+
+        <TextView
+            android:id="@+id/tvRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="1" />
+
+    </FrameLayout>
 
     <!-- Product Image -->
-    <ImageView
-        android:id="@+id/ivProductImage"
-        android:layout_width="@dimen/image_thumbnail"
-        android:layout_height="@dimen/image_thumbnail"
-        android:layout_marginStart="@dimen/margin_small"
-        android:src="@drawable/ic_placeholder_product"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivProduct"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/product_image" />
+        app:shapeAppearanceOverlay="@style/RoundedCorner"
+        tools:src="@drawable/placeholder_product" />
 
     <!-- Product Info -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginStart="12dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Body"
-            android:maxLines="1"
             android:ellipsize="end"
-            tools:text="Coca Cola 500ml" />
+            android:maxLines="1"
+            android:textAppearance="?textAppearanceBodyMedium"
+            android:textColor="@color/text_primary"
+            tools:text="Producto más vendido" />
 
         <TextView
-            android:id="@+id/tvQuantitySold"
+            android:id="@+id/tvSoldCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="45 unidades vendidas" />
+            android:layout_marginTop="2dp"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_secondary"
+            tools:text="150 vendidos" />
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressPercentage"
+            style="@style/Widget.Material3.LinearProgressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            tools:progress="80" />
 
     </LinearLayout>
 
     <!-- Revenue -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvRevenue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="end">
-
-        <TextView
-            android:id="@+id/tvRevenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Body"
-            android:textColor="?attr/colorPrimary"
-            android:textStyle="bold"
-            tools:text="₲ 360.000" />
-
-        <TextView
-            android:id="@+id/tvPercentage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-            android:textColor="@color/success"
-            tools:text="12% del total" />
-
-    </LinearLayout>
+        android:layout_marginStart="8dp"
+        android:textAppearance="?textAppearanceBodyMedium"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        tools:text="Gs. 2.5M" />
 
 </LinearLayout>
