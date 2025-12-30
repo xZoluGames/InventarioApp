@@ -1,8 +1,7 @@
 package com.inventario.py.data.local.entity
 
 /**
- * ARCHIVO DE TIPOS FALTANTES
- * Contiene todos los enums, sealed classes y data classes que el proyecto necesita
+ * ARCHIVO DE TIPOS FALTANTES - CORREGIDO
  */
 
 // ==================== ENUMS ====================
@@ -66,6 +65,15 @@ enum class DateFilter {
     CUSTOM
 }
 
+enum class MovementType {
+    IN,
+    OUT,
+    ADJUSTMENT,
+    SALE,
+    RETURN,
+    TRANSFER
+}
+
 // ==================== SEALED CLASSES ====================
 
 sealed class LoginState {
@@ -84,44 +92,30 @@ sealed class SyncState {
 
 // ==================== DATA CLASSES ====================
 
-/**
- * Producto con sus variantes
- */
 data class ProductWithVariants(
     val product: ProductEntity,
     val variants: List<ProductVariantEntity> = emptyList()
 ) {
+    val id: String get() = product.id
     val totalStock: Int
         get() = if (variants.isNotEmpty()) variants.sumOf { it.stock } else product.totalStock
-    
-    val hasVariants: Boolean
-        get() = variants.isNotEmpty()
+    val hasVariants: Boolean get() = variants.isNotEmpty()
 }
 
-/**
- * Venta con detalles completos
- */
 data class SaleWithDetails(
     val sale: SaleEntity,
     val items: List<SaleItemEntity> = emptyList(),
     val seller: UserEntity? = null
 ) {
-    val itemCount: Int
-        get() = items.sumOf { it.quantity }
-    
-    val totalAmount: Long
-        get() = sale.total
-    
-    val createdAt: Long
-        get() = sale.soldAt
-    
-    val discount: Long
-        get() = sale.totalDiscount
+    val id: String get() = sale.id
+    val itemCount: Int get() = items.sumOf { it.quantity }
+    val totalAmount: Long get() = sale.total
+    val createdAt: Long get() = sale.soldAt
+    val discount: Long get() = sale.totalDiscount
+    val paymentMethod: String get() = sale.paymentMethod
+    val status: String get() = sale.status
 }
 
-/**
- * Item de venta simplificado para UI
- */
 data class SaleItem(
     val id: String,
     val productId: String,
@@ -133,9 +127,6 @@ data class SaleItem(
     val imageUrl: String? = null
 )
 
-/**
- * Variante de producto simplificada para UI
- */
 data class ProductVariant(
     val id: String,
     val productId: String,
@@ -146,20 +137,16 @@ data class ProductVariant(
     val stock: Int = 0,
     val isActive: Boolean = true
 ) {
-    // Aliases para compatibilidad
     val variantName: String get() = name
     val priceModifier: Long get() = additionalPrice
     val currentStock: Int get() = stock
 }
 
-/**
- * Movimiento de stock
- */
 data class StockMovement(
     val id: String,
     val productId: String,
     val variantId: String? = null,
-    val type: MovementType,
+    val movementType: MovementType,
     val quantity: Int,
     val previousStock: Int,
     val newStock: Int,
@@ -169,9 +156,6 @@ data class StockMovement(
     val createdAt: Long = System.currentTimeMillis()
 )
 
-/**
- * Estado de reportes
- */
 data class ReportsState(
     val isLoading: Boolean = false,
     val totalSales: Long = 0,
@@ -195,35 +179,31 @@ data class TopProduct(
     val percentage: Float = 0f
 )
 
-// ==================== EXTENSION FUNCTIONS ====================
+// ==================== EXTENSION PROPERTIES ====================
 
-/**
- * Extensiones para ProductVariantEntity
- */
-val ProductVariantEntity.priceModifier: Long
-    get() = this.additionalPrice
+// Para ProductVariantEntity
+val ProductVariantEntity.priceModifier: Long get() = this.additionalPrice
+val ProductVariantEntity.currentStock: Int get() = this.stock
+val ProductVariantEntity.variantName: String get() = this.name
 
-val ProductVariantEntity.currentStock: Int
-    get() = this.stock
+// Para SaleEntity  
+val SaleEntity.totalAmount: Long get() = this.total
+val SaleEntity.createdAt: Long get() = this.soldAt
+val SaleEntity.discount: Long get() = this.totalDiscount
 
-val ProductVariantEntity.variantName: String
-    get() = this.name
+// Para StockMovementEntity
+val StockMovementEntity.movementType: MovementType 
+    get() = try { MovementType.valueOf(this.type) } catch (e: Exception) { MovementType.ADJUSTMENT }
 
-/**
- * Extensiones para SaleEntity
- */
-val SaleEntity.totalAmount: Long
-    get() = this.total
+// Para UserEntity
+val UserEntity.name: String get() = this.fullName
 
-val SaleEntity.createdAt: Long
-    get() = this.soldAt
+// Para ProductEntity
+val ProductEntity.category: String? get() = this.categoryId
+val ProductEntity.minStock: Int get() = this.lowStockThreshold
 
-val SaleEntity.discount: Long
-    get() = this.totalDiscount
+// ==================== CONVERSION FUNCTIONS ====================
 
-/**
- * Convertir SaleItemEntity a SaleItem
- */
 fun SaleItemEntity.toSaleItem() = SaleItem(
     id = this.id,
     productId = this.productId,
@@ -235,9 +215,6 @@ fun SaleItemEntity.toSaleItem() = SaleItem(
     imageUrl = this.productImageUrl
 )
 
-/**
- * Convertir ProductVariantEntity a ProductVariant
- */
 fun ProductVariantEntity.toProductVariant() = ProductVariant(
     id = this.id,
     productId = this.productId,
@@ -248,3 +225,22 @@ fun ProductVariantEntity.toProductVariant() = ProductVariant(
     stock = this.stock,
     isActive = this.isActive
 )
+
+fun StockMovementEntity.toStockMovement() = StockMovement(
+    id = this.id,
+    productId = this.productId,
+    variantId = this.variantId,
+    movementType = this.movementType,
+    quantity = this.quantity,
+    previousStock = this.previousStock,
+    newStock = this.newStock,
+    reason = this.reason,
+    referenceId = this.referenceId,
+    createdBy = this.createdBy,
+    createdAt = this.createdAt
+)
+
+// Lista conversions
+fun List<StockMovementEntity>.toStockMovements() = this.map { it.toStockMovement() }
+fun List<ProductVariantEntity>.toProductVariants() = this.map { it.toProductVariant() }
+fun List<SaleItemEntity>.toSaleItems() = this.map { it.toSaleItem() }

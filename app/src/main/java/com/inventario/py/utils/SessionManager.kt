@@ -47,7 +47,6 @@ class SessionManager @Inject constructor(
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (e: Exception) {
-            // Fallback to regular SharedPreferences if encryption fails
             context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         }
     }
@@ -85,43 +84,25 @@ class SessionManager @Inject constructor(
         return prefs.getString(KEY_REFRESH_TOKEN, null)
     }
     
-    fun clearRefreshToken() {
-        prefs.edit().remove(KEY_REFRESH_TOKEN).apply()
-    }
-    
     // ==================== USER INFO ====================
     
     fun saveUserId(userId: String) {
         prefs.edit().putString(KEY_USER_ID, userId).apply()
     }
     
-    fun getUserId(): String? {
-        return prefs.getString(KEY_USER_ID, null)
-    }
+    fun getUserId(): String? = prefs.getString(KEY_USER_ID, null)
     
     fun saveUserName(name: String) {
         prefs.edit().putString(KEY_USER_NAME, name).apply()
     }
     
-    fun getUserName(): String? {
-        return prefs.getString(KEY_USER_NAME, null)
-    }
-    
-    fun saveUserEmail(email: String) {
-        prefs.edit().putString(KEY_USER_EMAIL, email).apply()
-    }
-    
-    fun getUserEmail(): String? {
-        return prefs.getString(KEY_USER_EMAIL, null)
-    }
+    fun getUserName(): String? = prefs.getString(KEY_USER_NAME, null)
     
     fun saveUserRole(role: String) {
         prefs.edit().putString(KEY_USER_ROLE, role).apply()
     }
     
-    fun getUserRole(): String? {
-        return prefs.getString(KEY_USER_ROLE, null)
-    }
+    fun getUserRole(): String? = prefs.getString(KEY_USER_ROLE, null)
     
     // ==================== CURRENT USER ====================
     
@@ -132,7 +113,7 @@ class SessionManager @Inject constructor(
             putString(KEY_USER_ID, user.id)
             putString(KEY_USER_NAME, user.fullName)
             putString(KEY_USER_EMAIL, user.email)
-            putString(KEY_USER_ROLE, user.role.name)
+            putString(KEY_USER_ROLE, user.role)
             putBoolean(KEY_IS_LOGGED_IN, true)
             apply()
         }
@@ -155,38 +136,17 @@ class SessionManager @Inject constructor(
         return prefs.getBoolean(KEY_IS_LOGGED_IN, false) && getAuthToken() != null
     }
     
-    val isLoggedIn: Boolean
-        get() = isLoggedIn()
-    
-    fun setLoggedIn(loggedIn: Boolean) {
-        prefs.edit().putBoolean(KEY_IS_LOGGED_IN, loggedIn).apply()
-    }
+    val isLoggedIn: Boolean get() = isLoggedIn()
     
     // ==================== ROLE CHECK ====================
     
-    fun isOwner(): Boolean {
-        return getUserRole() == UserRole.OWNER.name
-    }
+    fun isOwner(): Boolean = getUserRole() == UserRole.OWNER.name
     
-    val isOwner: Boolean
-        get() = isOwner()
+    val isOwner: Boolean get() = isOwner()
     
     fun isAdmin(): Boolean {
         val role = getUserRole()
         return role == UserRole.OWNER.name || role == UserRole.ADMIN.name
-    }
-    
-    fun canEditProducts(): Boolean {
-        val role = getUserRole()
-        return role == UserRole.OWNER.name || role == UserRole.ADMIN.name
-    }
-    
-    fun canViewPurchasePrice(): Boolean {
-        return isOwner()
-    }
-    
-    fun canManageUsers(): Boolean {
-        return isOwner()
     }
     
     // ==================== SERVER CONFIG ====================
@@ -205,7 +165,6 @@ class SessionManager @Inject constructor(
         saveAuthToken(token, expiresIn)
         saveRefreshToken(refreshToken)
         saveCurrentUser(user)
-        setLoggedIn(true)
     }
     
     fun clearSession() {
@@ -214,18 +173,5 @@ class SessionManager @Inject constructor(
     
     fun logout() {
         clearSession()
-    }
-    
-    // ==================== TOKEN REFRESH ====================
-    
-    fun isTokenExpired(): Boolean {
-        val expiry = prefs.getLong(KEY_TOKEN_EXPIRY, 0)
-        return System.currentTimeMillis() > expiry
-    }
-    
-    fun shouldRefreshToken(): Boolean {
-        val expiry = prefs.getLong(KEY_TOKEN_EXPIRY, 0)
-        val fiveMinutes = 5 * 60 * 1000
-        return System.currentTimeMillis() > (expiry - fiveMinutes)
     }
 }

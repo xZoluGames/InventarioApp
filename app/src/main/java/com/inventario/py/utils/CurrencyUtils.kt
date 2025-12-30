@@ -21,30 +21,26 @@ object CurrencyUtils {
         return "Gs. ${decimalFormat.format(amount)}"
     }
     
-    /**
-     * Formatea un valor Double a formato de Guaraníes
-     */
     fun formatGs(amount: Double): String {
         return "Gs. ${decimalFormat.format(amount.toLong())}"
     }
     
-    /**
-     * Formatea un valor Int a formato de Guaraníes
-     */
     fun formatGs(amount: Int): String {
         return "Gs. ${decimalFormat.format(amount)}"
     }
     
-    /**
-     * Formatea sin el prefijo "Gs."
-     */
+    // ==================== ALIASES para compatibilidad ====================
+    
+    fun formatGuarani(amount: Long): String = formatGs(amount)
+    fun formatGuarani(amount: Double): String = formatGs(amount)
+    fun formatGuarani(amount: Int): String = formatGs(amount)
+    
+    // ==================== Otros métodos ====================
+    
     fun formatNumber(amount: Long): String {
         return decimalFormat.format(amount)
     }
     
-    /**
-     * Formatea con símbolo corto
-     */
     fun formatShort(amount: Long): String {
         return when {
             amount >= 1_000_000_000 -> "Gs. ${String.format("%.1f", amount / 1_000_000_000.0)}B"
@@ -54,9 +50,6 @@ object CurrencyUtils {
         }
     }
     
-    /**
-     * Parsea un string formateado a Long
-     */
     fun parseGs(formatted: String): Long {
         return try {
             formatted
@@ -71,32 +64,20 @@ object CurrencyUtils {
         }
     }
     
-    /**
-     * Calcula porcentaje
-     */
     fun calculatePercentage(part: Long, total: Long): Float {
         return if (total > 0) (part.toFloat() / total.toFloat()) * 100f else 0f
     }
     
-    /**
-     * Formatea porcentaje
-     */
     fun formatPercentage(percentage: Float): String {
         return String.format("%.1f%%", percentage)
     }
     
-    /**
-     * Calcula margen de ganancia
-     */
     fun calculateMargin(salePrice: Long, purchasePrice: Long): Float {
         return if (purchasePrice > 0) {
             ((salePrice - purchasePrice).toFloat() / purchasePrice.toFloat()) * 100f
         } else 0f
     }
     
-    /**
-     * Formatea margen con color indicador
-     */
     fun formatMargin(margin: Float): String {
         val sign = if (margin >= 0) "+" else ""
         return "$sign${String.format("%.1f", margin)}%"
