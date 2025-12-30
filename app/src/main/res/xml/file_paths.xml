@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path 
+        name="external_files" 
+        path="." />
+    <files-path 
+        name="internal_files" 
+        path="." />
+    <cache-path 
+        name="cache" 
+        path="." />
+    <external-files-path 
+        name="external_app_files" 
+        path="." />
+    <files-path 
+        name="exports" 
+        path="exports/" />
+    <files-path 
+        name="backups" 
+        path="backups/" />
+    <files-path 
+        name="images" 
+        path="images/" />
+</paths>

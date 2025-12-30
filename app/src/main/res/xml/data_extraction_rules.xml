@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="database" path="inventario_database" />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="backups" />
+        <exclude domain="cache" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="database" path="inventario_database" />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="backups" />
+    </device-transfer>
+</data-extraction-rules>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inventario PY</string>
+    
+    <!-- Login -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="login_username">Usuario</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_button">Ingresar</string>
+    <string name="login_error">Usuario o contraseña incorrectos</string>
+    <string name="login_remember">Recordar sesión</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_products">Productos</string>
+    <string name="nav_sales">Ventas</string>
+    <string name="nav_cart">Carrito</string>
+    <string name="nav_reports">Reportes</string>
+    <string name="nav_settings">Configuración</string>
+    <string name="nav_history">Historial</string>
+    
+    <!-- Products -->
+    <string name="products_title">Productos</string>
+    <string name="products_add">Agregar Producto</string>
+    <string name="products_edit">Editar Producto</string>
+    <string name="products_search">Buscar producto…</string>
+    <string name="products_scan">Escanear código</string>
+    <string name="products_empty">No hay productos registrados</string>
+    <string name="products_low_stock">Stock bajo</string>
+    
+    <!-- Product Fields -->
+    <string name="product_name">Nombre</string>
+    <string name="product_description">Descripción</string>
+    <string name="product_barcode">Código de barras</string>
+    <string name="product_identifier">Identificador</string>
+    <string name="product_price">Precio de venta</string>
+    <string name="product_cost">Precio de compra</string>
+    <string name="product_stock">Cantidad en stock</string>
+    <string name="product_min_stock">Stock mínimo</string>
+    <string name="product_supplier">Proveedor</string>
+    <string name="product_quality">Calidad</string>
+    <string name="product_category">Categoría</string>
+    <string name="product_image">Imagen</string>
+    <string name="product_colors">Colores disponibles</string>
+    <string name="product_types">Tipos/Variantes</string>
+    <string name="product_capacity">Capacidad</string>
+    <string name="product_date_added">Fecha de registro</string>
+    
+    <!-- Cart -->
+    <string name="cart_title">Carrito de Venta</string>
+    <string name="cart_empty">El carrito está vacío</string>
+    <string name="cart_total">Total</string>
+    <string name="cart_sell">Vender</string>
+    <string name="cart_clear">Vaciar carrito</string>
+    <string name="cart_add_item">Agregar al carrito</string>
+    <string name="cart_remove_item">Quitar del carrito</string>
+    <string name="cart_quantity">Cantidad</string>
+    
+    <!-- Sales -->
+    <string name="sales_title">Registro de Ventas</string>
+    <string name="sales_today">Ventas de hoy</string>
+    <string name="sales_week">Esta semana</string>
+    <string name="sales_month">Este mes</string>
+    <string name="sales_year">Este año</string>
+    <string name="sales_empty">No hay ventas registradas</string>
+    <string name="sales_total">Total vendido</string>
+    <string name="sales_profit">Ganancia</string>
+    <string name="sales_export">Exportar a Excel</string>
+    <string name="sales_date">Fecha</string>
+    <string name="sales_items">Artículos</string>
+    
+    <!-- Reports -->
+    <string name="reports_title">Reportes</string>
+    <string name="reports_daily">Reporte Diario</string>
+    <string name="reports_monthly">Reporte Mensual</string>
+    <string name="reports_annual">Reporte Anual</string>
+    <string name="reports_custom">Rango personalizado</string>
+    <string name="reports_generate">Generar Reporte</string>
+    <string name="reports_export">Exportar a Excel</string>
+    <string name="reports_top_products">Productos más vendidos</string>
+    <string name="reports_revenue">Ingresos</string>
+    <string name="reports_expenses">Gastos</string>
+    
+    <!-- History -->
+    <string name="history_title">Historial de Productos</string>
+    <string name="history_product">Historial de %1$s</string>
+    <string name="history_sold">Vendido</string>
+    <string name="history_in_stock">En existencia</string>
+    <string name="history_out_of_stock">Agotado</string>
+    <string name="history_sold_at">Vendido a</string>
+    <string name="history_bought_at">Comprado a</string>
+    <string name="history_sale_date">Fecha de venta</string>
+    
+    <!-- Settings -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_account">Cuenta</string>
+    <string name="settings_sync">Sincronización</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_low_stock_alert">Alerta de stock bajo</string>
+    <string name="settings_backup">Respaldo de datos</string>
+    <string name="settings_restore">Restaurar datos</string>
+    <string name="settings_server">Servidor</string>
+    <string name="settings_server_url">URL del servidor</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="settings_version">Versión</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_language">Idioma</string>
+    
+    <!-- Sync -->
+    <string name="sync_now">Sincronizar ahora</string>
+    <string name="sync_auto">Sincronización automática</string>
+    <string name="sync_last">Última sincronización</string>
+    <string name="sync_in_progress">Sincronizando…</string>
+    <string name="sync_success">Sincronización completada</string>
+    <string name="sync_error">Error al sincronizar</string>
+    <string name="sync_offline">Modo sin conexión</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_name">Alertas de Inventario</string>
+    <string name="notification_channel_description">Notificaciones de stock bajo y actualizaciones</string>
+    <string name="notification_low_stock_title">⚠️ Stock Bajo</string>
+    <string name="notification_low_stock_message">%1$s tiene solo %2$d unidades</string>
+    <string name="notification_sync_title">Sincronización</string>
+    
+    <!-- User Roles -->
+    <string name="role_owner">Dueño</string>
+    <string name="role_employee">Empleado</string>
+    
+    <!-- Common -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="ok">Aceptar</string>
+    <string name="error">Error</string>
+    <string name="success">Éxito</string>
+    <string name="loading">Cargando…</string>
+    <string name="retry">Reintentar</string>
+    <string name="search">Buscar</string>
+    <string name="filter">Filtrar</string>
+    <string name="sort">Ordenar</string>
+    <string name="all">Todos</string>
+    <string name="none">Ninguno</string>
+    <string name="select">Seleccionar</string>
+    <string name="select_image">Seleccionar imagen</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="gallery">Galería</string>
+    
+    <!-- Currency -->
+    <string name="currency_symbol">Gs.</string>
+    <string name="currency_format">%1$s Gs.</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_delete_title">Eliminar producto</string>
+    <string name="dialog_delete_message">¿Estás seguro de que deseas eliminar este producto?</string>
+    <string name="dialog_confirm_sale_title">Confirmar venta</string>
+    <string name="dialog_confirm_sale_message">Total a cobrar: %1$s Gs.\n¿Confirmar venta?</string>
+    <string name="dialog_backup_title">Respaldo de datos</string>
+    <string name="dialog_backup_message">¿Crear respaldo de todos los datos?</string>
+    <string name="dialog_restore_title">Restaurar datos</string>
+    <string name="dialog_restore_message">⚠️ Esto reemplazará todos los datos actuales. ¿Continuar?</string>
+    
+    <!-- Errors -->
+    <string name="error_required_field">Este campo es requerido</string>
+    <string name="error_invalid_price">Precio inválido</string>
+    <string name="error_invalid_quantity">Cantidad inválida</string>
+    <string name="error_no_connection">Sin conexión a internet</string>
+    <string name="error_server">Error del servidor</string>
+    <string name="error_unknown">Error desconocido</string>
+    <string name="error_camera_permission">Se requiere permiso de cámara</string>
+    <string name="error_storage_permission">Se requiere permiso de almacenamiento</string>
+    <string name="error_insufficient_stock">Stock insuficiente</string>
+    
+    <!-- Success messages -->
+    <string name="success_product_added">Producto agregado exitosamente</string>
+    <string name="success_product_updated">Producto actualizado</string>
+    <string name="success_product_deleted">Producto eliminado</string>
+    <string name="success_sale_completed">Venta completada</string>
+    <string name="success_backup_created">Respaldo creado exitosamente</string>
+    <string name="success_data_restored">Datos restaurados exitosamente</string>
+    <string name="success_export">Archivo exportado exitosamente</string>
+    
+    <!-- Scanner -->
+    <string name="scanner_title">Escanear código de barras</string>
+    <string name="scanner_instruction">Apunta la cámara al código de barras</string>
+    <string name="scanner_flash_on">Flash encendido</string>
+    <string name="scanner_flash_off">Flash apagado</string>
+    <string name="scanner_not_found">Producto no encontrado</string>
+    <string name="scanner_add_new">¿Deseas agregar este producto?</string>
+    
+    <!-- Time periods -->
+    <string name="today">Hoy</string>
+    <string name="yesterday">Ayer</string>
+    <string name="this_week">Esta semana</string>
+    <string name="this_month">Este mes</string>
+    <string name="this_year">Este año</string>
+    <string name="custom_range">Rango personalizado</string>
+    <string name="from_date">Desde</string>
+    <string name="to_date">Hasta</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="database" path="inventario_database" />
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="backups" />
+    <exclude domain="cache" path="." />
+    <exclude domain="no_backup" path="." />
+</full-backup-content>
