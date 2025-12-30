@@ -1,27 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Background circle -->
-    <path
-        android:fillColor="#1976D2"
-        android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0"/>
-    <!-- Inventory bars icon -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M28,44h12v28H28V44z"/>
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M48,36h12v36H48V36z"/>
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M68,52h12v20H68V52z"/>
-    <!-- Box outline -->
-    <path
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="3"
-        android:fillColor="#00000000"
-        android:pathData="M24,32h60v48H24z"/>
+    <group android:scaleX="0.35"
+        android:scaleY="0.35"
+        android:translateX="35.1"
+        android:translateY="35.1">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M54,8C28.6,8 8,28.6 8,54s20.6,46 46,46 46,-20.6 46,-46S79.4,8 54,8zM54,92c-21,0 -38,-17 -38,-38s17,-38 38,-38 38,17 38,38 -17,38 -38,38z"/>
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M54,24c-16.5,0 -30,13.5 -30,30s13.5,30 30,30 30,-13.5 30,-30S70.5,24 54,24zM54,76c-12.1,0 -22,-9.9 -22,-22s9.9,-22 22,-22 22,9.9 22,22 -9.9,22 -22,22z"/>
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M54,40c-7.7,0 -14,6.3 -14,14s6.3,14 14,14 14,-6.3 14,-14S61.7,40 54,40zM54,60c-3.3,0 -6,-2.7 -6,-6s2.7,-6 6,-6 6,2.7 6,6 -2.7,6 -6,6z"/>
+    </group>
 </vector>

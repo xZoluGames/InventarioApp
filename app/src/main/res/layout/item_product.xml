@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/card_background"
+    app:cardCornerRadius="@dimen/corner_large"
+    app:cardElevation="@dimen/elevation_small">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_medium">
+
+        <!-- Product Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_product"
+            android:layout_width="@dimen/image_product_list"
+            android:layout_height="@dimen/image_product_list"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/cd_product_image"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_placeholder_product"/>
+
+        <!-- Stock Badge -->
+        <TextView
+            android:id="@+id/tv_stock_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_stock_badge"
+            android:paddingHorizontal="@dimen/padding_small"
+            android:paddingVertical="2dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_tiny"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/iv_product"
+            app:layout_constraintTop_toTopOf="@id/iv_product"
+            tools:text="5"/>
+
+        <!-- Product Name -->
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_product"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Protector de Pantalla Samsung Galaxy A54 5G"/>
+
+        <!-- Category -->
+        <TextView
+            android:id="@+id/tv_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_tiny"
+            android:drawablePadding="@dimen/padding_tiny"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_small"
+            app:drawableStartCompat="@drawable/ic_category"
+            app:drawableTint="@color/text_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_product"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
+            tools:text="Accesorios / Protectores"/>
+
+        <!-- Identifier/Barcode -->
+        <TextView
+            android:id="@+id/tv_identifier"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_tiny"
+            android:drawablePadding="@dimen/padding_tiny"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_hint"
+            android:textSize="@dimen/text_tiny"
+            app:drawableStartCompat="@drawable/ic_barcode_small"
+            app:drawableTint="@color/text_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_product"
+            app:layout_constraintTop_toBottomOf="@id/tv_category"
+            tools:text="PRD-123456"/>
+
+        <!-- Price -->
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textAppearance="@style/TextAppearance.Inventario.Price"
+            app:layout_constraintStart_toEndOf="@id/iv_product"
+            app:layout_constraintTop_toBottomOf="@id/tv_identifier"
+            tools:text="Gs. 35.000"/>
+
+        <!-- Stock Status -->
+        <TextView
+            android:id="@+id/tv_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_identifier"
+            tools:text="Stock: 15"/>
+
+        <!-- Variants Indicator -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_variants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:chipMinHeight="24dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product"
+            app:layout_constraintStart_toEndOf="@id/iv_product"
+            android:layout_marginStart="@dimen/margin_medium"
+            tools:text="3 variantes"
+            tools:visibility="visible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

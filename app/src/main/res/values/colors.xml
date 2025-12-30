@@ -1,92 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Colors - Azul profesional -->
-    <color name="primary">#1976D2</color>
+    <!-- Primary Colors -->
+    <color name="primary">#1565C0</color>
     <color name="primary_dark">#0D47A1</color>
     <color name="primary_light">#42A5F5</color>
-    <color name="primary_container">#E3F2FD</color>
-    <color name="on_primary">#FFFFFF</color>
-    <color name="on_primary_container">#001E36</color>
-
-    <!-- Secondary Colors - Verde para acciones positivas -->
-    <color name="secondary">#388E3C</color>
-    <color name="secondary_dark">#1B5E20</color>
-    <color name="secondary_light">#66BB6A</color>
-    <color name="secondary_container">#E8F5E9</color>
-    <color name="on_secondary">#FFFFFF</color>
-    <color name="on_secondary_container">#002106</color>
-
-    <!-- Tertiary Colors - Naranja para alertas -->
-    <color name="tertiary">#F57C00</color>
-    <color name="tertiary_dark">#E65100</color>
-    <color name="tertiary_light">#FFB74D</color>
-    <color name="tertiary_container">#FFF3E0</color>
-    <color name="on_tertiary">#FFFFFF</color>
-    <color name="on_tertiary_container">#311600</color>
-
-    <!-- Error Colors -->
-    <color name="error">#D32F2F</color>
-    <color name="error_dark">#B71C1C</color>
-    <color name="error_container">#FFEBEE</color>
-    <color name="on_error">#FFFFFF</color>
-    <color name="on_error_container">#410002</color>
-
-    <!-- Success Colors -->
-    <color name="success">#2E7D32</color>
-    <color name="success_light">#4CAF50</color>
-    <color name="success_container">#C8E6C9</color>
-
-    <!-- Warning Colors -->
-    <color name="warning">#ED6C02</color>
-    <color name="warning_light">#FF9800</color>
-    <color name="warning_container">#FFE0B2</color>
-
+    <color name="primary_variant">#1976D2</color>
+    
+    <!-- Secondary Colors -->
+    <color name="secondary">#FF6F00</color>
+    <color name="secondary_dark">#E65100</color>
+    <color name="secondary_light">#FFB74D</color>
+    <color name="secondary_variant">#FF8F00</color>
+    
     <!-- Background Colors -->
     <color name="background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>
-    <color name="surface_variant">#F5F5F5</color>
-    <color name="on_background">#1C1B1F</color>
-    <color name="on_surface">#1C1B1F</color>
-    <color name="on_surface_variant">#49454F</color>
-
-    <!-- Outline Colors -->
-    <color name="outline">#79747E</color>
-    <color name="outline_variant">#CAC4D0</color>
-
-    <!-- Dark Theme Colors -->
-    <color name="primary_dark_theme">#90CAF9</color>
-    <color name="secondary_dark_theme">#81C784</color>
-    <color name="background_dark">#121212</color>
-    <color name="surface_dark">#1E1E1E</color>
-    <color name="on_background_dark">#E6E1E5</color>
-    <color name="on_surface_dark">#E6E1E5</color>
-
-    <!-- Status Colors -->
-    <color name="in_stock">#4CAF50</color>
-    <color name="low_stock">#FF9800</color>
-    <color name="out_of_stock">#F44336</color>
-
-    <!-- Card Colors -->
     <color name="card_background">#FFFFFF</color>
-    <color name="card_stroke">#E0E0E0</color>
-
-    <!-- Divider -->
-    <color name="divider">#E0E0E0</color>
-
+    <color name="input_background">#F5F5F5</color>
+    
     <!-- Text Colors -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
-    <color name="text_disabled">#BDBDBD</color>
     <color name="text_hint">#9E9E9E</color>
-
-    <!-- Paraguay Flag Colors (para detalles opcionales) -->
-    <color name="py_red">#D52B1E</color>
-    <color name="py_white">#FFFFFF</color>
-    <color name="py_blue">#0038A8</color>
-
-    <!-- Splash Screen -->
-    <color name="splash_background">#1976D2</color>
-
-    <!-- Launcher Icon -->
-    <color name="ic_launcher_background">#1976D2</color>
+    <color name="text_disabled">#BDBDBD</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_secondary">#FFFFFF</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="success_light">#81C784</color>
+    <color name="warning">#FFC107</color>
+    <color name="warning_light">#FFD54F</color>
+    <color name="error">#F44336</color>
+    <color name="error_light">#E57373</color>
+    <color name="info">#2196F3</color>
+    <color name="info_light">#64B5F6</color>
+    
+    <!-- Stock Status -->
+    <color name="stock_high">#4CAF50</color>
+    <color name="stock_medium">#FFC107</color>
+    <color name="stock_low">#FF9800</color>
+    <color name="stock_critical">#F44336</color>
+    <color name="stock_empty">#9E9E9E</color>
+    
+    <!-- Dividers & Borders -->
+    <color name="divider">#E0E0E0</color>
+    <color name="border">#BDBDBD</color>
+    <color name="ripple">#1A1565C0</color>
+    
+    <!-- Overlay -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#40FFFFFF</color>
+    
+    <!-- Chart Colors -->
+    <color name="chart_1">#1565C0</color>
+    <color name="chart_2">#FF6F00</color>
+    <color name="chart_3">#4CAF50</color>
+    <color name="chart_4">#9C27B0</color>
+    <color name="chart_5">#00BCD4</color>
+    
+    <!-- Navigation -->
+    <color name="nav_selected">#1565C0</color>
+    <color name="nav_unselected">#757575</color>
+    
+    <!-- Scanner -->
+    <color name="scanner_frame">#FFFFFF</color>
+    <color name="scanner_laser">#FF0000</color>
 </resources>

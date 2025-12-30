@@ -1,234 +1,331 @@
 package com.inventario.py.utils
 
-import java.text.NumberFormat
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.Snackbar
+import com.inventario.py.BuildConfig
+import com.inventario.py.R
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-// ========== Network Result ==========
+// ==================== CONSTANTES ====================
 
-sealed class NetworkResult<T> {
-    data class Success<T>(val data: T) : NetworkResult<T>()
-    data class Error<T>(val message: String) : NetworkResult<T>()
-    class Loading<T> : NetworkResult<T>()
+object Constants {
+    const val CURRENCY_SYMBOL = "Gs."
+    const val DATE_FORMAT_DISPLAY = "dd/MM/yyyy"
+    const val DATE_FORMAT_TIME = "HH:mm"
+    const val DATE_FORMAT_FULL = "dd/MM/yyyy HH:mm"
+    const val DATE_FORMAT_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    const val DATE_FORMAT_FILE = "yyyyMMdd_HHmmss"
     
-    val isSuccess: Boolean get() = this is Success
-    val isError: Boolean get() = this is Error
-    val isLoading: Boolean get() = this is Loading
+    const val REQUEST_CODE_CAMERA = 1001
+    const val REQUEST_CODE_GALLERY = 1002
+    const val REQUEST_CODE_BARCODE = 1003
     
-    fun getOrNull(): T? = (this as? Success)?.data
-    fun errorOrNull(): String? = (this as? Error)?.message
+    const val EXTRA_PRODUCT_ID = "product_id"
+    const val EXTRA_SALE_ID = "sale_id"
+    const val EXTRA_BARCODE = "barcode"
+    const val EXTRA_SCAN_MODE = "scan_mode"
+    
+    const val SCAN_MODE_ADD_PRODUCT = "add_product"
+    const val SCAN_MODE_SEARCH = "search"
+    const val SCAN_MODE_ADD_TO_CART = "add_to_cart"
 }
 
-// ========== Currency Formatting ==========
+// ==================== EXTENSIONES DE FORMATO ====================
 
-object CurrencyFormatter {
-    private val numberFormat = NumberFormat.getNumberInstance(Locale("es", "PY")).apply {
-        maximumFractionDigits = 0
-        isGroupingUsed = true
+/**
+ * Formatea un número Long a formato de moneda Guaraní
+ * Ejemplo: 1500000 -> "Gs. 1.500.000"
+ */
+fun Long.toGuaraniFormat(): String {
+    val symbols = DecimalFormatSymbols(Locale("es", "PY")).apply {
+        groupingSeparator = '.'
+        decimalSeparator = ','
     }
+    val formatter = DecimalFormat("#,###", symbols)
+    return "${Constants.CURRENCY_SYMBOL} ${formatter.format(this)}"
+}
 
-    fun formatGuaranies(amount: Long): String {
-        return "${numberFormat.format(amount)} Gs."
+/**
+ * Formatea para input (sin símbolo)
+ */
+fun Long.toGuaraniInputFormat(): String {
+    val symbols = DecimalFormatSymbols(Locale("es", "PY")).apply {
+        groupingSeparator = '.'
     }
+    val formatter = DecimalFormat("#,###", symbols)
+    return formatter.format(this)
+}
 
-    fun formatGuaraniesShort(amount: Long): String {
-        return when {
-            amount >= 1_000_000_000 -> "${numberFormat.format(amount / 1_000_000_000)}B Gs."
-            amount >= 1_000_000 -> "${numberFormat.format(amount / 1_000_000)}M Gs."
-            amount >= 1_000 -> "${numberFormat.format(amount / 1_000)}K Gs."
-            else -> "${numberFormat.format(amount)} Gs."
-        }
-    }
-
-    fun parseGuaranies(text: String): Long {
-        return try {
-            text.replace(".", "")
-                .replace(",", "")
-                .replace("Gs", "")
-                .replace(".", "")
-                .trim()
-                .toLongOrNull() ?: 0L
-        } catch (e: Exception) {
-            0L
-        }
+/**
+ * Parsea un string formateado a Long
+ */
+fun String.parseGuaraniToLong(): Long {
+    return try {
+        this.replace(".", "")
+            .replace(",", "")
+            .replace(Constants.CURRENCY_SYMBOL, "")
+            .replace(" ", "")
+            .toLongOrNull() ?: 0L
+    } catch (e: Exception) {
+        0L
     }
 }
 
-// ========== Date Formatting ==========
+/**
+ * Formato de fecha para mostrar
+ */
+fun Long.toDisplayDate(): String {
+    return SimpleDateFormat(Constants.DATE_FORMAT_DISPLAY, Locale("es", "PY"))
+        .format(Date(this))
+}
 
-object DateFormatter {
-    private val fullFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("es", "PY"))
-    private val dateOnlyFormat = SimpleDateFormat("dd/MM/yyyy", Locale("es", "PY"))
-    private val timeOnlyFormat = SimpleDateFormat("HH:mm", Locale("es", "PY"))
-    private val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "PY"))
-    private val dayMonthFormat = SimpleDateFormat("dd MMM", Locale("es", "PY"))
+fun Long.toDisplayTime(): String {
+    return SimpleDateFormat(Constants.DATE_FORMAT_TIME, Locale("es", "PY"))
+        .format(Date(this))
+}
 
-    fun formatFull(date: Date): String = fullFormat.format(date)
-    fun formatDate(date: Date): String = dateOnlyFormat.format(date)
-    fun formatTime(date: Date): String = timeOnlyFormat.format(date)
-    fun formatMonthYear(date: Date): String = monthYearFormat.format(date)
-    fun formatDayMonth(date: Date): String = dayMonthFormat.format(date)
+fun Long.toDisplayDateTime(): String {
+    return SimpleDateFormat(Constants.DATE_FORMAT_FULL, Locale("es", "PY"))
+        .format(Date(this))
+}
 
-    fun formatRelative(date: Date): String {
-        val now = Calendar.getInstance()
-        val target = Calendar.getInstance().apply { time = date }
+fun Long.toRelativeTime(): String {
+    val now = System.currentTimeMillis()
+    val diff = now - this
+    
+    return when {
+        diff < 60_000 -> "Hace un momento"
+        diff < 3600_000 -> "Hace ${diff / 60_000} min"
+        diff < 86400_000 -> "Hace ${diff / 3600_000} horas"
+        diff < 604800_000 -> "Hace ${diff / 86400_000} días"
+        else -> toDisplayDate()
+    }
+}
 
-        return when {
-            isSameDay(now, target) -> "Hoy ${formatTime(date)}"
-            isYesterday(now, target) -> "Ayer ${formatTime(date)}"
-            isSameWeek(now, target) -> {
-                val dayName = SimpleDateFormat("EEEE", Locale("es", "PY")).format(date)
-                "$dayName ${formatTime(date)}"
+// ==================== EXTENSIONES DE VIEW ====================
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}
+
+fun View.visibleIf(condition: Boolean) {
+    visibility = if (condition) View.VISIBLE else View.GONE
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun View.showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+    Snackbar.make(this, message, duration).show()
+}
+
+fun View.showSnackbarWithAction(
+    message: String,
+    actionText: String,
+    action: () -> Unit
+) {
+    Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+        .setAction(actionText) { action() }
+        .show()
+}
+
+// ==================== EXTENSIONES DE CONTEXT ====================
+
+fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    requireContext().toast(message, duration)
+}
+
+// ==================== EXTENSIONES DE IMAGEVIEW ====================
+
+fun ImageView.loadImage(url: String?, placeholder: Int = R.drawable.ic_placeholder_product) {
+    Glide.with(context)
+        .load(url)
+        .placeholder(placeholder)
+        .error(placeholder)
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(this)
+}
+
+fun ImageView.loadImageFromFile(path: String?, placeholder: Int = R.drawable.ic_placeholder_product) {
+    Glide.with(context)
+        .load(path?.let { File(it) })
+        .placeholder(placeholder)
+        .error(placeholder)
+        .into(this)
+}
+
+// ==================== UTILIDADES DE ARCHIVO ====================
+
+object FileUtils {
+    
+    fun getImageFile(context: Context): File {
+        val timeStamp = SimpleDateFormat(Constants.DATE_FORMAT_FILE, Locale.getDefault())
+            .format(Date())
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("IMG_${timeStamp}_", ".jpg", storageDir)
+    }
+    
+    fun getFileUri(context: Context, file: File): Uri {
+        return FileProvider.getUriForFile(
+            context,
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            file
+        )
+    }
+    
+    fun saveBitmapToFile(context: Context, bitmap: Bitmap): File {
+        val file = getImageFile(context)
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
+        }
+        return file
+    }
+    
+    fun getExcelFile(context: Context, fileName: String): File {
+        val timeStamp = SimpleDateFormat(Constants.DATE_FORMAT_FILE, Locale.getDefault())
+            .format(Date())
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        return File(storageDir, "${fileName}_${timeStamp}.xlsx")
+    }
+    
+    fun createExcelFile(context: Context, fileName: String, headers: List<String>, data: List<List<Any>>): File {
+        val workbook: Workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Datos")
+        
+        // Header row
+        val headerRow = sheet.createRow(0)
+        headers.forEachIndexed { index, header ->
+            headerRow.createCell(index).setCellValue(header)
+        }
+        
+        // Data rows
+        data.forEachIndexed { rowIndex, rowData ->
+            val row = sheet.createRow(rowIndex + 1)
+            rowData.forEachIndexed { cellIndex, cellData ->
+                val cell = row.createCell(cellIndex)
+                when (cellData) {
+                    is String -> cell.setCellValue(cellData)
+                    is Number -> cell.setCellValue(cellData.toDouble())
+                    is Boolean -> cell.setCellValue(cellData)
+                    is Date -> cell.setCellValue(cellData)
+                    else -> cell.setCellValue(cellData.toString())
+                }
             }
-            isSameYear(now, target) -> formatDayMonth(date)
-            else -> formatDate(date)
         }
+        
+        // Auto-size columns
+        headers.indices.forEach { sheet.autoSizeColumn(it) }
+        
+        val file = getExcelFile(context, fileName)
+        FileOutputStream(file).use { workbook.write(it) }
+        workbook.close()
+        
+        return file
     }
-
-    private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
-    }
-
-    private fun isYesterday(now: Calendar, target: Calendar): Boolean {
-        val yesterday = Calendar.getInstance().apply {
-            time = now.time
-            add(Calendar.DAY_OF_YEAR, -1)
+    
+    fun shareFile(context: Context, file: File, mimeType: String = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        val uri = getFileUri(context, file)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = mimeType
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        return isSameDay(yesterday, target)
-    }
-
-    private fun isSameWeek(now: Calendar, target: Calendar): Boolean {
-        return now.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
-                now.get(Calendar.WEEK_OF_YEAR) == target.get(Calendar.WEEK_OF_YEAR)
-    }
-
-    private fun isSameYear(now: Calendar, target: Calendar): Boolean {
-        return now.get(Calendar.YEAR) == target.get(Calendar.YEAR)
-    }
-
-    // Utilidades para rangos de fecha
-    fun getStartOfDay(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
-    }
-
-    fun getEndOfDay(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.time
-    }
-
-    fun getStartOfWeek(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
-    }
-
-    fun getStartOfMonth(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
-    }
-
-    fun getEndOfMonth(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.time
-    }
-
-    fun getStartOfYear(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.DAY_OF_YEAR, 1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
-    }
-
-    fun getEndOfYear(date: Date = Date()): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.MONTH, Calendar.DECEMBER)
-            set(Calendar.DAY_OF_MONTH, 31)
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.time
+        context.startActivity(Intent.createChooser(intent, "Compartir archivo"))
     }
 }
 
-// ========== Validation ==========
+// ==================== VALIDACIONES ====================
 
 object Validators {
-    fun isValidPrice(price: String): Boolean {
-        return price.isNotBlank() && price.replace(".", "").toLongOrNull()?.let { it >= 0 } ?: false
+    
+    fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
-
-    fun isValidQuantity(quantity: String): Boolean {
-        return quantity.isNotBlank() && quantity.toIntOrNull()?.let { it >= 0 } ?: false
+    
+    fun isValidPhone(phone: String): Boolean {
+        // Formato paraguayo: puede empezar con 09 o +595
+        val phonePattern = "^(\\+595|0)?9[0-9]{8}$".toRegex()
+        return phonePattern.matches(phone.replace(" ", "").replace("-", ""))
     }
-
-    fun isValidBarcode(barcode: String): Boolean {
-        return barcode.length >= 8 && barcode.all { it.isDigit() }
-    }
-
-    fun isValidUsername(username: String): Boolean {
-        return username.length >= 3 && username.all { it.isLetterOrDigit() || it == '_' }
-    }
-
+    
     fun isValidPassword(password: String): Boolean {
+        // Mínimo 6 caracteres
         return password.length >= 6
+    }
+    
+    fun isValidBarcode(barcode: String): Boolean {
+        // EAN-13, EAN-8, UPC-A, etc.
+        return barcode.matches("^[0-9]{8,13}$".toRegex())
+    }
+    
+    fun isValidRuc(ruc: String): Boolean {
+        // RUC paraguayo
+        return ruc.matches("^[0-9]{6,9}-[0-9]$".toRegex())
     }
 }
 
-// ========== Global Functions ==========
+// ==================== GENERADORES ====================
 
-fun formatGuaranies(amount: Long): String = CurrencyFormatter.formatGuaranies(amount)
-fun formatCurrency(amount: Long): String = CurrencyFormatter.formatGuaranies(amount)
-fun formatRelativeDate(date: Date): String = DateFormatter.formatRelative(date)
+object Generators {
+    
+    fun generateId(): String {
+        return UUID.randomUUID().toString()
+    }
+    
+    fun generateSaleNumber(lastNumber: Int?): String {
+        val nextNumber = (lastNumber ?: 0) + 1
+        return nextNumber.toString().padStart(8, '0')
+    }
+    
+    fun generateIdentifier(prefix: String = "PRD"): String {
+        val timestamp = System.currentTimeMillis().toString().takeLast(6)
+        val random = (1000..9999).random()
+        return "$prefix-$timestamp-$random"
+    }
+}
 
-// ========== Extensions ==========
+// ==================== BOOT RECEIVER ====================
 
+import android.content.BroadcastReceiver
 
-fun Long.toFormattedPrice(): String = CurrencyFormatter.formatGuaranies(this)
-fun Long.toShortPrice(): String = CurrencyFormatter.formatGuaraniesShort(this)
-fun Date.toFormattedDate(): String = DateFormatter.formatDate(this)
-fun Date.toFormattedDateTime(): String = DateFormatter.formatFull(this)
-fun Date.toFormattedFull(): String = DateFormatter.formatFull(this)
-fun Date.toRelativeDate(): String = DateFormatter.formatRelative(this)
-
-fun <T> List<T>.safeSubList(fromIndex: Int, toIndex: Int): List<T> {
-    return if (fromIndex >= size) {
-        emptyList()
-    } else {
-        subList(fromIndex, minOf(toIndex, size))
+class BootReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            // Programar sincronización periódica
+            // Se puede usar WorkManager aquí
+        }
     }
 }

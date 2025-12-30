@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/padding_small"
+    android:gravity="center_vertical">
+
+    <!-- Ranking Number -->
+    <TextView
+        android:id="@+id/tvRanking"
+        android:layout_width="@dimen/icon_medium"
+        android:layout_height="@dimen/icon_medium"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.Inventario.Title"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        tools:text="1" />
+
+    <!-- Product Image -->
+    <ImageView
+        android:id="@+id/ivProductImage"
+        android:layout_width="@dimen/image_thumbnail"
+        android:layout_height="@dimen/image_thumbnail"
+        android:layout_marginStart="@dimen/margin_small"
+        android:src="@drawable/ic_placeholder_product"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/product_image" />
+
+    <!-- Product Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Body"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Coca Cola 500ml" />
+
+        <TextView
+            android:id="@+id/tvQuantitySold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="45 unidades vendidas" />
+
+    </LinearLayout>
+
+    <!-- Revenue -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvRevenue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Body"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            tools:text="₲ 360.000" />
+
+        <TextView
+            android:id="@+id/tvPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+            android:textColor="@color/success"
+            tools:text="12% del total" />
+
+    </LinearLayout>
+
+</LinearLayout>

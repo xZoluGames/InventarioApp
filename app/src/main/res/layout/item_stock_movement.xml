@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/padding_small"
+    android:gravity="center_vertical">
+
+    <!-- Movement Type Icon -->
+    <ImageView
+        android:id="@+id/ivMovementType"
+        android:layout_width="@dimen/icon_medium"
+        android:layout_height="@dimen/icon_medium"
+        android:padding="@dimen/padding_small"
+        android:background="@drawable/bg_circle"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@null"
+        tools:backgroundTint="@color/success_light"
+        tools:tint="@color/success" />
+
+    <!-- Movement Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvMovementType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Body"
+            tools:text="Entrada de stock" />
+
+        <TextView
+            android:id="@+id/tvMovementReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="Compra a proveedor" />
+
+        <TextView
+            android:id="@+id/tvMovementDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="15/12/2024 14:30" />
+
+    </LinearLayout>
+
+    <!-- Quantity Change -->
+    <TextView
+        android:id="@+id/tvMovementQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Inventario.Title"
+        android:textStyle="bold"
+        tools:text="+25"
+        tools:textColor="@color/success" />
+
+</LinearLayout>

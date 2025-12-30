@@ -1,204 +1,453 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Inventario PY</string>
+    <string name="app_name">Inventario</string>
+    <string name="app_name_full">Sistema de Inventario</string>
     
-    <!-- Login -->
-    <string name="login_title">Iniciar Sesión</string>
-    <string name="login_username">Usuario</string>
-    <string name="login_password">Contraseña</string>
-    <string name="login_button">Ingresar</string>
-    <string name="login_error">Usuario o contraseña incorrectos</string>
-    <string name="login_remember">Recordar sesión</string>
+    <!-- General -->
+    <string name="loading">Cargando…</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="search">Buscar</string>
+    <string name="filter">Filtrar</string>
+    <string name="close">Cerrar</string>
+    <string name="accept">Aceptar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="done">Listo</string>
+    <string name="retry">Reintentar</string>
+    <string name="back">Volver</string>
+    <string name="next">Siguiente</string>
+    <string name="add">Agregar</string>
+    <string name="remove">Quitar</string>
+    <string name="share">Compartir</string>
+    <string name="export">Exportar</string>
+    <string name="import_text">Importar</string>
+    <string name="sync">Sincronizar</string>
+    <string name="refresh">Actualizar</string>
+    <string name="clear">Limpiar</string>
+    <string name="select">Seleccionar</string>
+    <string name="all">Todos</string>
+    <string name="none">Ninguno</string>
+    <string name="other">Otro</string>
+    <string name="details">Detalles</string>
+    <string name="settings">Configuración</string>
+    <string name="help">Ayuda</string>
+    <string name="about">Acerca de</string>
+    <string name="version">Versión %1$s</string>
+    <string name="optional">(Opcional)</string>
+    <string name="required">* Requerido</string>
+    
+    <!-- Auth -->
+    <string name="login">Iniciar Sesión</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="username">Usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="remember_me">Recordarme</string>
+    <string name="login_success">Bienvenido</string>
+    <string name="login_error">Error al iniciar sesión</string>
+    <string name="invalid_credentials">Usuario o contraseña incorrectos</string>
+    <string name="session_expired">Tu sesión ha expirado</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="current_password">Contraseña actual</string>
+    <string name="new_password">Nueva contraseña</string>
+    <string name="password_changed">Contraseña cambiada exitosamente</string>
     
     <!-- Navigation -->
     <string name="nav_home">Inicio</string>
     <string name="nav_products">Productos</string>
     <string name="nav_sales">Ventas</string>
-    <string name="nav_cart">Carrito</string>
     <string name="nav_reports">Reportes</string>
-    <string name="nav_settings">Configuración</string>
-    <string name="nav_history">Historial</string>
+    <string name="nav_settings">Ajustes</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard">Panel Principal</string>
+    <string name="sales_today">Ventas de Hoy</string>
+    <string name="sales_month">Ventas del Mes</string>
+    <string name="total_products">Total Productos</string>
+    <string name="low_stock_alerts">Alertas de Stock</string>
+    <string name="recent_sales">Ventas Recientes</string>
+    <string name="quick_actions">Acciones Rápidas</string>
+    <string name="new_sale">Nueva Venta</string>
+    <string name="add_product">Agregar Producto</string>
+    <string name="scan_barcode">Escanear Código</string>
+    <string name="view_reports">Ver Reportes</string>
+    <string name="daily_summary">Resumen Diario</string>
+    <string name="profit_today">Ganancia Hoy</string>
+    <string name="transactions_today">Transacciones Hoy</string>
     
     <!-- Products -->
-    <string name="products_title">Productos</string>
-    <string name="products_add">Agregar Producto</string>
-    <string name="products_edit">Editar Producto</string>
-    <string name="products_search">Buscar producto…</string>
-    <string name="products_scan">Escanear código</string>
-    <string name="products_empty">No hay productos registrados</string>
-    <string name="products_low_stock">Stock bajo</string>
-    
-    <!-- Product Fields -->
-    <string name="product_name">Nombre</string>
+    <string name="products">Productos</string>
+    <string name="product">Producto</string>
+    <string name="product_name">Nombre del producto</string>
     <string name="product_description">Descripción</string>
-    <string name="product_barcode">Código de barras</string>
-    <string name="product_identifier">Identificador</string>
-    <string name="product_price">Precio de venta</string>
-    <string name="product_cost">Precio de compra</string>
-    <string name="product_stock">Cantidad en stock</string>
-    <string name="product_min_stock">Stock mínimo</string>
-    <string name="product_supplier">Proveedor</string>
-    <string name="product_quality">Calidad</string>
-    <string name="product_category">Categoría</string>
-    <string name="product_image">Imagen</string>
-    <string name="product_colors">Colores disponibles</string>
-    <string name="product_types">Tipos/Variantes</string>
-    <string name="product_capacity">Capacidad</string>
-    <string name="product_date_added">Fecha de registro</string>
+    <string name="barcode">Código de barras</string>
+    <string name="identifier">Identificador</string>
+    <string name="category">Categoría</string>
+    <string name="categories">Categorías</string>
+    <string name="supplier">Proveedor</string>
+    <string name="suppliers">Proveedores</string>
+    <string name="stock">Stock</string>
+    <string name="total_stock">Stock Total</string>
+    <string name="min_stock">Stock Mínimo</string>
+    <string name="min_stock_alert">Alerta de stock mínimo</string>
+    <string name="sale_price">Precio de Venta</string>
+    <string name="purchase_price">Precio de Compra</string>
+    <string name="profit_margin">Margen de Ganancia</string>
+    <string name="quality">Calidad</string>
+    <string name="product_images">Imágenes</string>
+    <string name="add_image">Agregar imagen</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="choose_gallery">Elegir de galería</string>
+    <string name="date_added">Fecha de registro</string>
+    <string name="last_updated">Última actualización</string>
+    <string name="product_added">Producto agregado</string>
+    <string name="product_updated">Producto actualizado</string>
+    <string name="product_deleted">Producto eliminado</string>
+    <string name="delete_product_confirm">¿Estás seguro de eliminar este producto?</string>
+    <string name="no_products">No hay productos</string>
+    <string name="search_products">Buscar productos…</string>
+    <string name="filter_products">Filtrar productos</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="sort_name">Nombre</string>
+    <string name="sort_price">Precio</string>
+    <string name="sort_stock">Stock</string>
+    <string name="sort_date">Fecha</string>
+    <string name="in_stock">En stock</string>
+    <string name="out_of_stock">Agotado</string>
+    <string name="low_stock">Stock bajo</string>
     
-    <!-- Cart -->
-    <string name="cart_title">Carrito de Venta</string>
-    <string name="cart_empty">El carrito está vacío</string>
-    <string name="cart_total">Total</string>
-    <string name="cart_sell">Vender</string>
-    <string name="cart_clear">Vaciar carrito</string>
-    <string name="cart_add_item">Agregar al carrito</string>
-    <string name="cart_remove_item">Quitar del carrito</string>
-    <string name="cart_quantity">Cantidad</string>
+    <!-- Variants -->
+    <string name="variants">Variantes</string>
+    <string name="variant">Variante</string>
+    <string name="add_variant">Agregar variante</string>
+    <string name="variant_type">Tipo de variante</string>
+    <string name="variant_value">Valor</string>
+    <string name="variant_stock">Stock de variante</string>
+    <string name="variant_price_diff">Diferencia de precio</string>
+    <string name="color">Color</string>
+    <string name="type">Tipo</string>
+    <string name="capacity">Capacidad</string>
+    <string name="size">Tamaño</string>
+    <string name="custom">Personalizado</string>
+    <string name="select_variant">Seleccionar variante</string>
     
     <!-- Sales -->
-    <string name="sales_title">Registro de Ventas</string>
-    <string name="sales_today">Ventas de hoy</string>
-    <string name="sales_week">Esta semana</string>
-    <string name="sales_month">Este mes</string>
-    <string name="sales_year">Este año</string>
-    <string name="sales_empty">No hay ventas registradas</string>
-    <string name="sales_total">Total vendido</string>
-    <string name="sales_profit">Ganancia</string>
-    <string name="sales_export">Exportar a Excel</string>
-    <string name="sales_date">Fecha</string>
-    <string name="sales_items">Artículos</string>
-    
-    <!-- Reports -->
-    <string name="reports_title">Reportes</string>
-    <string name="reports_daily">Reporte Diario</string>
-    <string name="reports_monthly">Reporte Mensual</string>
-    <string name="reports_annual">Reporte Anual</string>
-    <string name="reports_custom">Rango personalizado</string>
-    <string name="reports_generate">Generar Reporte</string>
-    <string name="reports_export">Exportar a Excel</string>
-    <string name="reports_top_products">Productos más vendidos</string>
-    <string name="reports_revenue">Ingresos</string>
-    <string name="reports_expenses">Gastos</string>
-    
-    <!-- History -->
-    <string name="history_title">Historial de Productos</string>
-    <string name="history_product">Historial de %1$s</string>
-    <string name="history_sold">Vendido</string>
-    <string name="history_in_stock">En existencia</string>
-    <string name="history_out_of_stock">Agotado</string>
-    <string name="history_sold_at">Vendido a</string>
-    <string name="history_bought_at">Comprado a</string>
-    <string name="history_sale_date">Fecha de venta</string>
-    
-    <!-- Settings -->
-    <string name="settings_title">Configuración</string>
-    <string name="settings_account">Cuenta</string>
-    <string name="settings_sync">Sincronización</string>
-    <string name="settings_notifications">Notificaciones</string>
-    <string name="settings_low_stock_alert">Alerta de stock bajo</string>
-    <string name="settings_backup">Respaldo de datos</string>
-    <string name="settings_restore">Restaurar datos</string>
-    <string name="settings_server">Servidor</string>
-    <string name="settings_server_url">URL del servidor</string>
-    <string name="settings_logout">Cerrar sesión</string>
-    <string name="settings_about">Acerca de</string>
-    <string name="settings_version">Versión</string>
-    <string name="settings_theme">Tema</string>
-    <string name="settings_language">Idioma</string>
-    
-    <!-- Sync -->
-    <string name="sync_now">Sincronizar ahora</string>
-    <string name="sync_auto">Sincronización automática</string>
-    <string name="sync_last">Última sincronización</string>
-    <string name="sync_in_progress">Sincronizando…</string>
-    <string name="sync_success">Sincronización completada</string>
-    <string name="sync_error">Error al sincronizar</string>
-    <string name="sync_offline">Modo sin conexión</string>
-    
-    <!-- Notifications -->
-    <string name="notification_channel_name">Alertas de Inventario</string>
-    <string name="notification_channel_description">Notificaciones de stock bajo y actualizaciones</string>
-    <string name="notification_low_stock_title">⚠️ Stock Bajo</string>
-    <string name="notification_low_stock_message">%1$s tiene solo %2$d unidades</string>
-    <string name="notification_sync_title">Sincronización</string>
-    
-    <!-- User Roles -->
-    <string name="role_owner">Dueño</string>
-    <string name="role_employee">Empleado</string>
-    
-    <!-- Common -->
-    <string name="save">Guardar</string>
-    <string name="cancel">Cancelar</string>
-    <string name="delete">Eliminar</string>
-    <string name="edit">Editar</string>
-    <string name="confirm">Confirmar</string>
-    <string name="yes">Sí</string>
-    <string name="no">No</string>
-    <string name="ok">Aceptar</string>
-    <string name="error">Error</string>
-    <string name="success">Éxito</string>
-    <string name="loading">Cargando…</string>
-    <string name="retry">Reintentar</string>
-    <string name="search">Buscar</string>
-    <string name="filter">Filtrar</string>
-    <string name="sort">Ordenar</string>
-    <string name="all">Todos</string>
-    <string name="none">Ninguno</string>
-    <string name="select">Seleccionar</string>
-    <string name="select_image">Seleccionar imagen</string>
-    <string name="take_photo">Tomar foto</string>
-    <string name="gallery">Galería</string>
-    
-    <!-- Currency -->
-    <string name="currency_symbol">Gs.</string>
-    <string name="currency_format">%1$s Gs.</string>
-    
-    <!-- Dialogs -->
-    <string name="dialog_delete_title">Eliminar producto</string>
-    <string name="dialog_delete_message">¿Estás seguro de que deseas eliminar este producto?</string>
-    <string name="dialog_confirm_sale_title">Confirmar venta</string>
-    <string name="dialog_confirm_sale_message">Total a cobrar: %1$s Gs.\n¿Confirmar venta?</string>
-    <string name="dialog_backup_title">Respaldo de datos</string>
-    <string name="dialog_backup_message">¿Crear respaldo de todos los datos?</string>
-    <string name="dialog_restore_title">Restaurar datos</string>
-    <string name="dialog_restore_message">⚠️ Esto reemplazará todos los datos actuales. ¿Continuar?</string>
-    
-    <!-- Errors -->
-    <string name="error_required_field">Este campo es requerido</string>
-    <string name="error_invalid_price">Precio inválido</string>
-    <string name="error_invalid_quantity">Cantidad inválida</string>
-    <string name="error_no_connection">Sin conexión a internet</string>
-    <string name="error_server">Error del servidor</string>
-    <string name="error_unknown">Error desconocido</string>
-    <string name="error_camera_permission">Se requiere permiso de cámara</string>
-    <string name="error_storage_permission">Se requiere permiso de almacenamiento</string>
-    <string name="error_insufficient_stock">Stock insuficiente</string>
-    
-    <!-- Success messages -->
-    <string name="success_product_added">Producto agregado exitosamente</string>
-    <string name="success_product_updated">Producto actualizado</string>
-    <string name="success_product_deleted">Producto eliminado</string>
-    <string name="success_sale_completed">Venta completada</string>
-    <string name="success_backup_created">Respaldo creado exitosamente</string>
-    <string name="success_data_restored">Datos restaurados exitosamente</string>
-    <string name="success_export">Archivo exportado exitosamente</string>
-    
-    <!-- Scanner -->
-    <string name="scanner_title">Escanear código de barras</string>
-    <string name="scanner_instruction">Apunta la cámara al código de barras</string>
-    <string name="scanner_flash_on">Flash encendido</string>
-    <string name="scanner_flash_off">Flash apagado</string>
-    <string name="scanner_not_found">Producto no encontrado</string>
-    <string name="scanner_add_new">¿Deseas agregar este producto?</string>
-    
-    <!-- Time periods -->
+    <string name="sales">Ventas</string>
+    <string name="sale">Venta</string>
+    <string name="sale_number">N° de Venta</string>
+    <string name="cart">Carrito</string>
+    <string name="add_to_cart">Agregar al carrito</string>
+    <string name="view_cart">Ver carrito</string>
+    <string name="cart_empty">El carrito está vacío</string>
+    <string name="items_in_cart">%1$d artículos en el carrito</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="discount">Descuento</string>
+    <string name="total">Total</string>
+    <string name="quantity">Cantidad</string>
+    <string name="unit_price">Precio unitario</string>
+    <string name="sell">Vender</string>
+    <string name="complete_sale">Completar Venta</string>
+    <string name="cancel_sale">Cancelar Venta</string>
+    <string name="sale_completed">Venta completada</string>
+    <string name="sale_cancelled">Venta cancelada</string>
+    <string name="payment_method">Método de pago</string>
+    <string name="cash">Efectivo</string>
+    <string name="card">Tarjeta</string>
+    <string name="transfer">Transferencia</string>
+    <string name="credit">Crédito</string>
+    <string name="customer">Cliente</string>
+    <string name="customer_name">Nombre del cliente</string>
+    <string name="customer_phone">Teléfono</string>
+    <string name="customer_ruc">RUC</string>
+    <string name="notes">Notas</string>
+    <string name="sale_date">Fecha de venta</string>
+    <string name="sold_by">Vendido por</string>
+    <string name="sale_details">Detalles de venta</string>
+    <string name="no_sales">No hay ventas</string>
+    <string name="sales_history">Historial de ventas</string>
     <string name="today">Hoy</string>
-    <string name="yesterday">Ayer</string>
     <string name="this_week">Esta semana</string>
     <string name="this_month">Este mes</string>
     <string name="this_year">Este año</string>
     <string name="custom_range">Rango personalizado</string>
     <string name="from_date">Desde</string>
     <string name="to_date">Hasta</string>
+    <string name="insufficient_stock">Stock insuficiente</string>
+    <string name="max_available">Máximo disponible: %1$d</string>
+    
+    <!-- Reports -->
+    <string name="reports">Reportes</string>
+    <string name="daily_report">Reporte Diario</string>
+    <string name="monthly_report">Reporte Mensual</string>
+    <string name="annual_report">Reporte Anual</string>
+    <string name="custom_report">Reporte Personalizado</string>
+    <string name="sales_report">Reporte de Ventas</string>
+    <string name="inventory_report">Reporte de Inventario</string>
+    <string name="profit_report">Reporte de Ganancias</string>
+    <string name="export_excel">Exportar a Excel</string>
+    <string name="export_pdf">Exportar a PDF</string>
+    <string name="generate_report">Generar Reporte</string>
+    <string name="total_sales">Total Ventas</string>
+    <string name="total_revenue">Ingresos Totales</string>
+    <string name="total_profit">Ganancia Total</string>
+    <string name="total_cost">Costo Total</string>
+    <string name="transactions">Transacciones</string>
+    <string name="average_sale">Venta Promedio</string>
+    <string name="top_products">Productos Más Vendidos</string>
+    <string name="sales_by_category">Ventas por Categoría</string>
+    <string name="sales_by_payment">Ventas por Método de Pago</string>
+    <string name="sales_trend">Tendencia de Ventas</string>
+    <string name="report_exported">Reporte exportado exitosamente</string>
+    <string name="no_data_period">No hay datos para este período</string>
+    
+    <!-- Scanner -->
+    <string name="scanner">Escáner</string>
+    <string name="scanning">Escaneando…</string>
+    <string name="scan_product">Escanear producto</string>
+    <string name="scan_instructions">Apunta la cámara al código de barras</string>
+    <string name="barcode_detected">Código detectado</string>
+    <string name="product_found">Producto encontrado</string>
+    <string name="product_not_found">Producto no encontrado</string>
+    <string name="register_new">¿Registrar nuevo?</string>
+    <string name="flashlight">Linterna</string>
+    <string name="camera_permission">Permiso de cámara requerido</string>
+    <string name="camera_permission_rationale">Se necesita acceso a la cámara para escanear códigos de barras</string>
+    <string name="grant_permission">Conceder permiso</string>
+    <string name="manual_entry">Entrada manual</string>
+    <string name="enter_barcode">Ingrese el código</string>
+    
+    <!-- Settings -->
+    <string name="general_settings">General</string>
+    <string name="account_settings">Cuenta</string>
+    <string name="notification_settings">Notificaciones</string>
+    <string name="sync_settings">Sincronización</string>
+    <string name="backup_settings">Respaldo</string>
+    <string name="enable_notifications">Habilitar notificaciones</string>
+    <string name="low_stock_notifications">Alertas de stock bajo</string>
+    <string name="auto_sync">Sincronización automática</string>
+    <string name="sync_interval">Intervalo de sincronización</string>
+    <string name="last_sync">Última sincronización: %1$s</string>
+    <string name="sync_now">Sincronizar ahora</string>
+    <string name="syncing">Sincronizando…</string>
+    <string name="sync_success">Sincronización completada</string>
+    <string name="sync_error">Error de sincronización</string>
+    <string name="backup">Respaldo</string>
+    <string name="create_backup">Crear respaldo</string>
+    <string name="restore_backup">Restaurar respaldo</string>
+    <string name="backup_created">Respaldo creado</string>
+    <string name="backup_restored">Respaldo restaurado</string>
+    <string name="server_url">URL del servidor</string>
+    <string name="test_connection">Probar conexión</string>
+    <string name="connection_success">Conexión exitosa</string>
+    <string name="connection_error">Error de conexión</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="language">Idioma</string>
+    <string name="currency">Moneda</string>
+    <string name="guaranies">Guaraníes (Gs.)</string>
+    
+    <!-- Users -->
+    <string name="users">Usuarios</string>
+    <string name="user">Usuario</string>
+    <string name="add_user">Agregar usuario</string>
+    <string name="edit_user">Editar usuario</string>
+    <string name="user_role">Rol</string>
+    <string name="owner">Dueño</string>
+    <string name="employee">Empleado</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="phone">Teléfono</string>
+    <string name="active">Activo</string>
+    <string name="inactive">Inactivo</string>
+    <string name="profile">Perfil</string>
+    <string name="my_profile">Mi Perfil</string>
+    
+    <!-- Stock Movements -->
+    <string name="stock_movements">Movimientos de Stock</string>
+    <string name="stock_in">Entrada</string>
+    <string name="stock_out">Salida</string>
+    <string name="adjustment">Ajuste</string>
+    <string name="return_stock">Devolución</string>
+    <string name="reason">Motivo</string>
+    <string name="add_stock">Agregar stock</string>
+    <string name="remove_stock">Quitar stock</string>
+    <string name="adjust_stock">Ajustar stock</string>
+    
+    <!-- Errors & Messages -->
+    <string name="error">Error</string>
+    <string name="error_generic">Ha ocurrido un error</string>
+    <string name="error_network">Error de conexión</string>
+    <string name="error_server">Error del servidor</string>
+    <string name="error_loading">Error al cargar datos</string>
+    <string name="error_saving">Error al guardar</string>
+    <string name="error_deleting">Error al eliminar</string>
+    <string name="field_required">Este campo es requerido</string>
+    <string name="invalid_email">Correo electrónico inválido</string>
+    <string name="invalid_phone">Teléfono inválido</string>
+    <string name="invalid_price">Precio inválido</string>
+    <string name="passwords_not_match">Las contraseñas no coinciden</string>
+    <string name="success">Éxito</string>
+    <string name="saved_successfully">Guardado exitosamente</string>
+    <string name="deleted_successfully">Eliminado exitosamente</string>
+    <string name="no_internet">Sin conexión a internet</string>
+    <string name="working_offline">Trabajando sin conexión</string>
+    <string name="data_synced">Datos sincronizados</string>
+    <string name="pending_sync">Cambios pendientes de sincronizar</string>
+    <string name="confirm_delete">Confirmar eliminación</string>
+    <string name="action_cannot_undone">Esta acción no se puede deshacer</string>
+    <string name="confirm_logout">¿Deseas cerrar sesión?</string>
+    
+    <!-- Notifications -->
+    <string name="channel_alerts">Alertas de Inventario</string>
+    <string name="channel_alerts_desc">Notificaciones de stock bajo y alertas importantes</string>
+    <string name="channel_sync">Sincronización</string>
+    <string name="channel_sync_desc">Estado de sincronización de datos</string>
+    <string name="notif_low_stock_title">Stock Bajo</string>
+    <string name="notif_low_stock_text">%1$s tiene solo %2$d unidades</string>
+    <string name="notif_sync_title">Sincronización</string>
+    <string name="notif_sync_complete">Datos sincronizados correctamente</string>
+    
+    <!-- Empty States -->
+    <string name="empty_products">No hay productos registrados</string>
+    <string name="empty_products_action">Agrega tu primer producto</string>
+    <string name="empty_sales">No hay ventas registradas</string>
+    <string name="empty_sales_action">Realiza tu primera venta</string>
+    <string name="empty_categories">No hay categorías</string>
+    <string name="empty_search">No se encontraron resultados</string>
+    <string name="empty_search_hint">Intenta con otros términos de búsqueda</string>
+    
+    <!-- Price History -->
+    <string name="price_history">Historial de Precios</string>
+    <string name="price_changed">Precio modificado</string>
+    <string name="old_price">Precio anterior</string>
+    <string name="new_price">Precio nuevo</string>
+    <string name="change_reason">Motivo del cambio</string>
+    
+    <!-- Daily Cash -->
+    <string name="daily_cash">Caja Diaria</string>
+    <string name="open_cash">Abrir Caja</string>
+    <string name="close_cash">Cerrar Caja</string>
+    <string name="opening_amount">Monto de apertura</string>
+    <string name="closing_amount">Monto de cierre</string>
+    <string name="expected_amount">Monto esperado</string>
+    <string name="difference">Diferencia</string>
+    <string name="cash_closed">Caja cerrada</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_logo">Logo de la aplicación</string>
+    <string name="cd_product_image">Imagen del producto</string>
+    <string name="cd_scan">Escanear código</string>
+    <string name="cd_cart">Carrito de compras</string>
+    <string name="cd_search">Buscar</string>
+    <string name="cd_filter">Filtrar</string>
+    <string name="cd_add">Agregar</string>
+    <string name="cd_edit">Editar</string>
+    <string name="cd_delete">Eliminar</string>
+    <string name="cd_close">Cerrar</string>
+    <string name="cd_menu">Menú</string>
+    <string name="cd_back">Volver</string>
+    <string name="cd_more_options">Más opciones</string>
+    <string name="cd_increase">Aumentar cantidad</string>
+    <string name="cd_decrease">Disminuir cantidad</string>
+    <string name="cd_flash">Linterna</string>
+    
+    <!-- Settings Screen -->
+    <string name="business_settings">Configuración del Negocio</string>
+    <string name="business_info">Información del Negocio</string>
+    <string name="business_info_description">Nombre, dirección, RUC</string>
+    <string name="categories_description">Administrar categorías de productos</string>
+
+    <string name="suppliers_description">Gestionar proveedores</string>
+    <string name="users_description">Administrar empleados y permisos</string>
+    <string name="app_settings">Configuración de la App</string>
+    <string name="dark_mode_description">Tema oscuro para la interfaz</string>
+    <string name="sound_effects">Efectos de Sonido</string>
+    <string name="sound_effects_description">Sonidos al escanear y confirmar</string>
+    <string name="low_stock_notifications_description">Alertas cuando el stock es bajo</string>
+
+    <string name="sync_status_synced">Sincronizado</string>
+    <string name="sync_status_pending">Cambios pendientes</string>
+    <string name="sync_status_offline">Sin conexión</string>
+
+    <string name="server_config">Configuración del Servidor</string>
+    
+    <!-- Reports Screen -->
+    <string name="date_range">Rango de Fechas</string>
+
+    <string name="start_date">Fecha Inicio</string>
+    <string name="end_date">Fecha Fin</string>
+
+    <string name="profit">Ganancia</string>
+    <string name="sales_chart">Gráfico de Ventas</string>
+    <string name="no_data_available">No hay datos disponibles</string>
+
+    <string name="no_sales_in_period">No hay ventas en este período</string>
+    <string name="inventory_summary">Resumen de Inventario</string>
+    <string name="inventory_value">Valor del Inventario</string>
+    <string name="export_reports">Exportar Reportes</string>
+    <string name="export_description">Descarga reportes en formato Excel</string>
+
+    
+    <!-- Scanner Screen -->
+
+    <string name="scanner_instructions">Coloca el código de barras dentro del recuadro</string>
+    <string name="enter_manually">Ingresar Manualmente</string>
+
+    <string name="scan_again">Escanear Otro</string>
+
+    <string name="camera_permission_required">Permiso de Cámara Requerido</string>
+    <string name="camera_permission_description">Para escanear códigos de barras necesitamos acceso a la cámara</string>
+
+    
+    <!-- Product Detail -->
+    <string name="product_image">Imagen del Producto</string>
+    <string name="cost_price">Precio Costo</string>
+
+    <string name="stock_information">Información de Stock</string>
+    <string name="current_stock">Stock Actual</string>
+
+    <string name="no_stock_movements">No hay movimientos registrados</string>
+    <string name="view_all">Ver Todo</string>
+    <string name="created_at">Fecha de Creación</string>
+
+    
+    <!-- Additional Strings for Fragments -->
+    <string name="select_date_range">Seleccionar Rango de Fechas</string>
+
+    <string name="cannot_cancel_sale">No se puede cancelar esta venta</string>
+
+    <string name="cancel_sale_confirmation">¿Estás seguro de cancelar esta venta? El stock será restaurado.</string>
+    <string name="stock_count">Stock: %1$d</string>
+    <string name="product_added_to_cart">%1$s agregado al carrito</string>
+
+    <string name="enter_code_or_name">Código o nombre del producto</string>
+
+    <string name="status">Estado</string>
+    <string name="completed">Completada</string>
+    <string name="pending">Pendiente</string>
+    <string name="cancelled">Cancelada</string>
+
+    <string name="clear_filters">Limpiar Filtros</string>
+
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="role_owner">Dueño</string>
+    <string name="role_employee">Empleado</string>
+    <string name="version_format">Versión %1$s</string>
+
+    <string name="sync_complete">Sincronización completada</string>
+    <string name="last_sync_format">Última sincronización: %1$s</string>
+    <string name="never_synced">Nunca sincronizado</string>
+    <string name="pending_changes_count">%1$d cambios pendientes</string>
+    <string name="server_updated">Servidor actualizado</string>
+    <string name="coming_soon">Próximamente</string>
+    <string name="password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="change">Cambiar</string>
+
+    <string name="view_product">Ver Producto</string>
+    <string name="ic_flash_off" translatable="false">ic_flash_off</string>
 </resources>

@@ -3,17 +3,12 @@ package com.inventario.py.data.local.database
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.inventario.py.data.local.entities.ProductVariantEntity
-import com.inventario.py.data.local.entities.SyncStatus
-import com.inventario.py.domain.model.HistoryAction
-import com.inventario.py.domain.model.PaymentMethod
-import com.inventario.py.domain.model.UserRole
 import java.util.Date
 
 class Converters {
+    
     private val gson = Gson()
-
-    // Date converters
+    
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
         return value?.let { Date(it) }
@@ -23,96 +18,56 @@ class Converters {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
-
-    // String List converters
+    
     @TypeConverter
-    fun fromStringList(value: List<String>?): String {
-        return gson.toJson(value ?: emptyList<String>())
+    fun fromStringList(value: List<String>?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toStringList(value: String): List<String> {
-        val type = object : TypeToken<List<String>>() {}.type
-        return try {
-            gson.fromJson(value, type) ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
+    fun toStringList(value: String?): List<String>? {
+        return value?.let {
+            val type = object : TypeToken<List<String>>() {}.type
+            gson.fromJson(it, type)
         }
     }
-
-    // ProductVariantEntity List converters
+    
     @TypeConverter
-    fun fromVariantList(value: List<ProductVariantEntity>?): String {
-        return gson.toJson(value ?: emptyList<ProductVariantEntity>())
+    fun fromLongList(value: List<Long>?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toVariantList(value: String): List<ProductVariantEntity> {
-        val type = object : TypeToken<List<ProductVariantEntity>>() {}.type
-        return try {
-            gson.fromJson(value, type) ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
+    fun toLongList(value: String?): List<Long>? {
+        return value?.let {
+            val type = object : TypeToken<List<Long>>() {}.type
+            gson.fromJson(it, type)
         }
     }
-
-    // SyncStatus converters
+    
     @TypeConverter
-    fun fromSyncStatus(status: SyncStatus): String {
-        return status.name
+    fun fromMap(value: Map<String, String>?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toSyncStatus(value: String): SyncStatus {
-        return try {
-            SyncStatus.valueOf(value)
-        } catch (e: Exception) {
-            SyncStatus.PENDING
+    fun toMap(value: String?): Map<String, String>? {
+        return value?.let {
+            val type = object : TypeToken<Map<String, String>>() {}.type
+            gson.fromJson(it, type)
         }
     }
-
-    // PaymentMethod converters
+    
     @TypeConverter
-    fun fromPaymentMethod(method: PaymentMethod): String {
-        return method.name
+    fun fromMapLong(value: Map<String, Long>?): String? {
+        return value?.let { gson.toJson(it) }
     }
 
     @TypeConverter
-    fun toPaymentMethod(value: String): PaymentMethod {
-        return try {
-            PaymentMethod.valueOf(value)
-        } catch (e: Exception) {
-            PaymentMethod.CASH
-        }
-    }
-
-    // UserRole converters
-    @TypeConverter
-    fun fromUserRole(role: UserRole): String {
-        return role.name
-    }
-
-    @TypeConverter
-    fun toUserRole(value: String): UserRole {
-        return try {
-            UserRole.valueOf(value)
-        } catch (e: Exception) {
-            UserRole.EMPLOYEE
-        }
-    }
-
-    // HistoryAction converters
-    @TypeConverter
-    fun fromHistoryAction(action: HistoryAction): String {
-        return action.name
-    }
-
-    @TypeConverter
-    fun toHistoryAction(value: String): HistoryAction {
-        return try {
-            HistoryAction.valueOf(value)
-        } catch (e: Exception) {
-            HistoryAction.UPDATED
+    fun toMapLong(value: String?): Map<String, Long>? {
+        return value?.let {
+            val type = object : TypeToken<Map<String, Long>>() {}.type
+            gson.fromJson(it, type)
         }
     }
 }

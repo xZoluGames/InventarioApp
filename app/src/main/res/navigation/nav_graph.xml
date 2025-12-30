@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.inventario.py.ui.main.HomeFragment"
+        android:label="@string/nav_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_product_detail"
+            app:destination="@id/productDetailFragment"/>
+        <action
+            android:id="@+id/action_home_to_new_sale"
+            app:destination="@id/newSaleFragment"/>
+        <action
+            android:id="@+id/action_home_to_scanner"
+            app:destination="@id/scannerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="com.inventario.py.ui.products.ProductsFragment"
+        android:label="@string/nav_products"
+        tools:layout="@layout/fragment_products">
+        <action
+            android:id="@+id/action_products_to_detail"
+            app:destination="@id/productDetailFragment"/>
+        <action
+            android:id="@+id/action_products_to_add"
+            app:destination="@id/addProductFragment"/>
+        <action
+            android:id="@+id/action_products_to_scanner"
+            app:destination="@id/scannerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.inventario.py.ui.products.ProductDetailFragment"
+        android:label="@string/product"
+        tools:layout="@layout/fragment_product_detail">
+        <argument
+            android:name="productId"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_detail_to_edit"
+            app:destination="@id/addProductFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/addProductFragment"
+        android:name="com.inventario.py.ui.products.AddProductFragment"
+        android:label="@string/add_product"
+        tools:layout="@layout/fragment_add_product">
+        <argument
+            android:name="productId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <argument
+            android:name="barcode"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <action
+            android:id="@+id/action_add_to_scanner"
+            app:destination="@id/scannerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/salesFragment"
+        android:name="com.inventario.py.ui.sales.SalesFragment"
+        android:label="@string/nav_sales"
+        tools:layout="@layout/fragment_sales">
+        <action
+            android:id="@+id/action_salesFragment_to_saleDetailFragment"
+            app:destination="@id/saleDetailFragment"/>
+        <action
+            android:id="@+id/action_sales_to_detail"
+            app:destination="@id/saleDetailFragment"/>
+        <action
+            android:id="@+id/action_sales_to_new"
+            app:destination="@id/newSaleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/newSaleFragment"
+        android:name="com.inventario.py.ui.sales.NewSaleFragment"
+        android:label="@string/new_sale"
+        tools:layout="@layout/fragment_new_sale">
+        <action
+            android:id="@+id/action_new_sale_to_scanner"
+            app:destination="@id/scannerFragment"/>
+        <action
+            android:id="@+id/action_new_sale_to_cart"
+            app:destination="@id/cartFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.inventario.py.ui.sales.CartFragment"
+        android:label="@string/cart"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cart_to_checkout"
+            app:destination="@id/checkoutFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.inventario.py.ui.sales.CheckoutFragment"
+        android:label="@string/complete_sale"
+        tools:layout="@layout/fragment_checkout"/>
+
+    <fragment
+        android:id="@+id/saleDetailFragment"
+        android:name="com.inventario.py.ui.sales.SaleDetailFragment"
+        android:label="@string/sale_details"
+        tools:layout="@layout/fragment_sale_detail">
+        <argument
+            android:name="saleId"
+            app:argType="long"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.inventario.py.ui.reports.ReportsFragment"
+        android:label="@string/nav_reports"
+        tools:layout="@layout/fragment_reports"/>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.inventario.py.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings"
+        tools:layout="@layout/fragment_settings"/>
+
+    <fragment
+        android:id="@+id/scannerFragment"
+        android:name="com.inventario.py.ui.scanner.ScannerFragment"
+        android:label="@string/scan_barcode"
+        tools:layout="@layout/fragment_scanner">
+        <argument
+            android:name="forSale"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+        <argument
+            android:name="scanMode"
+            app:argType="string"
+            android:defaultValue="search"/>
+    </fragment>
+
+</navigation>

@@ -3,11 +3,11 @@ package com.inventario.py
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -18,6 +18,13 @@ class InventarioApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Inicializar Timber para logging
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+        
+        // Crear canales de notificación
         createNotificationChannels()
     }
 
@@ -29,17 +36,17 @@ class InventarioApp : Application(), Configuration.Provider {
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NotificationManager::class.java)
 
             // Canal para alertas de stock bajo
-            val lowStockChannel = NotificationChannel(
-                CHANNEL_LOW_STOCK,
-                getString(R.string.notification_channel_name),
+            val stockChannel = NotificationChannel(
+                CHANNEL_STOCK_ALERTS,
+                "Alertas de Stock",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = getString(R.string.notification_channel_description)
+                description = "Notificaciones cuando el stock de productos está bajo"
                 enableVibration(true)
-                setShowBadge(true)
+                enableLights(true)
             }
 
             // Canal para sincronización
@@ -49,27 +56,36 @@ class InventarioApp : Application(), Configuration.Provider {
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "Notificaciones de sincronización de datos"
-                setShowBadge(false)
             }
 
-            // Canal para progreso de exportación
-            val exportChannel = NotificationChannel(
-                CHANNEL_EXPORT,
-                "Exportación",
+            // Canal para ventas
+            val salesChannel = NotificationChannel(
+                CHANNEL_SALES,
+                "Ventas",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Progreso de exportación de archivos"
+                description = "Notificaciones de ventas realizadas"
+            }
+
+            // Canal general
+            val generalChannel = NotificationChannel(
+                CHANNEL_GENERAL,
+                "General",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Notificaciones generales de la aplicación"
             }
 
             notificationManager.createNotificationChannels(
-                listOf(lowStockChannel, syncChannel, exportChannel)
+                listOf(stockChannel, syncChannel, salesChannel, generalChannel)
             )
         }
     }
 
     companion object {
-        const val CHANNEL_LOW_STOCK = "low_stock_channel"
+        const val CHANNEL_STOCK_ALERTS = "stock_alerts_channel"
         const val CHANNEL_SYNC = "sync_channel"
-        const val CHANNEL_EXPORT = "export_channel"
+        const val CHANNEL_SALES = "sales_channel"
+        const val CHANNEL_GENERAL = "general_channel"
     }
 }

@@ -1,85 +1,409 @@
 package com.inventario.py.data.remote.dto
 
-import com.google.gson.annotations.SerializedName
-import com.inventario.py.data.local.entities.*
-import com.inventario.py.domain.model.PaymentMethod
-import java.util.Date
+import com.inventario.py.data.local.entity.*
 
-// ========== Request DTOs ==========
+// ==================== AUTENTICACIÓN ====================
 
 data class LoginRequest(
     val username: String,
     val password: String
 )
 
-data class ProductRequest(
-    val id: Long,
-    val name: String,
-    val description: String,
-    val barcode: String?,
-    val identifier: String?,
-    val price: Long,
-    val cost: Long,
-    val stock: Int,
-    @SerializedName("min_stock")
-    val minStock: Int,
-    val supplier: String?,
-    val quality: String?,
-    val category: String?,
-    val colors: List<String>,
-    val types: List<VariantDto>,
-    val capacities: List<VariantDto>,
-    @SerializedName("date_added")
-    val dateAdded: Long,
-    @SerializedName("is_active")
-    val isActive: Boolean
-)
-
-data class SaleRequest(
-    val id: Long,
-    val items: List<SaleItemDto>,
-    val total: Long,
-    @SerializedName("total_cost")
-    val totalCost: Long,
-    val profit: Long,
-    val date: Long,
-    @SerializedName("employee_id")
-    val employeeId: Long,
-    @SerializedName("employee_name")
-    val employeeName: String,
-    @SerializedName("payment_method")
-    val paymentMethod: String,
-    val notes: String?
-)
-
-data class SyncRequest(
-    val products: List<ProductRequest>,
-    val sales: List<SaleRequest>,
-    @SerializedName("last_sync")
-    val lastSync: Long
-)
-
-data class BackupRequest(
-    @SerializedName("device_id")
-    val deviceId: String,
-    val timestamp: Long,
-    val data: BackupData
-)
-
-data class BackupData(
-    val products: List<ProductRequest>,
-    val sales: List<SaleRequest>,
-    val users: List<UserDto>
-)
-
-// ========== Response DTOs ==========
-
 data class LoginResponse(
     val success: Boolean,
     val message: String?,
-    val token: String?,
-    val user: UserDto?
+    val data: AuthData?
 )
+
+data class AuthData(
+    val token: String,
+    val refreshToken: String,
+    val user: UserDto,
+    val expiresIn: Long
+)
+
+data class RefreshTokenRequest(
+    val refreshToken: String
+)
+
+data class RefreshTokenResponse(
+    val success: Boolean,
+    val token: String?,
+    val refreshToken: String?,
+    val expiresIn: Long?
+)
+
+// ==================== USUARIO ====================
+
+data class UserDto(
+    val id: String,
+    val username: String,
+    val email: String,
+    val fullName: String,
+    val role: String,
+    val isActive: Boolean,
+    val profileImageUrl: String?,
+    val phoneNumber: String?,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val lastLoginAt: Long?
+) {
+    fun toEntity(): UserEntity = UserEntity(
+        id = id,
+        username = username,
+        email = email,
+        passwordHash = "",
+        fullName = fullName,
+        role = role,
+        isActive = isActive,
+        profileImageUrl = profileImageUrl,
+        phoneNumber = phoneNumber,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        lastLoginAt = lastLoginAt,
+        syncStatus = UserEntity.SYNC_STATUS_SYNCED
+    )
+}
+
+data class CreateUserRequest(
+    val username: String,
+    val email: String,
+    val password: String,
+    val fullName: String,
+    val role: String,
+    val phoneNumber: String?
+)
+
+// ==================== PRODUCTO ====================
+
+data class ProductDto(
+    val id: String,
+    val name: String,
+    val description: String?,
+    val barcode: String?,
+    val identifier: String,
+    val imageUrl: String?,
+    val categoryId: String?,
+    val subcategoryId: String?,
+    val totalStock: Int,
+    val minStockAlert: Int,
+    val isStockAlertEnabled: Boolean,
+    val salePrice: Long,
+    val purchasePrice: Long,
+    val supplierId: String?,
+    val supplierName: String?,
+    val quality: String?,
+    val isActive: Boolean,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val createdBy: String?,
+    val variants: List<ProductVariantDto>?,
+    val images: List<ProductImageDto>?
+) {
+    fun toEntity(): ProductEntity = ProductEntity(
+        id = id,
+        name = name,
+        description = description,
+        barcode = barcode,
+        identifier = identifier,
+        imageUrl = imageUrl,
+        categoryId = categoryId,
+        subcategoryId = subcategoryId,
+        totalStock = totalStock,
+        minStockAlert = minStockAlert,
+        isStockAlertEnabled = isStockAlertEnabled,
+        salePrice = salePrice,
+        purchasePrice = purchasePrice,
+        supplierId = supplierId,
+        supplierName = supplierName,
+        quality = quality,
+        isActive = isActive,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        createdBy = createdBy,
+        syncStatus = ProductEntity.SYNC_STATUS_SYNCED
+    )
+}
+
+data class ProductVariantDto(
+    val id: String,
+    val productId: String,
+    val variantType: String,
+    val variantLabel: String,
+    val variantValue: String,
+    val stock: Int,
+    val additionalPrice: Long,
+    val barcode: String?,
+    val isActive: Boolean,
+    val createdAt: Long,
+    val updatedAt: Long
+) {
+    fun toEntity(): ProductVariantEntity = ProductVariantEntity(
+        id = id,
+        productId = productId,
+        variantType = variantType,
+        variantLabel = variantLabel,
+        variantValue = variantValue,
+        stock = stock,
+        additionalPrice = additionalPrice,
+        barcode = barcode,
+        isActive = isActive,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        syncStatus = 0
+    )
+}
+
+data class ProductImageDto(
+    val id: String,
+    val productId: String,
+    val imageUrl: String?,
+    val isPrimary: Boolean,
+    val sortOrder: Int,
+    val createdAt: Long
+) {
+    fun toEntity(): ProductImageEntity = ProductImageEntity(
+        id = id,
+        productId = productId,
+        imageUrl = imageUrl,
+        isPrimary = isPrimary,
+        sortOrder = sortOrder,
+        createdAt = createdAt,
+        syncStatus = 0
+    )
+}
+
+data class CreateProductRequest(
+    val name: String,
+    val description: String?,
+    val barcode: String?,
+    val identifier: String,
+    val categoryId: String?,
+    val totalStock: Int,
+    val minStockAlert: Int,
+    val salePrice: Long,
+    val purchasePrice: Long,
+    val supplierId: String?,
+    val supplierName: String?,
+    val quality: String?,
+    val variants: List<CreateVariantRequest>?
+)
+
+data class CreateVariantRequest(
+    val variantType: String,
+    val variantLabel: String,
+    val variantValue: String,
+    val stock: Int,
+    val additionalPrice: Long,
+    val barcode: String?
+)
+
+data class UpdateStockRequest(
+    val productId: String,
+    val variantId: String?,
+    val quantity: Int,
+    val movementType: String, // "IN", "OUT", "ADJUSTMENT"
+    val reason: String?
+)
+
+// ==================== CATEGORÍA ====================
+
+data class CategoryDto(
+    val id: String,
+    val name: String,
+    val description: String?,
+    val parentId: String?,
+    val iconName: String?,
+    val colorHex: String?,
+    val sortOrder: Int,
+    val isActive: Boolean,
+    val createdAt: Long,
+    val updatedAt: Long
+) {
+    fun toEntity(): CategoryEntity = CategoryEntity(
+        id = id,
+        name = name,
+        description = description,
+        parentId = parentId,
+        iconName = iconName,
+        colorHex = colorHex,
+        sortOrder = sortOrder,
+        isActive = isActive,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        syncStatus = 0
+    )
+}
+
+// ==================== PROVEEDOR ====================
+
+data class SupplierDto(
+    val id: String,
+    val name: String,
+    val contactName: String?,
+    val phone: String?,
+    val email: String?,
+    val address: String?,
+    val city: String?,
+    val notes: String?,
+    val isActive: Boolean,
+    val createdAt: Long,
+    val updatedAt: Long
+) {
+    fun toEntity(): SupplierEntity = SupplierEntity(
+        id = id,
+        name = name,
+        contactName = contactName,
+        phone = phone,
+        email = email,
+        address = address,
+        city = city,
+        notes = notes,
+        isActive = isActive,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        syncStatus = 0
+    )
+}
+
+// ==================== VENTA ====================
+
+data class SaleDto(
+    val id: String,
+    val saleNumber: String,
+    val customerId: String?,
+    val customerName: String?,
+    val subtotal: Long,
+    val totalDiscount: Long,
+    val taxAmount: Long,
+    val total: Long,
+    val paymentMethod: String,
+    val amountPaid: Long,
+    val changeAmount: Long,
+    val status: String,
+    val notes: String?,
+    val soldBy: String,
+    val soldByName: String,
+    val soldAt: Long,
+    val cancelledAt: Long?,
+    val cancelledBy: String?,
+    val cancellationReason: String?,
+    val items: List<SaleItemDto>?
+) {
+    fun toEntity(): SaleEntity = SaleEntity(
+        id = id,
+        saleNumber = saleNumber,
+        customerId = customerId,
+        customerName = customerName,
+        subtotal = subtotal,
+        totalDiscount = totalDiscount,
+        taxAmount = taxAmount,
+        total = total,
+        paymentMethod = paymentMethod,
+        amountPaid = amountPaid,
+        changeAmount = changeAmount,
+        status = status,
+        notes = notes,
+        soldBy = soldBy,
+        soldByName = soldByName,
+        soldAt = soldAt,
+        cancelledAt = cancelledAt,
+        cancelledBy = cancelledBy,
+        cancellationReason = cancellationReason,
+        syncStatus = 0
+    )
+}
+
+data class SaleItemDto(
+    val id: String,
+    val saleId: String,
+    val productId: String,
+    val productName: String,
+    val productIdentifier: String,
+    val variantId: String?,
+    val variantDescription: String?,
+    val quantity: Int,
+    val unitPrice: Long,
+    val purchasePrice: Long,
+    val discount: Long,
+    val subtotal: Long,
+    val productImageUrl: String?,
+    val barcode: String?
+) {
+    fun toEntity(): SaleItemEntity = SaleItemEntity(
+        id = id,
+        saleId = saleId,
+        productId = productId,
+        productName = productName,
+        productIdentifier = productIdentifier,
+        variantId = variantId,
+        variantDescription = variantDescription,
+        quantity = quantity,
+        unitPrice = unitPrice,
+        purchasePrice = purchasePrice,
+        discount = discount,
+        subtotal = subtotal,
+        productImageUrl = productImageUrl,
+        barcode = barcode
+    )
+}
+
+data class CreateSaleRequest(
+    val customerId: String?,
+    val customerName: String?,
+    val items: List<CreateSaleItemRequest>,
+    val totalDiscount: Long,
+    val paymentMethod: String,
+    val amountPaid: Long,
+    val notes: String?
+)
+
+data class CreateSaleItemRequest(
+    val productId: String,
+    val variantId: String?,
+    val quantity: Int,
+    val unitPrice: Long,
+    val discount: Long
+)
+
+// ==================== SINCRONIZACIÓN ====================
+
+data class SyncRequest(
+    val lastSyncAt: Long,
+    val products: List<ProductDto>?,
+    val variants: List<ProductVariantDto>?,
+    val sales: List<SaleDto>?,
+    val stockMovements: List<StockMovementDto>?
+)
+
+data class SyncResponse(
+    val success: Boolean,
+    val message: String?,
+    val serverTime: Long,
+    val products: List<ProductDto>?,
+    val categories: List<CategoryDto>?,
+    val suppliers: List<SupplierDto>?,
+    val sales: List<SaleDto>?,
+    val deletedProductIds: List<String>?,
+    val deletedSaleIds: List<String>?
+)
+
+data class StockMovementDto(
+    val id: String,
+    val productId: String,
+    val variantId: String?,
+    val movementType: String,
+    val quantity: Int,
+    val previousStock: Int,
+    val newStock: Int,
+    val reason: String?,
+    val referenceId: String?,
+    val referenceType: String?,
+    val createdAt: Long,
+    val createdBy: String
+)
+
+// ==================== RESPUESTAS GENÉRICAS ====================
 
 data class ApiResponse<T>(
     val success: Boolean,
@@ -87,198 +411,55 @@ data class ApiResponse<T>(
     val data: T?
 )
 
-data class SyncResponse(
+data class PaginatedResponse<T>(
     val success: Boolean,
-    val message: String?,
-    @SerializedName("server_products")
-    val serverProducts: List<ProductResponse>,
-    @SerializedName("server_sales")
-    val serverSales: List<SaleResponse>,
-    @SerializedName("sync_timestamp")
-    val syncTimestamp: Long
+    val data: List<T>,
+    val total: Int,
+    val page: Int,
+    val pageSize: Int,
+    val totalPages: Int
 )
 
-data class ProductResponse(
-    val id: Long,
-    @SerializedName("server_id")
-    val serverId: Long?,
-    val name: String,
-    val description: String,
-    val barcode: String?,
-    val identifier: String?,
-    val price: Long,
-    val cost: Long,
-    val stock: Int,
-    @SerializedName("min_stock")
-    val minStock: Int,
-    val supplier: String?,
-    val quality: String?,
-    val category: String?,
-    val colors: List<String>,
-    val types: List<VariantDto>,
-    val capacities: List<VariantDto>,
-    @SerializedName("date_added")
-    val dateAdded: Long,
-    @SerializedName("last_modified")
-    val lastModified: Long,
-    @SerializedName("is_active")
-    val isActive: Boolean
+// ==================== ESTADÍSTICAS ====================
+
+data class DashboardStatsDto(
+    val todaySales: Long,
+    val todayTransactions: Int,
+    val monthSales: Long,
+    val monthTransactions: Int,
+    val yearSales: Long,
+    val yearTransactions: Int,
+    val totalProducts: Int,
+    val lowStockProducts: Int,
+    val outOfStockProducts: Int,
+    val inventoryValue: Long,
+    val todayProfit: Long,
+    val monthProfit: Long,
+    val topSellingProducts: List<TopProductDto>?
 )
 
-data class SaleResponse(
-    val id: Long,
-    @SerializedName("server_id")
-    val serverId: Long?,
-    val items: List<SaleItemDto>,
-    val total: Long,
-    @SerializedName("total_cost")
-    val totalCost: Long,
-    val profit: Long,
-    val date: Long,
-    @SerializedName("employee_id")
-    val employeeId: Long,
-    @SerializedName("employee_name")
-    val employeeName: String,
-    @SerializedName("payment_method")
-    val paymentMethod: String,
-    val notes: String?
-)
-
-// ========== Common DTOs ==========
-
-data class VariantDto(
-    val name: String,
-    @SerializedName("additional_price")
-    val additionalPrice: Long = 0
-)
-
-data class SaleItemDto(
-    val id: Long = 0,
-    @SerializedName("sale_id")
-    val saleId: Long = 0,
-    @SerializedName("product_id")
-    val productId: Long,
-    @SerializedName("product_name")
+data class TopProductDto(
+    val productId: String,
     val productName: String,
-    val barcode: String?,
-    val quantity: Int,
-    @SerializedName("unit_price")
-    val unitPrice: Long,
-    @SerializedName("unit_cost")
-    val unitCost: Long,
-    @SerializedName("selected_type")
-    val selectedType: String?,
-    @SerializedName("selected_capacity")
-    val selectedCapacity: String?,
-    @SerializedName("selected_color")
-    val selectedColor: String?
+    val totalSold: Int,
+    val totalRevenue: Long
 )
 
-data class UserDto(
-    val id: Long,
-    val username: String,
-    val name: String,
-    val role: String,
-    @SerializedName("is_active")
-    val isActive: Boolean
+data class SalesReportDto(
+    val startDate: Long,
+    val endDate: Long,
+    val totalSales: Long,
+    val totalTransactions: Int,
+    val totalProfit: Long,
+    val averageTicket: Long,
+    val salesByPaymentMethod: Map<String, Long>,
+    val salesByDay: List<DailySalesDto>,
+    val topProducts: List<TopProductDto>
 )
 
-// ========== Mappers ==========
-
-fun ProductEntity.toRequest() = ProductRequest(
-    id = id,
-    name = name,
-    description = description,
-    barcode = barcode,
-    identifier = identifier,
-    price = price,
-    cost = cost,
-    stock = stock,
-    minStock = minStock,
-    supplier = supplier,
-    quality = quality,
-    category = category,
-    colors = colors,
-    types = types.map { VariantDto(it.name, it.additionalPrice) },
-    capacities = capacities.map { VariantDto(it.name, it.additionalPrice) },
-    dateAdded = dateAdded.time,
-    isActive = isActive
-)
-
-fun ProductResponse.toEntity() = ProductEntity(
-    id = id,
-    serverId = serverId,
-    name = name,
-    description = description,
-    barcode = barcode,
-    identifier = identifier,
-    price = price,
-    cost = cost,
-    stock = stock,
-    minStock = minStock,
-    supplier = supplier,
-    quality = quality,
-    category = category,
-    colors = colors,
-    types = types.map { ProductVariantEntity(it.name, it.additionalPrice) },
-    capacities = capacities.map { ProductVariantEntity(it.name, it.additionalPrice) },
-    dateAdded = Date(dateAdded),
-    lastModified = Date(lastModified),
-    isActive = isActive,
-    syncStatus = SyncStatus.SYNCED
-)
-
-fun SaleEntity.toRequest(saleItems: List<SaleItemEntity>) = SaleRequest(
-    id = id,
-    items = saleItems.map { it.toDto() },
-    total = total,
-    totalCost = totalCost,
-    profit = profit,
-    date = date.time,
-    employeeId = employeeId,
-    employeeName = employeeName,
-    paymentMethod = paymentMethod.name,
-    notes = notes
-)
-
-fun SaleItemEntity.toDto() = SaleItemDto(
-    id = id,
-    saleId = saleId,
-    productId = productId,
-    productName = productName,
-    barcode = barcode,
-    quantity = quantity,
-    unitPrice = unitPrice,
-    unitCost = unitCost,
-    selectedType = selectedType,
-    selectedCapacity = selectedCapacity,
-    selectedColor = selectedColor
-)
-
-fun SaleResponse.toEntity() = SaleEntity(
-    id = id,
-    serverId = serverId,
-    total = total,
-    totalCost = totalCost,
-    profit = profit,
-    date = Date(date),
-    employeeId = employeeId,
-    employeeName = employeeName,
-    paymentMethod = try { PaymentMethod.valueOf(paymentMethod) } catch (e: Exception) { PaymentMethod.CASH },
-    notes = notes,
-    syncStatus = SyncStatus.SYNCED
-)
-
-fun SaleItemDto.toEntity(parentSaleId: Long) = SaleItemEntity(
-    id = id,
-    saleId = parentSaleId,
-    productId = productId,
-    productName = productName,
-    barcode = barcode,
-    quantity = quantity,
-    unitPrice = unitPrice,
-    unitCost = unitCost,
-    selectedType = selectedType,
-    selectedCapacity = selectedCapacity,
-    selectedColor = selectedColor
+data class DailySalesDto(
+    val date: String,
+    val total: Long,
+    val transactions: Int,
+    val profit: Long
 )

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/padding_small"
+    android:gravity="center_vertical">
+
+    <!-- Product Image -->
+    <ImageView
+        android:id="@+id/ivProductImage"
+        android:layout_width="@dimen/image_thumbnail"
+        android:layout_height="@dimen/image_thumbnail"
+        android:src="@drawable/ic_placeholder_product"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/product_image" />
+
+    <!-- Product Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Body"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Coca Cola 500ml" />
+
+        <TextView
+            android:id="@+id/tvQuantityPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="2 x ₲ 8.000" />
+
+    </LinearLayout>
+
+    <!-- Subtotal -->
+    <TextView
+        android:id="@+id/tvSubtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Inventario.Body"
+        android:textStyle="bold"
+        tools:text="₲ 16.000" />
+
+</LinearLayout>
