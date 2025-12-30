@@ -567,4 +567,37 @@
     <!-- General -->
     <string name="no_data">Sin datos</string>
     <string name="select_option">Seleccionar opción</string>
+    <!-- Strings faltantes - Parte 4 (solo los del log) -->
+
+    <!-- Checkout -->
+    <string name="payment_credit">Crédito</string>
+    <string name="payment_credit_description">Pago a crédito del cliente</string>
+    <string name="exact">Exacto</string>
+    <string name="customer_name_hint">Nombre del cliente (opcional)</string>
+
+    <!-- New Sale -->
+    <string name="filter_all">Todos</string>
+    <string name="no_products_found">No se encontraron productos</string>
+    <string name="try_different_search">Intenta con otra búsqueda</string>
+
+    <!-- Product Detail -->
+    <string name="product_details">Detalles del Producto</string>
+    <string name="copy">Copiar</string>
+    <string name="recent_movements">Movimientos Recientes</string>
+    <string name="see_all">Ver todo</string>
+    <!-- Strings faltantes - Parte 5 -->
+
+    <!-- Sale Detail -->
+    <string name="sale_information">Información de la Venta</string>
+    <string name="date_time">Fecha y Hora</string>
+    <string name="products_sold">Productos Vendidos</string>
+    <string name="print">Imprimir</string>
+    <string name="delete_sale">Eliminar Venta</string>
+
+    <!-- Sales -->
+    <string name="to">hasta</string>
+    <string name="yesterday">Ayer</string>
+    <string name="no_sales_description">No hay ventas registradas en este período</string>
+    <!-- Reports -->
+    <string name="payment_methods">Métodos de Pago</string>
 </resources>

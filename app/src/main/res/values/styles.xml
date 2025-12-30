@@ -33,4 +33,35 @@
         <item name="cardElevation">0dp</item>
         <item name="cardBackgroundColor">@color/surface_variant</item>
     </style>
+    <!-- Estilos faltantes - Parte 4 (solo los del log) -->
+
+    <style name="TextAppearance.Inventario.Headline" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.Inventario.Headline2" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">28sp</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.Inventario.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <!-- Estilos faltantes - Parte 5 -->
+
+    <style name="Widget.Inventario.Button.Error" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/error</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="ShapeAppearance.Inventario.Circle" parent="ShapeAppearance.Material3.Corner.Full">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
