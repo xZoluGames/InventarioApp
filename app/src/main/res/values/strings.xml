@@ -481,4 +481,90 @@
     <string name="product_saved">Producto guardado exitosamente</string>
     <string name="error_saving_product">Error al guardar el producto</string>
     <string name="fill_required_fields">Por favor completa los campos requeridos</string>
+    <!-- ============================================ -->
+    <!-- STRINGS ADICIONALES FALTANTES - PARTE 3 -->
+    <!-- ============================================ -->
+
+    <!-- Scanner -->
+
+    <string name="maximum_stock">Stock Máximo</string>
+    <string name="select_supplier">Seleccionar Proveedor</string>
+
+    <!-- Add Product - Variantes -->
+    <string name="has_variants">Tiene Variantes</string>
+    <string name="has_variants_description">Activa si el producto tiene diferentes opciones (tallas, colores, etc.)</string>
+    <string name="product_variants">Variantes del Producto</string>
+    <string name="no_variants_added">No hay variantes agregadas</string>
+    <string name="variant_sku">SKU de Variante</string>
+    <string name="edit_variant">Editar Variante</string>
+    <string name="delete_variant">Eliminar Variante</string>
+    <string name="variant_color">Color</string>
+    <string name="variant_size">Talla</string>
+
+
+    <!-- Add Product - Precios -->
+    <string name="wholesale_price">Precio mayorista</string>
+    <string name="minimum_wholesale_qty">Cantidad mínima mayorista</string>
+
+    <!-- Add Product - Acciones -->
+    <string name="discard_changes">Descartar Cambios</string>
+    <string name="discard_changes_message">¿Deseas descartar los cambios realizados?</string>
+
+    <!-- Cart / Carrito -->
+    <string name="empty_cart">Carrito Vacío</string>
+    <string name="empty_cart_description">Agrega productos para comenzar una venta</string>
+    <string name="add_products">Agregar Productos</string>
+    <string name="add_discount">Agregar Descuento</string>
+    <string name="proceed_to_checkout">Proceder al Pago</string>
+    <string name="remove_from_cart">Quitar del carrito</string>
+    <string name="update_quantity">Actualizar cantidad</string>
+    <string name="cart_subtotal">Subtotal</string>
+    <string name="cart_discount">Descuento</string>
+    <string name="cart_tax">Impuesto</string>
+    <string name="cart_total">Total</string>
+    <string name="clear_cart">Vaciar Carrito</string>
+    <string name="clear_cart_confirmation">¿Estás seguro de vaciar el carrito?</string>
+
+    <!-- Checkout / Pago -->
+    <string name="checkout">Finalizar Compra</string>
+    <string name="order_summary">Resumen del Pedido</string>
+    <string name="payment_cash">Efectivo</string>
+    <string name="payment_cash_description">Pago en efectivo al momento de la entrega</string>
+    <string name="payment_card">Tarjeta</string>
+    <string name="payment_card_description">Débito o crédito</string>
+    <string name="payment_transfer">Transferencia</string>
+    <string name="payment_transfer_description">Transferencia bancaria</string>
+    <string name="payment_qr">QR / Billetera</string>
+    <string name="payment_qr_description">Pago con billetera digital</string>
+    <string name="customer_info">Información del Cliente</string>
+    <string name="sale_notes">Notas de la Venta</string>
+    <string name="confirm_sale">Confirmar Venta</string>
+    <string name="processing_sale">Procesando venta...</string>
+    <string name="sale_error">Error al procesar la venta</string>
+    <string name="print_receipt">Imprimir Recibo</string>
+    <string name="share_receipt">Compartir Recibo</string>
+    <string name="new_sale_button">Nueva Venta</string>
+    <string name="amount_received">Monto Recibido</string>
+    <string name="change_to_give">Vuelto</string>
+    <string name="insufficient_amount">Monto insuficiente</string>
+
+    <!-- Discount -->
+    <string name="discount_percentage">Porcentaje (%)</string>
+    <string name="discount_amount">Monto fijo</string>
+    <string name="apply_discount">Aplicar Descuento</string>
+    <string name="remove_discount">Quitar Descuento</string>
+    <string name="discount_applied">Descuento aplicado</string>
+
+    <!-- Suppliers / Proveedores -->
+    <string name="add_supplier">Agregar Proveedor</string>
+    <string name="supplier_name">Nombre del Proveedor</string>
+    <string name="supplier_contact">Contacto</string>
+    <string name="supplier_phone">Teléfono</string>
+    <string name="supplier_email">Email</string>
+    <string name="supplier_address">Dirección</string>
+    <string name="no_suppliers">No hay proveedores registrados</string>
+
+    <!-- General -->
+    <string name="no_data">Sin datos</string>
+    <string name="select_option">Seleccionar opción</string>
 </resources>

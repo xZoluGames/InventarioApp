@@ -130,4 +130,46 @@
     <!-- Chart -->
     <dimen name="chart_height">200dp</dimen>
     <dimen name="chart_legend_item_size">12dp</dimen>
+    <!-- ============================================ -->
+    <!-- DIMENSIONES ADICIONALES FALTANTES - PARTE 3 -->
+    <!-- ============================================ -->
+
+    <!-- Corner Radius -->
+    <dimen name="corner_radius_tiny">4dp</dimen>
+    <dimen name="corner_radius_xlarge">24dp</dimen>
+
+
+
+
+    <!-- Product Images -->
+    <dimen name="product_image_tiny">32dp</dimen>
+    <dimen name="product_image_xxlarge">200dp</dimen>
+
+    <!-- Icon Sizes -->
+    <dimen name="icon_size_tiny">16dp</dimen>
+    <dimen name="icon_size_small">20dp</dimen>
+    <dimen name="icon_size_medium">24dp</dimen>
+    <dimen name="icon_size_large">32dp</dimen>
+    <dimen name="icon_size_xlarge">48dp</dimen>
+    <dimen name="icon_size_xxlarge">64dp</dimen>
+
+    <!-- Avatar Sizes -->
+    <dimen name="avatar_xlarge">96dp</dimen>
+
+    <!-- Button Heights -->
+
+    <dimen name="button_height_medium">48dp</dimen>
+    <dimen name="button_height_large">56dp</dimen>
+
+    <!-- Card Elevation -->
+    <dimen name="card_elevation_small">2dp</dimen>
+    <dimen name="card_elevation_medium">4dp</dimen>
+    <dimen name="card_elevation_large">8dp</dimen>
+
+    <!-- Divider -->
+    <dimen name="divider_height_thick">2dp</dimen>
+
+    <!-- Bottom Sheet -->
+    <dimen name="bottom_sheet_peek_height">56dp</dimen>
+    <dimen name="bottom_sheet_corner_radius">16dp</dimen>
 </resources>
