@@ -24,7 +24,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
-
+import android.content.BroadcastReceiver
 // ==================== CONSTANTES ====================
 
 object Constants {
@@ -319,7 +319,7 @@ object Generators {
 
 // ==================== BOOT RECEIVER ====================
 
-import android.content.BroadcastReceiver
+
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

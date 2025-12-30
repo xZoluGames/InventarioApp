@@ -2,12 +2,12 @@ package com.inventario.py.ui.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inventario.py.data.local.entity.ProductVariant
-import com.inventario.py.data.local.entity.ProductWithVariants
-import com.inventario.py.data.local.entity.StockMovement
+import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.ProductVariantEntity
+import com.inventario.py.data.local.entity.StockMovementEntity
 import com.inventario.py.data.repository.CartRepository
 import com.inventario.py.data.repository.ProductRepository
-import com.inventario.py.data.repository.StockMovementRepository
+import com.inventario.py.data.repository.SalesRepository
 import com.inventario.py.utils.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -15,168 +15,113 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+data class ProductDetailState(
+    val isLoading: Boolean = true,
+    val product: ProductEntity? = null,
+    val variants: List<ProductVariantEntity> = emptyList(),
+    val stockMovements: List<StockMovementEntity> = emptyList(),
+    val error: String? = null
+)
+
+sealed class ProductDetailEvent {
+    data class AddedToCart(val productName: String) : ProductDetailEvent()
+    data class Error(val message: String) : ProductDetailEvent()
+    object ProductDeleted : ProductDetailEvent()
+}
+
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val productRepository: ProductRepository,
-    private val stockMovementRepository: StockMovementRepository,
+    private val salesRepository: SalesRepository,
     private val cartRepository: CartRepository,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    private val _productState = MutableStateFlow(ProductDetailState())
-    val productState: StateFlow<ProductDetailState> = _productState.asStateFlow()
+    private val _uiState = MutableStateFlow(ProductDetailState())
+    val uiState: StateFlow<ProductDetailState> = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    private val _events = MutableSharedFlow<ProductDetailEvent>()
+    val events: SharedFlow<ProductDetailEvent> = _events.asSharedFlow()
 
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message.asStateFlow()
+    private var currentProductId: String? = null
 
-    private val _deleteSuccess = MutableStateFlow(false)
-    val deleteSuccess: StateFlow<Boolean> = _deleteSuccess.asStateFlow()
-
-    private var currentProductId: Long = 0
-
-    fun loadProduct(productId: Long) {
+    fun loadProduct(productId: String) {
         currentProductId = productId
         viewModelScope.launch {
-            _isLoading.value = true
+            _uiState.value = _uiState.value.copy(isLoading = true)
             
             try {
-                // Combine product and stock movements
-                combine(
-                    productRepository.getProductById(productId),
-                    stockMovementRepository.getMovementsForProduct(productId)
-                ) { product, movements ->
-                    ProductDetailState(
+                val product = productRepository.getProductById(productId)
+                if (product != null) {
+                    val variants = productRepository.getVariantsByProductId(productId)
+                    val movements = productRepository.getStockMovementsForProduct(productId)
+                    
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
                         product = product,
+                        variants = variants,
                         stockMovements = movements
                     )
-                }.collect { state ->
-                    _productState.value = state
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "Producto no encontrado"
+                    )
                 }
             } catch (e: Exception) {
-                _message.value = "Error al cargar el producto"
-            } finally {
-                _isLoading.value = false
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Error al cargar el producto"
+                )
             }
         }
     }
 
-    fun addToCart() {
+    fun addToCart(variant: ProductVariantEntity? = null, quantity: Int = 1) {
         viewModelScope.launch {
-            val product = _productState.value.product ?: return@launch
-            
             try {
+                val product = _uiState.value.product ?: return@launch
+                
                 cartRepository.addToCart(
-                    productId = product.product.id,
-                    variantId = null,
-                    quantity = 1
-                )
-                _message.value = "Producto agregado al carrito"
-            } catch (e: Exception) {
-                _message.value = "Error al agregar al carrito"
-            }
-        }
-    }
-
-    fun adjustStock(quantity: Int, reason: String) {
-        viewModelScope.launch {
-            val product = _productState.value.product ?: return@launch
-            val userId = sessionManager.getUserId() ?: return@launch
-            
-            try {
-                val movementType = if (quantity > 0) "ADJUSTMENT_IN" else "ADJUSTMENT_OUT"
-                
-                val movement = StockMovement(
-                    productId = product.product.id,
-                    variantId = null,
-                    movementType = movementType,
-                    quantity = kotlin.math.abs(quantity),
-                    reason = reason.ifEmpty { "Ajuste manual" },
-                    createdBy = userId,
-                    createdAt = Date()
+                    productId = product.id,
+                    variantId = variant?.id,
+                    quantity = quantity
                 )
                 
-                stockMovementRepository.addMovement(movement)
-                
-                // Update product stock
-                val newStock = product.product.currentStock + quantity
-                productRepository.updateStock(product.product.id, newStock)
-                
-                _message.value = "Stock actualizado"
+                _events.emit(ProductDetailEvent.AddedToCart(product.name))
             } catch (e: Exception) {
-                _message.value = "Error al ajustar stock"
-            }
-        }
-    }
-
-    fun addVariant(name: String, sku: String, price: Double?, stock: Int) {
-        viewModelScope.launch {
-            val product = _productState.value.product ?: return@launch
-            
-            try {
-                val variant = ProductVariant(
-                    productId = product.product.id,
-                    variantName = name,
-                    variantValue = name,
-                    sku = sku,
-                    barcode = null,
-                    priceModifier = price,
-                    currentStock = stock,
-                    imageUrl = null
-                )
-                
-                productRepository.addVariant(variant)
-                _message.value = "Variante agregada"
-            } catch (e: Exception) {
-                _message.value = "Error al agregar variante"
-            }
-        }
-    }
-
-    fun updateVariant(variant: ProductVariant) {
-        viewModelScope.launch {
-            try {
-                productRepository.updateVariant(variant)
-                _message.value = "Variante actualizada"
-            } catch (e: Exception) {
-                _message.value = "Error al actualizar variante"
-            }
-        }
-    }
-
-    fun deleteVariant(variant: ProductVariant) {
-        viewModelScope.launch {
-            try {
-                productRepository.deleteVariant(variant)
-                _message.value = "Variante eliminada"
-            } catch (e: Exception) {
-                _message.value = "Error al eliminar variante"
+                _events.emit(ProductDetailEvent.Error(e.message ?: "Error al agregar al carrito"))
             }
         }
     }
 
     fun deleteProduct() {
         viewModelScope.launch {
-            val product = _productState.value.product ?: return@launch
-            
             try {
-                productRepository.deleteProduct(product.product)
-                _message.value = "Producto eliminado"
-                _deleteSuccess.value = true
+                currentProductId?.let { id ->
+                    productRepository.deleteProduct(id)
+                    _events.emit(ProductDetailEvent.ProductDeleted)
+                }
             } catch (e: Exception) {
-                _message.value = "Error al eliminar producto"
+                _events.emit(ProductDetailEvent.Error(e.message ?: "Error al eliminar el producto"))
             }
         }
     }
 
-    fun clearMessage() {
-        _message.value = null
+    fun updateStock(newStock: Int, reason: String? = null) {
+        viewModelScope.launch {
+            try {
+                currentProductId?.let { id ->
+                    productRepository.updateProductStock(id, newStock, reason)
+                    loadProduct(id) // Reload product
+                }
+            } catch (e: Exception) {
+                _events.emit(ProductDetailEvent.Error(e.message ?: "Error al actualizar el stock"))
+            }
+        }
+    }
+
+    fun refreshProduct() {
+        currentProductId?.let { loadProduct(it) }
     }
 }
-
-data class ProductDetailState(
-    val product: ProductWithVariants? = null,
-    val stockMovements: List<StockMovement> = emptyList()
-)

@@ -67,15 +67,22 @@ class CartRepository @Inject constructor(
             
             val variant = variantId?.let { productDao.getVariantByIdSync(it) }
             val unitPrice = variant?.priceModifier ?: product.salePrice
+            val subtotal = unitPrice * quantity
             
-            // Create new cart item
+            // Create new cart item using correct entity fields
             val cartItem = CartItemEntity(
                 id = UUID.randomUUID().toString(),
-                userId = currentUserId,
                 productId = productId,
+                productName = product.name,
                 variantId = variantId,
+                variantDescription = variant?.name,
                 quantity = quantity,
-                unitPrice = unitPrice.toLong()
+                unitPrice = unitPrice,
+                discount = 0,
+                subtotal = subtotal,
+                imageUrl = product.imageUrl,
+                addedAt = System.currentTimeMillis(),
+                addedBy = currentUserId
             )
             cartDao.insert(cartItem)
         }
@@ -116,7 +123,7 @@ class CartRepository @Inject constructor(
     /**
      * Get cart total
      */
-    fun getCartTotal(): Flow<Long> {
+    fun getCartTotal(): Flow<Long?> {
         return cartDao.getCartTotal(currentUserId)
     }
 }
