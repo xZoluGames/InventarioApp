@@ -68,4 +68,16 @@
     <!-- Scanner -->
     <color name="scanner_frame">#FFFFFF</color>
     <color name="scanner_laser">#FF0000</color>
+    <!-- Stock Status Colors -->
+    <color name="stock_ok">#4CAF50</color>
+
+    <color name="stock_out">#F44336</color>
+
+    <!-- Ranking Colors -->
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#CD7F32</color>
+
+    <!-- Additional Colors -->
+    <color name="colorSurfaceVariant">#E7E0EC</color>
 </resources>

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.navigation.fragment.findNavController
 
 @AndroidEntryPoint
 class SalesFragment : Fragment(), RefreshableFragment {

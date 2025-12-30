@@ -30,7 +30,8 @@ import com.inventario.py.utils.toGuaraniFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 @AndroidEntryPoint
 class ScannerFragment : Fragment() {
 

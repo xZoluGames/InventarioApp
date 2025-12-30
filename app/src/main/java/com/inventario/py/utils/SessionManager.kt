@@ -1,180 +1,231 @@
 package com.inventario.py.utils
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.inventario.py.data.local.entity.UserEntity
+import com.inventario.py.data.local.entity.UserRole
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session_prefs")
 
 @Singleton
 class SessionManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val gson = Gson()
     
     companion object {
-        private val KEY_TOKEN = stringPreferencesKey("auth_token")
-        private val KEY_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
-        private val KEY_USER = stringPreferencesKey("current_user")
-        private val KEY_USER_ID = stringPreferencesKey("user_id")
-        private val KEY_USER_ROLE = stringPreferencesKey("user_role")
-        private val KEY_IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
-        private val KEY_TOKEN_EXPIRY = longPreferencesKey("token_expiry")
-        private val KEY_LAST_SYNC = longPreferencesKey("last_sync")
-        private val KEY_SERVER_URL = stringPreferencesKey("server_url")
+        private const val PREFS_NAME = "inventario_session"
+        private const val KEY_AUTH_TOKEN = "auth_token"
+        private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_USER_ID = "user_id"
+        private const val KEY_USER_NAME = "user_name"
+        private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_ROLE = "user_role"
+        private const val KEY_IS_LOGGED_IN = "is_logged_in"
+        private const val KEY_CURRENT_USER = "current_user"
+        private const val KEY_SERVER_URL = "server_url"
+        private const val KEY_TOKEN_EXPIRY = "token_expiry"
+        private const val DEFAULT_SERVER_URL = "https://api.inventario.py"
     }
     
-    // ==================== TOKEN ====================
+    private val gson = Gson()
     
-    suspend fun saveAuthToken(token: String, refreshToken: String, expiresIn: Long) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_TOKEN] = token
-            prefs[KEY_REFRESH_TOKEN] = refreshToken
-            prefs[KEY_TOKEN_EXPIRY] = System.currentTimeMillis() + (expiresIn * 1000)
+    private val prefs: SharedPreferences by lazy {
+        try {
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+            
+            EncryptedSharedPreferences.create(
+                context,
+                PREFS_NAME,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (e: Exception) {
+            // Fallback to regular SharedPreferences if encryption fails
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        }
+    }
+    
+    // ==================== AUTH TOKEN ====================
+    
+    fun saveAuthToken(token: String, expiresIn: Long = 3600000) {
+        prefs.edit().apply {
+            putString(KEY_AUTH_TOKEN, token)
+            putLong(KEY_TOKEN_EXPIRY, System.currentTimeMillis() + expiresIn)
+            apply()
         }
     }
     
     fun getAuthToken(): String? {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_TOKEN]
+        val expiry = prefs.getLong(KEY_TOKEN_EXPIRY, 0)
+        if (System.currentTimeMillis() > expiry) {
+            clearAuthToken()
+            return null
         }
+        return prefs.getString(KEY_AUTH_TOKEN, null)
     }
     
-    val authTokenFlow: Flow<String?> = context.dataStore.data.map { prefs ->
-        prefs[KEY_TOKEN]
+    fun clearAuthToken() {
+        prefs.edit().remove(KEY_AUTH_TOKEN).remove(KEY_TOKEN_EXPIRY).apply()
+    }
+    
+    // ==================== REFRESH TOKEN ====================
+    
+    fun saveRefreshToken(token: String) {
+        prefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
     }
     
     fun getRefreshToken(): String? {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_REFRESH_TOKEN]
-        }
+        return prefs.getString(KEY_REFRESH_TOKEN, null)
     }
     
-    suspend fun clearTokens() {
-        context.dataStore.edit { prefs ->
-            prefs.remove(KEY_TOKEN)
-            prefs.remove(KEY_REFRESH_TOKEN)
-            prefs.remove(KEY_TOKEN_EXPIRY)
-        }
+    fun clearRefreshToken() {
+        prefs.edit().remove(KEY_REFRESH_TOKEN).apply()
     }
     
-    fun isTokenExpired(): Boolean {
-        return runBlocking {
-            val expiry = context.dataStore.data.first()[KEY_TOKEN_EXPIRY] ?: 0L
-            System.currentTimeMillis() >= expiry
-        }
+    // ==================== USER INFO ====================
+    
+    fun saveUserId(userId: String) {
+        prefs.edit().putString(KEY_USER_ID, userId).apply()
     }
     
-    // ==================== USER ====================
+    fun getUserId(): String? {
+        return prefs.getString(KEY_USER_ID, null)
+    }
     
-    suspend fun saveUser(user: UserEntity) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_USER] = gson.toJson(user)
-            prefs[KEY_USER_ID] = user.id
-            prefs[KEY_USER_ROLE] = user.role
-            prefs[KEY_IS_LOGGED_IN] = true
+    fun saveUserName(name: String) {
+        prefs.edit().putString(KEY_USER_NAME, name).apply()
+    }
+    
+    fun getUserName(): String? {
+        return prefs.getString(KEY_USER_NAME, null)
+    }
+    
+    fun saveUserEmail(email: String) {
+        prefs.edit().putString(KEY_USER_EMAIL, email).apply()
+    }
+    
+    fun getUserEmail(): String? {
+        return prefs.getString(KEY_USER_EMAIL, null)
+    }
+    
+    fun saveUserRole(role: String) {
+        prefs.edit().putString(KEY_USER_ROLE, role).apply()
+    }
+    
+    fun getUserRole(): String? {
+        return prefs.getString(KEY_USER_ROLE, null)
+    }
+    
+    // ==================== CURRENT USER ====================
+    
+    fun saveCurrentUser(user: UserEntity) {
+        val userJson = gson.toJson(user)
+        prefs.edit().apply {
+            putString(KEY_CURRENT_USER, userJson)
+            putString(KEY_USER_ID, user.id)
+            putString(KEY_USER_NAME, user.fullName)
+            putString(KEY_USER_EMAIL, user.email)
+            putString(KEY_USER_ROLE, user.role.name)
+            putBoolean(KEY_IS_LOGGED_IN, true)
+            apply()
         }
     }
     
     fun getCurrentUser(): UserEntity? {
-        return runBlocking {
-            val userJson = context.dataStore.data.first()[KEY_USER]
-            userJson?.let { gson.fromJson(it, UserEntity::class.java) }
+        val userJson = prefs.getString(KEY_CURRENT_USER, null) ?: return null
+        return try {
+            gson.fromJson(userJson, UserEntity::class.java)
+        } catch (e: Exception) {
+            null
         }
     }
     
-    val currentUserFlow: Flow<UserEntity?> = context.dataStore.data.map { prefs ->
-        prefs[KEY_USER]?.let { gson.fromJson(it, UserEntity::class.java) }
-    }
+    fun getCurrentUserId(): String? = getUserId()
     
-    fun getUserId(): String? {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_USER_ID]
-        }
-    }
-    
-    fun getUserRole(): String? {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_USER_ROLE]
-        }
-    }
-    
-    fun isOwner(): Boolean {
-        return getUserRole() == UserEntity.ROLE_OWNER
-    }
-    
-    fun isEmployee(): Boolean {
-        return getUserRole() == UserEntity.ROLE_EMPLOYEE
-    }
-    
-    val isLoggedInFlow: Flow<Boolean> = context.dataStore.data.map { prefs ->
-        prefs[KEY_IS_LOGGED_IN] ?: false
-    }
+    // ==================== LOGIN STATE ====================
     
     fun isLoggedIn(): Boolean {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_IS_LOGGED_IN] ?: false
-        }
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false) && getAuthToken() != null
     }
     
-    // ==================== SYNC ====================
+    val isLoggedIn: Boolean
+        get() = isLoggedIn()
     
-    suspend fun saveLastSyncTime(time: Long = System.currentTimeMillis()) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_LAST_SYNC] = time
-        }
+    fun setLoggedIn(loggedIn: Boolean) {
+        prefs.edit().putBoolean(KEY_IS_LOGGED_IN, loggedIn).apply()
     }
     
-    fun getLastSyncTime(): Long {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_LAST_SYNC] ?: 0L
-        }
+    // ==================== ROLE CHECK ====================
+    
+    fun isOwner(): Boolean {
+        return getUserRole() == UserRole.OWNER.name
     }
     
-    val lastSyncTimeFlow: Flow<Long> = context.dataStore.data.map { prefs ->
-        prefs[KEY_LAST_SYNC] ?: 0L
+    val isOwner: Boolean
+        get() = isOwner()
+    
+    fun isAdmin(): Boolean {
+        val role = getUserRole()
+        return role == UserRole.OWNER.name || role == UserRole.ADMIN.name
     }
     
-    // ==================== SERVER URL ====================
-    
-    suspend fun saveServerUrl(url: String) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_SERVER_URL] = url
-        }
+    fun canEditProducts(): Boolean {
+        val role = getUserRole()
+        return role == UserRole.OWNER.name || role == UserRole.ADMIN.name
     }
     
-    fun getServerUrl(): String? {
-        return runBlocking {
-            context.dataStore.data.first()[KEY_SERVER_URL]
-        }
+    fun canViewPurchasePrice(): Boolean {
+        return isOwner()
     }
     
-    // ==================== LOGOUT ====================
-    
-    suspend fun logout() {
-        context.dataStore.edit { prefs ->
-            prefs.clear()
-        }
+    fun canManageUsers(): Boolean {
+        return isOwner()
     }
     
-    suspend fun clearSession() {
-        context.dataStore.edit { prefs ->
-            prefs.remove(KEY_TOKEN)
-            prefs.remove(KEY_REFRESH_TOKEN)
-            prefs.remove(KEY_USER)
-            prefs.remove(KEY_USER_ID)
-            prefs.remove(KEY_USER_ROLE)
-            prefs[KEY_IS_LOGGED_IN] = false
-        }
+    // ==================== SERVER CONFIG ====================
+    
+    fun setServerUrl(url: String) {
+        prefs.edit().putString(KEY_SERVER_URL, url).apply()
+    }
+    
+    fun getServerUrl(): String {
+        return prefs.getString(KEY_SERVER_URL, DEFAULT_SERVER_URL) ?: DEFAULT_SERVER_URL
+    }
+    
+    // ==================== SESSION MANAGEMENT ====================
+    
+    fun createSession(token: String, refreshToken: String, user: UserEntity, expiresIn: Long = 3600000) {
+        saveAuthToken(token, expiresIn)
+        saveRefreshToken(refreshToken)
+        saveCurrentUser(user)
+        setLoggedIn(true)
+    }
+    
+    fun clearSession() {
+        prefs.edit().clear().apply()
+    }
+    
+    fun logout() {
+        clearSession()
+    }
+    
+    // ==================== TOKEN REFRESH ====================
+    
+    fun isTokenExpired(): Boolean {
+        val expiry = prefs.getLong(KEY_TOKEN_EXPIRY, 0)
+        return System.currentTimeMillis() > expiry
+    }
+    
+    fun shouldRefreshToken(): Boolean {
+        val expiry = prefs.getLong(KEY_TOKEN_EXPIRY, 0)
+        val fiveMinutes = 5 * 60 * 1000
+        return System.currentTimeMillis() > (expiry - fiveMinutes)
     }
 }

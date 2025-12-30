@@ -22,6 +22,7 @@ import com.inventario.py.ui.main.RefreshableFragment
 import com.inventario.py.utils.CurrencyUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.navigation.fragment.findNavController
 
 @AndroidEntryPoint
 class CartFragment : Fragment(), RefreshableFragment {

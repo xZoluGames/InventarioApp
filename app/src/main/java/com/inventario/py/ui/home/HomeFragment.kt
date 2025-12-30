@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.navigation.fragment.findNavController
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), RefreshableFragment {

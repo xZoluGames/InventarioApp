@@ -28,7 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 @AndroidEntryPoint
 class ProductDetailFragment : Fragment() {
 
