@@ -450,4 +450,35 @@
 
     <string name="view_product">Ver Producto</string>
     <string name="ic_flash_off" translatable="false">ic_flash_off</string>
+
+    <!-- Strings adicionales faltantes -->
+
+    <!-- Scanner -->
+    <string name="scanner_hint">Apunta la cámara al código de barras</string>
+
+    <!-- Add Product -->
+    <string name="tap_to_add_image">Toca para agregar imagen</string>
+    <string name="basic_information">Información Básica</string>
+    <string name="product_sku">SKU del Producto</string>
+    <string name="description">Descripción</string>
+    <string name="pricing">Precios</string>
+    <string name="stock_configuration">Configuración de Stock</string>
+    <string name="initial_stock">Stock Inicial</string>
+    <string name="minimum_stock">Stock Mínimo</string>
+    <string name="alert_when_below">Alerta cuando esté por debajo</string>
+
+    <!-- Additional common strings -->
+    <string name="change_image">Cambiar imagen</string>
+    <string name="remove_image">Eliminar imagen</string>
+    <string name="choose_from_gallery">Elegir de galería</string>
+    <string name="product_description_hint">Describe el producto...</string>
+    <string name="cost_hint">Precio de costo</string>
+    <string name="sale_price_hint">Precio de venta</string>
+    <string name="variant_name">Nombre de variante</string>
+    <string name="variant_price">Precio de variante</string>
+    <string name="save_product">Guardar Producto</string>
+    <string name="update_product">Actualizar Producto</string>
+    <string name="product_saved">Producto guardado exitosamente</string>
+    <string name="error_saving_product">Error al guardar el producto</string>
+    <string name="fill_required_fields">Por favor completa los campos requeridos</string>
 </resources>

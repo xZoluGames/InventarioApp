@@ -5,7 +5,9 @@
     <color name="primary_dark">#0D47A1</color>
     <color name="primary_light">#42A5F5</color>
     <color name="primary_variant">#1976D2</color>
-    
+    <color name="outline">#79747E</color>
+    <color name="surface_variant">#E7E0EC</color>
+    <color name="on_surface_variant">#49454F</color>
     <!-- Secondary Colors -->
     <color name="secondary">#FF6F00</color>
     <color name="secondary_dark">#E65100</color>
