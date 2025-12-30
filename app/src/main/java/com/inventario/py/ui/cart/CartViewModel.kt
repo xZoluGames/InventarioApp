@@ -3,6 +3,8 @@ package com.inventario.py.ui.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.CartItemWithProduct
+import com.inventario.py.data.local.entity.currentStock
+import com.inventario.py.data.local.entity.priceModifier
 import com.inventario.py.data.repository.CartRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

@@ -439,10 +439,10 @@ class ReportsViewModel @Inject constructor(
             row.createCell(2).setCellValue(sale.customerName ?: "-")
             row.createCell(3).setCellValue(
                 when (sale.paymentMethod) {
-                    PaymentMethod.CASH -> "Efectivo"
-                    PaymentMethod.CARD -> "Tarjeta"
-                    PaymentMethod.TRANSFER -> "Transferencia"
-                    PaymentMethod.CREDIT -> "Crédito"
+                    PaymentMethod.CASH.name -> "Efectivo"
+                    PaymentMethod.CARD.name -> "Tarjeta"
+                    PaymentMethod.TRANSFER.name -> "Transferencia"
+                    PaymentMethod.CREDIT.name -> "Crédito"
                 }
             )
             row.createCell(4).apply {

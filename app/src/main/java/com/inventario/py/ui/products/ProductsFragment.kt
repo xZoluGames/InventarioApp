@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.inventario.py.R
+import com.inventario.py.data.local.entity.StockFilter
 import com.inventario.py.databinding.FragmentProductsBinding
 import com.inventario.py.ui.adapters.ProductAdapter
 import com.inventario.py.ui.main.MainActivity

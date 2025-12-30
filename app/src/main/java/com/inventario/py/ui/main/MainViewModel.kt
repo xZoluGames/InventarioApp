@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.ProductEntity
 import com.inventario.py.data.local.entity.UserEntity
 import com.inventario.py.data.local.entity.UserRole
+import com.inventario.py.data.local.entity.totalAmount
 import com.inventario.py.data.repository.AuthRepository
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
@@ -58,7 +59,7 @@ class MainViewModel @Inject constructor(
                 if (user != null) {
                     _uiState.value = _uiState.value.copy(
                         currentUser = user,
-                        isOwner = user.role == UserRole.OWNER
+                        isOwner = user.role == UserRole.OWNER.name
                     )
                     loadDashboardData()
                 }

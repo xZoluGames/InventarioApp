@@ -72,7 +72,7 @@ class SettingsViewModel @Inject constructor(
             authRepository.getCurrentUser().collectLatest { user ->
                 _uiState.value = _uiState.value.copy(
                     currentUser = user,
-                    isOwner = user?.role == UserRole.OWNER
+                    isOwner = user?.role == UserRole.OWNER.name
                 )
             }
         }

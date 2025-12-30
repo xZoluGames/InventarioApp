@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.CartItemWithProduct
+import com.inventario.py.data.local.entity.currentStock
+import com.inventario.py.data.local.entity.priceModifier
+import com.inventario.py.data.local.entity.variantName
 import com.inventario.py.databinding.ItemCartBinding
 import com.inventario.py.utils.CurrencyUtils
 

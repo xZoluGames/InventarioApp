@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.inventario.py.R
+import com.inventario.py.data.local.entity.SyncState
 import com.inventario.py.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

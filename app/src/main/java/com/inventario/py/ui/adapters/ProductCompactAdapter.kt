@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.ProductWithVariants
+import com.inventario.py.data.local.entity.currentStock
+import com.inventario.py.data.local.entity.minStock
 import com.inventario.py.databinding.ItemProductCompactBinding
 import com.inventario.py.utils.CurrencyUtils
 

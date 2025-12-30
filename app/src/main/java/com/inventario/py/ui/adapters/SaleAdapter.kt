@@ -1,5 +1,6 @@
 package com.inventario.py.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.SaleWithDetails
+import com.inventario.py.data.local.entity.createdAt
+import com.inventario.py.data.local.entity.name
+import com.inventario.py.data.local.entity.totalAmount
 import com.inventario.py.databinding.ItemSaleBinding
 import com.inventario.py.utils.CurrencyUtils
 import java.text.SimpleDateFormat
@@ -45,6 +49,7 @@ class SaleAdapter(
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(saleWithDetails: SaleWithDetails) {
             val sale = saleWithDetails.sale
             val itemCount = saleWithDetails.items.size

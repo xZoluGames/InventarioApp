@@ -15,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.UserRole
+import com.inventario.py.data.local.entity.name
 import com.inventario.py.databinding.FragmentSettingsBinding
 import com.inventario.py.ui.auth.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -135,8 +136,8 @@ class SettingsFragment : Fragment() {
             state.currentUser?.let { user ->
                 tvUserName.text = user.name
                 tvUserRole.text = when (user.role) {
-                    UserRole.OWNER -> getString(R.string.role_owner)
-                    UserRole.EMPLOYEE -> getString(R.string.role_employee)
+                    UserRole.OWNER.name -> getString(R.string.role_owner)
+                    UserRole.EMPLOYEE.name -> getString(R.string.role_employee)
                 }
                 tvUserEmail.text = user.email
                 tvUserInitial.text = user.name.firstOrNull()?.uppercase() ?: "U"
