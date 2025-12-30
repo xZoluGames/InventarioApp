@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<full-backup-content>
+<full-backup-content xmlns:tools="http://schemas.android.com/tools">
     <include domain="database" path="inventario_database" />
     <include domain="sharedpref" path="." />
     <include domain="file" path="backups" />
-    <exclude domain="cache" path="." />
-    <exclude domain="no_backup" path="." />
+    <exclude domain="data" path="."
+        tools:ignore="FullBackupContent" />
+    <exclude domain="no_backup" path="."
+        tools:ignore="FullBackupContent" />
 </full-backup-content>
