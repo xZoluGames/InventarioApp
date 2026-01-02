@@ -676,5 +676,75 @@
         <string name="currency_format">Gs. %s</string>
         <string name="percentage_format">%.1f%%</string>
 
+    <!-- ==================== CHECKOUT ==================== -->
+    <string name="confirm_sale_amount">Confirmar Venta - %s</string>
+    <string name="sale_success_message">Venta #%1$s realizada con éxito\n\nTotal: %2$s</string>
 
+    <!-- ==================== PAGOS ==================== -->
+    <string name="payment_mixed">Mixto</string>
+
+    <!-- ==================== PRODUCTOS ==================== -->
+    <string name="edit_product">Editar Producto</string>
+    <string name="basic_info">Información Básica</string>
+    <string name="identification">Identificación</string>
+    <string name="identifier_helper">Código único para buscar el producto</string>
+    <string name="select_category">Seleccionar categoría</string>
+    <string name="owner_only">Solo visible para el dueño</string>
+    <string name="required_field">Este campo es requerido</string>
+    <string name="select_image">Seleccionar Imagen</string>
+    <string name="camera_permission_denied">Permiso de cámara denegado</string>
+
+    <!-- ==================== VARIANTES ==================== -->
+    <string name="add_variants">Agregar Variantes (Color, Tipo, Capacidad)</string>
+    <string name="select_variant_type">Seleccionar tipo de variante</string>
+    <string name="variant_capacity">Capacidad</string>
+    <string name="variant_custom">Personalizado</string>
+
+    <!-- ==================== VENTAS ==================== -->
+    <string name="duplicate_sale">Duplicar Venta</string>
+    <string name="sale_duplicated">Venta duplicada al carrito</string>
+    <string name="go_to_cart">Ir al carrito</string>
+    <string name="printing">Imprimiendo…</string>
+    <string name="sale_receipt">Recibo de Venta</string>
+    <string name="date">Fecha</string>
+    <string name="share_via">Compartir vía</string>
+
+    <!-- Estados de venta -->
+    <string name="status_completed">Completada</string>
+    <string name="status_cancelled">Cancelada</string>
+    <string name="status_refunded">Reembolsada</string>
+    <string name="status_pending">Pendiente</string>
+
+    <!-- Cancelación -->
+    <string name="yes_cancel">Sí, Cancelar</string>
+    <string name="select_cancel_reason">Seleccionar motivo de cancelación</string>
+    <string name="cancel_reason_customer_request">Solicitud del cliente</string>
+    <string name="cancel_reason_wrong_product">Producto equivocado</string>
+    <string name="cancel_reason_payment_issue">Problema con el pago</string>
+    <string name="cancel_reason_other">Otro motivo</string>
+    <string name="sale_cancelled_success">Venta cancelada correctamente</string>
+    <string name="cancellation_reason">Motivo:</string>
+    <string name="no_reason_provided">Sin motivo especificado</string>
+
+
+    <!-- ==================== GENERALES ==================== -->
+    <string name="exit">Salir</string>
+    <string name="exit_confirmation">¿Desea salir de la aplicación?</string>
+    <string name="sync_completed">Sincronización completada</string>
+
+
+    <!-- ==================== SCANNER ==================== -->
+    <string name="add_new_product">¿Desea agregar un nuevo producto con este código?</string>
+
+    <!-- ==================== MENÚS ==================== -->
+    <string name="action_print">Imprimir</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_delete">Eliminar</string>
+
+    <string name="customer_name_required">Nombre del cliente requerido para crédito</string>
+    <string name="cancel_reason">Motivo de cancelación</string>
+    <string name="cannot_cancel_completed">No se puede cancelar una venta completada hace más de 24 horas</string>
+    <string name="duplicate_sale_confirm">¿Desea agregar estos productos al carrito?</string>
 </resources>

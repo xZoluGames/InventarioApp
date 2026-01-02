@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Info del producto -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceBodyMedium"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Protector de pantalla iPhone 14" />
+
+        <TextView
+            android:id="@+id/tvVariant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_hint"
+            android:visibility="gone"
+            tools:text="Color: Negro"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvUnitPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_secondary"
+            tools:text="Gs. 25.000" />
+
+    </LinearLayout>
+
+    <!-- Cantidad -->
+    <TextView
+        android:id="@+id/tvQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:textAppearance="?textAppearanceBodyMedium"
+        android:textColor="@color/text_secondary"
+        tools:text="x2" />
+
+    <!-- Subtotal -->
+    <TextView
+        android:id="@+id/tvSubtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceBodyMedium"
+        android:textStyle="bold"
+        tools:text="Gs. 50.000" />
+
+</LinearLayout>

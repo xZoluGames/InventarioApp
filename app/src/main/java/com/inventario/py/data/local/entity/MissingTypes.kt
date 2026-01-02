@@ -102,6 +102,7 @@ enum class MovementType {
     ADJUSTMENT,
     SALE,
     RETURN,
+    CANCELLATION,
     TRANSFER;
 
     companion object {

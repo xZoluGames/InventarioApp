@@ -5,7 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
-    <!-- HOME FRAGMENT - RUTA CORREGIDA -->
+    <!-- ==================== HOME ==================== -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.inventario.py.ui.home.HomeFragment"
@@ -15,11 +15,17 @@
             android:id="@+id/action_home_to_product_detail"
             app:destination="@id/productDetailFragment"/>
         <action
+            android:id="@+id/action_home_to_new_sale"
+            app:destination="@id/cartFragment"/>
+        <action
             android:id="@+id/action_home_to_scanner"
             app:destination="@id/scannerFragment"/>
+        <action
+            android:id="@+id/action_home_to_add_product"
+            app:destination="@id/addProductFragment"/>
     </fragment>
 
-    <!-- PRODUCTS FRAGMENT -->
+    <!-- ==================== PRODUCTS ==================== -->
     <fragment
         android:id="@+id/productsFragment"
         android:name="com.inventario.py.ui.products.ProductsFragment"
@@ -29,11 +35,14 @@
             android:id="@+id/action_products_to_detail"
             app:destination="@id/productDetailFragment"/>
         <action
+            android:id="@+id/action_products_to_add"
+            app:destination="@id/addProductFragment"/>
+        <action
             android:id="@+id/action_products_to_scanner"
             app:destination="@id/scannerFragment"/>
     </fragment>
 
-    <!-- PRODUCT DETAIL FRAGMENT -->
+    <!-- PRODUCT DETAIL -->
     <fragment
         android:id="@+id/productDetailFragment"
         android:name="com.inventario.py.ui.products.ProductDetailFragment"
@@ -42,37 +51,96 @@
         <argument
             android:name="productId"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_detail_to_edit"
+            app:destination="@id/addProductFragment"/>
     </fragment>
 
-    <!-- SALES FRAGMENT -->
+    <!-- ADD/EDIT PRODUCT -->
+    <fragment
+        android:id="@+id/addProductFragment"
+        android:name="com.inventario.py.ui.products.AddProductFragment"
+        android:label="@string/add_product"
+        tools:layout="@layout/fragment_add_product">
+        <argument
+            android:name="productId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <argument
+            android:name="barcode"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <action
+            android:id="@+id/action_add_to_scanner"
+            app:destination="@id/scannerFragment"/>
+    </fragment>
+
+    <!-- ==================== SALES ==================== -->
     <fragment
         android:id="@+id/salesFragment"
         android:name="com.inventario.py.ui.sales.SalesFragment"
         android:label="@string/nav_sales"
-        tools:layout="@layout/fragment_sales"/>
+        tools:layout="@layout/fragment_sales">
+        <action
+            android:id="@+id/action_sales_to_detail"
+            app:destination="@id/saleDetailFragment"/>
+        <action
+            android:id="@+id/action_sales_to_new"
+            app:destination="@id/cartFragment"/>
+    </fragment>
 
-    <!-- CART FRAGMENT -->
+    <!-- CART -->
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.inventario.py.ui.cart.CartFragment"
         android:label="@string/cart"
-        tools:layout="@layout/fragment_cart"/>
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cart_to_checkout"
+            app:destination="@id/checkoutFragment"/>
+        <action
+            android:id="@+id/action_cart_to_scanner"
+            app:destination="@id/scannerFragment"/>
+        <action
+            android:id="@+id/action_cart_to_products"
+            app:destination="@id/productsFragment"/>
+    </fragment>
 
-    <!-- REPORTS FRAGMENT -->
+    <!-- CHECKOUT -->
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.inventario.py.ui.checkout.CheckoutFragment"
+        android:label="@string/checkout"
+        tools:layout="@layout/fragment_checkout"/>
+
+    <!-- SALE DETAIL -->
+    <fragment
+        android:id="@+id/saleDetailFragment"
+        android:name="com.inventario.py.ui.sales.SaleDetailFragment"
+        android:label="@string/sale_details"
+        tools:layout="@layout/fragment_sale_detail">
+        <argument
+            android:name="saleId"
+            app:argType="string"/>
+    </fragment>
+
+    <!-- ==================== REPORTS ==================== -->
     <fragment
         android:id="@+id/reportsFragment"
         android:name="com.inventario.py.ui.reports.ReportsFragment"
         android:label="@string/nav_reports"
         tools:layout="@layout/fragment_reports"/>
 
-    <!-- SETTINGS FRAGMENT -->
+    <!-- ==================== SETTINGS ==================== -->
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.inventario.py.ui.settings.SettingsFragment"
         android:label="@string/nav_settings"
         tools:layout="@layout/fragment_settings"/>
 
-    <!-- SCANNER FRAGMENT -->
+    <!-- ==================== SCANNER ==================== -->
     <fragment
         android:id="@+id/scannerFragment"
         android:name="com.inventario.py.ui.scanner.ScannerFragment"

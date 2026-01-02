@@ -30,10 +30,9 @@ class MainActivity : AppCompatActivity() {
     private val fragmentsWithoutBottomNav = setOf(
         R.id.scannerFragment,
         R.id.productDetailFragment,
-//        R.id.addProductFragment,
-//        R.id.checkoutFragment,
- //       R.id.saleDetailFragment,
- //       R.id.newSaleFragment
+        R.id.addProductFragment,
+        R.id.checkoutFragment,
+        R.id.saleDetailFragment
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
         setupBackPress()
+        setupFab()
         observeState()
     }
 
@@ -58,6 +58,12 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNavigation.visibility =
                 if (destination.id in fragmentsWithoutBottomNav) View.GONE else View.VISIBLE
+
+            // Mostrar/ocultar FAB de escaneo
+            binding.fabScan.visibility = when (destination.id) {
+                R.id.homeFragment, R.id.productsFragment, R.id.cartFragment -> View.VISIBLE
+                else -> View.GONE
+            }
         }
     }
 
@@ -71,72 +77,77 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun setupFab() {
+        binding.fabScan.setOnClickListener {
+            val currentDestination = navController.currentDestination?.id
+            val forSale = currentDestination == R.id.cartFragment
+            navigateToScanner(forSale)
+        }
+    }
+
     private fun showExitConfirmation() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Salir")
-            .setMessage("¿Desea salir de la aplicación?")
-            .setPositiveButton("Salir") { _, _ ->
+            .setTitle(getString(R.string.exit))
+            .setMessage(getString(R.string.exit_confirmation))
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 finish()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.no), null)
             .show()
     }
 
     private fun observeState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Observar estado de sincronización
                 launch {
                     viewModel.syncState.collect { state ->
-                        when (state) {
-                            is SyncState.Syncing -> {
-                                // Could show a sync indicator
+                        handleSyncState(state)
+                    }
+                }
+
+                // Observar productos con bajo stock
+                launch {
+                    viewModel.lowStockProducts.collect { count ->
+                        // Mostrar badge en el menú de productos si hay bajo stock
+                        if (count > 0) {
+                            binding.bottomNavigation.getOrCreateBadge(R.id.productsFragment).apply {
+                                number = count
+                                isVisible = true
                             }
-                            is SyncState.Success -> {
-                                // Sync completed silently
-                            }
-                            is SyncState.Error -> {
-                                showSyncError(state.message)
-                            }
-                            is SyncState.Idle -> {
-                                // Nothing to do
-                            }
+                        } else {
+                            binding.bottomNavigation.removeBadge(R.id.productsFragment)
                         }
                     }
                 }
+            }
+        }
+    }
 
-                launch {
-                    viewModel.lowStockProducts.collect { count ->
-                        updateLowStockBadge(count)
+    private fun handleSyncState(state: SyncState) {
+        when (state) {
+            is SyncState.Syncing -> {
+                // Mostrar indicador de sincronización
+            }
+            is SyncState.Success -> {
+                Snackbar.make(binding.root, R.string.sync_completed, Snackbar.LENGTH_SHORT).show()
+            }
+            is SyncState.Error -> {
+                Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.retry) {
+                        viewModel.syncNow()
                     }
-                }
+                    .show()
             }
+            else -> { /* Idle */ }
         }
     }
 
-    private fun updateLowStockBadge(count: Int) {
-        val badge = binding.bottomNavigation.getOrCreateBadge(R.id.productsFragment)
-        if (count > 0) {
-            badge.isVisible = true
-            badge.number = count
-        } else {
-            badge.isVisible = false
-        }
-    }
-
-    private fun showSyncError(message: String) {
-        Snackbar.make(binding.root, "Error de sincronización: $message", Snackbar.LENGTH_LONG)
-            .setAction("Reintentar") {
-                viewModel.syncData()
-            }
-            .show()
-    }
-
-    // ==================== NAVIGATION HELPERS ====================
-    // NOTA: Los IDs de producto y venta son String, no Long
+    // ==================== FUNCIONES DE NAVEGACIÓN ====================
 
     fun navigateToProductDetail(productId: String) {
         val bundle = Bundle().apply {
-            putString("productId", productId)  // Cambiado de putLong a putString
+            putString("productId", productId)
         }
         navController.navigate(R.id.productDetailFragment, bundle)
     }
@@ -144,15 +155,27 @@ class MainActivity : AppCompatActivity() {
     fun navigateToScanner(forSale: Boolean = false) {
         val bundle = Bundle().apply {
             putBoolean("forSale", forSale)
+            putString("scanMode", if (forSale) "sale" else "search")
         }
         navController.navigate(R.id.scannerFragment, bundle)
     }
 
-/*    fun navigateToAddProduct(barcode: String? = null) {
+    fun navigateToAddProduct(barcode: String? = null) {
         val bundle = Bundle().apply {
             barcode?.let { putString("barcode", it) }
         }
         navController.navigate(R.id.addProductFragment, bundle)
+    }
+
+    fun navigateToEditProduct(productId: String) {
+        val bundle = Bundle().apply {
+            putString("productId", productId)
+        }
+        navController.navigate(R.id.addProductFragment, bundle)
+    }
+
+    fun navigateToCart() {
+        navController.navigate(R.id.cartFragment)
     }
 
     fun navigateToCheckout() {
@@ -161,7 +184,7 @@ class MainActivity : AppCompatActivity() {
 
     fun navigateToSaleDetail(saleId: String) {
         val bundle = Bundle().apply {
-            putString("saleId", saleId)  // Cambiado de putLong a putString
+            putString("saleId", saleId)
         }
         navController.navigate(R.id.saleDetailFragment, bundle)
     }
@@ -169,11 +192,25 @@ class MainActivity : AppCompatActivity() {
     // Sobrecarga para compatibilidad con código que use Long
     fun navigateToSaleDetail(saleId: Long) {
         navigateToSaleDetail(saleId.toString())
-    }*/
+    }
+
+    fun navigateToNewSale() {
+        navController.navigate(R.id.cartFragment)
+    }
+
+    // ==================== UTILIDADES ====================
 
     fun getCurrentUserId(): Long = viewModel.getCurrentUserId()
 
     fun isOwner(): Boolean = viewModel.isOwner()
+
+    fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+        Snackbar.make(binding.root, message, duration).show()
+    }
+
+    fun showSnackbar(messageResId: Int, duration: Int = Snackbar.LENGTH_SHORT) {
+        Snackbar.make(binding.root, messageResId, duration).show()
+    }
 }
 
 /**
