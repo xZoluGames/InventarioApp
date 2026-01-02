@@ -362,14 +362,21 @@ class SalesFragment : Fragment(), RefreshableFragment {
     }
 
     private fun navigateToSaleDetail(saleId: String) {
-        try {
-            val action = SalesFragmentDirections
-                .actionSalesFragmentToSaleDetailFragment(saleId.toLong().toString())
-            findNavController().navigate(action)
-        } catch (e: Exception) {
-            // Fallback navigation
-            (requireActivity() as? MainActivity)?.navigateToSaleDetail(saleId.toLong())
-        }
+        // TEMPORAL: Mostrar información en un diálogo
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Detalle de Venta")
+            .setMessage("ID de venta: $saleId\n\nLa pantalla de detalles estará disponible próximamente.")
+            .setPositiveButton("Entendido", null)
+            .show()
+
+        // ORIGINAL (comentado):
+        // try {
+        //     val action = SalesFragmentDirections
+        //         .actionSalesFragmentToSaleDetailFragment(saleId.toLong().toString())
+        //     findNavController().navigate(action)
+        // } catch (e: Exception) {
+        //     (requireActivity() as? MainActivity)?.navigateToSaleDetail(saleId.toLong())
+        // }
     }
 
     override fun onRefresh() {

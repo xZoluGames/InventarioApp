@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
     private val fragmentsWithoutBottomNav = setOf(
         R.id.scannerFragment,
         R.id.productDetailFragment,
-        R.id.addProductFragment,
-        R.id.checkoutFragment,
-        R.id.saleDetailFragment,
-        R.id.newSaleFragment
+//        R.id.addProductFragment,
+//        R.id.checkoutFragment,
+ //       R.id.saleDetailFragment,
+ //       R.id.newSaleFragment
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.scannerFragment, bundle)
     }
 
-    fun navigateToAddProduct(barcode: String? = null) {
+/*    fun navigateToAddProduct(barcode: String? = null) {
         val bundle = Bundle().apply {
             barcode?.let { putString("barcode", it) }
         }
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
     // Sobrecarga para compatibilidad con código que use Long
     fun navigateToSaleDetail(saleId: Long) {
         navigateToSaleDetail(saleId.toString())
-    }
+    }*/
 
     fun getCurrentUserId(): Long = viewModel.getCurrentUserId()
 

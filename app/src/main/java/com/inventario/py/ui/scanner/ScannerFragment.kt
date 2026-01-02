@@ -312,7 +312,7 @@ class ScannerFragment : Fragment() {
     }
 
     private fun navigateToAddProduct(barcode: String) {
-        (requireActivity() as? MainActivity)?.navigateToAddProduct(barcode)
+      //  (requireActivity() as? MainActivity)?.navigateToAddProduct(barcode)
     }
 
     private fun playBeepSound() {

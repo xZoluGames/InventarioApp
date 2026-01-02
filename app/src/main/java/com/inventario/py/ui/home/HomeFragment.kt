@@ -83,7 +83,7 @@ class HomeFragment : Fragment(), RefreshableFragment {
         // Recent sales adapter
         recentSalesAdapter = SaleAdapter(
             onItemClick = { sale ->
-                (activity as? MainActivity)?.navigateToSaleDetail(sale.id)
+              //  (activity as? MainActivity)?.navigateToSaleDetail(sale.id)
             },
             showDetails = false
         )
@@ -106,7 +106,7 @@ class HomeFragment : Fragment(), RefreshableFragment {
             }
             
             btnAddProduct.setOnClickListener {
-                (activity as? MainActivity)?.navigateToAddProduct()
+            //    (activity as? MainActivity)?.navigateToAddProduct()
             }
             
             btnViewReports.setOnClickListener {

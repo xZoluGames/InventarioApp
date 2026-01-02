@@ -422,10 +422,18 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun navigateToEdit() {
-        val bundle = Bundle().apply {
-            putString("productId", args.productId)
-        }
-        findNavController().navigate(R.id.addProductFragment, bundle)
+        // TEMPORAL: Mostrar toast
+        android.widget.Toast.makeText(
+            requireContext(),
+            "Edición de producto disponible próximamente",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+
+        // ORIGINAL (comentado):
+        // val bundle = Bundle().apply {
+        //     putString("productId", args.productId)
+        // }
+        // findNavController().navigate(R.id.addProductFragment, bundle)
     }
 
     private fun shareProduct() {

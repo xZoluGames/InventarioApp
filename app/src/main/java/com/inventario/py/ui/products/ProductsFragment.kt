@@ -146,7 +146,7 @@ class ProductsFragment : Fragment(), RefreshableFragment {
             
             // FAB - Add product
             fabAddProduct.setOnClickListener {
-                (activity as? MainActivity)?.navigateToAddProduct()
+              //  (activity as? MainActivity)?.navigateToAddProduct()
             }
             
             // Toggle view mode
