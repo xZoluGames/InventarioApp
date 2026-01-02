@@ -443,6 +443,7 @@ class ReportsViewModel @Inject constructor(
                     PaymentMethod.CARD.name -> "Tarjeta"
                     PaymentMethod.TRANSFER.name -> "Transferencia"
                     PaymentMethod.CREDIT.name -> "Crédito"
+
                 }
             )
             row.createCell(4).apply {

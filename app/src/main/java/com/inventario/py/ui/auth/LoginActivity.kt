@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
+import com.inventario.py.data.local.entity.LoginState
 import com.inventario.py.databinding.ActivityLoginBinding
 import com.inventario.py.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint

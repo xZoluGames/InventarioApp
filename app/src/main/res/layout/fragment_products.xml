@@ -7,123 +7,221 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/products">
+
+            <!-- Toggle View Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToggleView"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_grid"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <!-- Scanner Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnScanner"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_barcode_scanner"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <!-- Filter Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFilter"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_filter"
+                app:iconTint="?attr/colorOnSurface" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Search Bar -->
+        <!-- Search View -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_medium"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="@dimen/corner_large"
-            app:cardElevation="@dimen/elevation_small">
+            style="@style/Widget.Inventario.CardView.Filled">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/padding_medium">
+                android:gravity="center_vertical"
+                android:padding="@dimen/padding_small">
 
                 <ImageView
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:src="@drawable/ic_search"
-                    android:contentDescription="@string/cd_search"
-                    app:tint="@color/text_hint"/>
+                    app:tint="@color/text_hint"
+                    android:contentDescription="@null" />
 
                 <EditText
-                    android:id="@+id/et_search"
+                    android:id="@+id/searchView"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_height"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:background="@null"
                     android:hint="@string/search_products"
-                    android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:paddingHorizontal="@dimen/padding_small"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"/>
-
-                <ImageView
-                    android:id="@+id/iv_scan"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:src="@drawable/ic_barcode_scanner"
-                    android:contentDescription="@string/cd_scan"
-                    app:tint="@color/primary"/>
-
-                <ImageView
-                    android:id="@+id/iv_filter"
-                    android:layout_width="@dimen/icon_small"
-                    android:layout_height="@dimen/icon_small"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:src="@drawable/ic_filter"
-                    android:contentDescription="@string/cd_filter"
-                    app:tint="@color/text_secondary"/>
+                    android:textAppearance="?textAppearanceBodyMedium" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Filter Chips -->
-        <HorizontalScrollView
-            android:id="@+id/scroll_chips"
+        <!-- Filter Container (expandable) -->
+        <LinearLayout
+            android:id="@+id/filterContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_medium"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_filters"
-                android:layout_width="wrap_content"
+            <!-- Stock Filter Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/padding_medium"
-                android:paddingBottom="@dimen/padding_small"
-                app:singleSelection="true">
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_all"
-                    style="@style/Widget.Inventario.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupStock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/all"/>
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_in_stock"
-                    style="@style/Widget.Inventario.Chip.Choice"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAllStock"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/all" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipInStock"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/in_stock" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLowStock"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/low_stock" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipOutOfStock"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/out_of_stock" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <!-- Category Filter Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/in_stock"/>
+                    app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_low_stock"
-                    style="@style/Widget.Inventario.Chip.Choice"
+                    <!-- Dynamic category chips will be added here -->
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <!-- Sort Spinner -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/low_stock"/>
+                    android:text="@string/sort_by"
+                    android:textAppearance="?textAppearanceBodySmall"
+                    android:textColor="@color/text_secondary" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_out_of_stock"
-                    style="@style/Widget.Inventario.Chip.Choice"
+                <Spinner
+                    android:id="@+id/spinnerSort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/out_of_stock"/>
+                    android:layout_marginStart="@dimen/margin_small" />
 
-            </com.google.android.material.chip.ChipGroup>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
-        </HorizontalScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClearFilters"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clear_filters"
+                    android:textColor="@color/error" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Product Count -->
+        <TextView
+            android:id="@+id/tvProductCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/padding_medium"
+            android:paddingVertical="@dimen/padding_small"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_secondary"
+            tools:text="156 productos" />
 
         <!-- Products List -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -133,17 +231,17 @@
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_products"
+                    android:id="@+id/rvProducts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:padding="@dimen/padding_medium"
                     tools:itemCount="10"
-                    tools:listitem="@layout/item_product"/>
+                    tools:listitem="@layout/item_product" />
 
                 <!-- Empty State -->
                 <LinearLayout
-                    android:id="@+id/layout_empty"
+                    android:id="@+id/emptyState"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -157,35 +255,43 @@
                         android:layout_height="@dimen/empty_state_icon_size"
                         android:src="@drawable/ic_inventory"
                         android:contentDescription="@null"
-                        app:tint="@color/text_hint"/>
+                        app:tint="@color/text_hint" />
 
                     <TextView
-                        android:id="@+id/tv_empty_title"
+                        android:id="@+id/tvEmptyTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_medium"
                         android:text="@string/empty_products"
-                        android:textAppearance="@style/TextAppearance.Inventario.Subtitle"/>
+                        android:textAppearance="@style/TextAppearance.Inventario.Subtitle" />
 
                     <TextView
-                        android:id="@+id/tv_empty_subtitle"
+                        android:id="@+id/tvEmptySubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="@string/empty_products_action"
                         android:textColor="@color/text_hint"
-                        android:textSize="@dimen/text_body"/>
+                        android:textSize="@dimen/text_body" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_add_first"
+                        android:id="@+id/btnAddFirst"
                         style="@style/Widget.Inventario.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_large"
                         android:text="@string/add_product"
-                        app:icon="@drawable/ic_add"/>
+                        app:icon="@drawable/ic_add" />
 
                 </LinearLayout>
+
+                <!-- Loading -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
@@ -193,31 +299,16 @@
 
     </LinearLayout>
 
-    <!-- FAB -->
+    <!-- FAB Add Product -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add"
+        android:id="@+id/fabAddProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/margin_medium"
-        android:contentDescription="@string/cd_add"
+        android:contentDescription="@string/add_product"
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/secondary"
-        app:tint="@color/text_on_secondary"/>
-
-    <!-- Loading -->
-    <FrameLayout
-        android:id="@+id/layout_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_light"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-    </FrameLayout>
+        app:tint="@color/text_on_secondary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

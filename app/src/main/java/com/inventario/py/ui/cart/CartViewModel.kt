@@ -53,7 +53,7 @@ class CartViewModel @Inject constructor(
         val discount = 0.0
         
         _cartTotal.value = CartTotal(
-            subtotal = subtotal,
+            subtotal = subtotal.toDouble(),
             discount = discount,
             total = subtotal - discount,
             itemCount = itemCount

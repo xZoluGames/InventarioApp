@@ -176,6 +176,7 @@
     <string name="this_week">Esta semana</string>
     <string name="this_month">Este mes</string>
     <string name="this_year">Este año</string>
+    <string name="this_all">Todos</string>
     <string name="custom_range">Rango personalizado</string>
     <string name="from_date">Desde</string>
     <string name="to_date">Hasta</string>
@@ -608,4 +609,72 @@
     <string name="units_sold">Unidades vendidas</string>
     <string name="percentage_of_sales">del total</string>
     <string name="more_options">Más opciones</string>
+    <!-- Home -->
+    <string name="no_low_stock_products">No hay productos con stock bajo</string>
+
+    <!-- Product detail -->
+    <string name="max_stock">Stock máximo</string>
+    <string name="price_details">Detalles de precio</string>
+    <string name="product_information">Información del producto</string>
+
+    <!-- Reports -->
+    <string name="apply">Aplicar</string>
+    <string name="sales_summary">Resumen de ventas</string>
+    <string name="average_ticket">Ticket promedio</string>
+    <string name="chart_coming_soon">Gráfico disponible próximamente</string>
+    <string name="export_sales">Exportar ventas</string>
+    <string name="export_inventory">Exportar inventario</string>
+
+    <!-- Sales -->
+    <string name="no_sales_found">No se encontraron ventas</string>
+
+    <!-- Settings -->
+    <string name="help_section">Ayuda</string>
+    <!-- Help & Support -->
+    <string name="help_support">Soporte</string>
+    <string name="help_support_description">
+    ¿Necesitás ayuda? Contactá con soporte para resolver dudas o problemas de la aplicación.
+</string>
+
+
+
+
+        <!-- Navigation -->
+
+        <string name="nav_inventory">Inventario</string>
+
+
+        <!-- Common -->
+        <string name="ok">Aceptar</string>
+
+
+        <!-- Date Filters -->
+        <string name="select_start_date">Seleccionar fecha de inicio</string>
+        <string name="select_end_date">Seleccionar fecha de fin</string>
+
+        <!-- Sales -->
+        <string name="sale_detail">Detalle de Venta</string>
+
+
+        <!-- Empty States -->
+        <string name="no_products_description">Agrega productos para comenzar</string>
+
+        <!-- Reports -->
+        <string name="no_top_products">No hay productos vendidos en este período</string>
+
+        <!-- Inventory -->
+        <string name="low_stock_count">Productos con Stock Bajo</string>
+
+        <string name="out_of_stock_count">Productos Sin Stock</string>
+
+
+        <!-- Units -->
+        <string name="items">productos</string>
+
+
+        <!-- Formats -->
+        <string name="currency_format">Gs. %s</string>
+        <string name="percentage_format">%.1f%%</string>
+
+
 </resources>

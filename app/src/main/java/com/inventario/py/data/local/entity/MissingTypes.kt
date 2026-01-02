@@ -92,15 +92,6 @@ enum class VariantType {
     }
 }
 
-enum class DateFilter {
-    TODAY,
-    YESTERDAY,
-    THIS_WEEK,
-    THIS_MONTH,
-    THIS_YEAR,
-    CUSTOM
-}
-
 enum class MovementType {
     IN,
     OUT,
@@ -207,7 +198,7 @@ data class StockMovement(
     val id: String,
     val productId: String,
     val variantId: String? = null,
-    val movementType: MovementType,
+    val movementType: String,
     val quantity: Int,
     val previousStock: Int,
     val newStock: Int,
@@ -231,7 +222,27 @@ data class ReportsState(
     val dailySales: Map<String, Long> = emptyMap(),
     val paymentMethodBreakdown: Map<PaymentMethod, Long> = emptyMap(),
     val error: String? = null
-)
+) {
+    // Propiedades calculadas para compatibilidad
+    val averageSale: Long get() = if (totalTransactions > 0) totalSales / totalTransactions else 0
+    val transactionCount: Int get() = totalTransactions
+
+    // Breakdown de métodos de pago
+    val cashTotal: Long get() = cashSales
+    val cardTotal: Long get() = cardSales
+    val transferTotal: Long get() = transferSales
+
+    // Porcentajes de métodos de pago
+    val cashPercentage: Float get() = if (totalSales > 0) (cashSales * 100f / totalSales) else 0f
+    val cardPercentage: Float get() = if (totalSales > 0) (cardSales * 100f / totalSales) else 0f
+    val transferPercentage: Float get() = if (totalSales > 0) (transferSales * 100f / totalSales) else 0f
+
+    // Información de inventario (deberían venir del ViewModel)
+    var totalProducts: Int = 0
+    var lowStockCount: Int = 0
+    var outOfStockCount: Int = 0
+    var inventoryValue: Long = 0
+}
 
 data class TopProduct(
     val productId: String,
@@ -264,6 +275,7 @@ data class CartItemWithProduct(
 val ProductEntity.lowStockThreshold: Int get() = this.minStockAlert
 val ProductEntity.category: String? get() = this.categoryId
 val ProductEntity.minStock: Int get() = this.minStockAlert
+val ProductEntity.currentStock: Int get() = this.totalStock
 
 // Para ProductVariantEntity
 val ProductVariantEntity.priceModifier: Long get() = this.additionalPrice

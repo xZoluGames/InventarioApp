@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.inventario.py.data.local.entity.lowStockThreshold
+
 @AndroidEntryPoint
 class ScannerFragment : Fragment() {
 
@@ -176,7 +178,7 @@ class ScannerFragment : Fragment() {
     private fun updateUI(state: ScannerUiState) {
         binding.apply {
             // Update flash button icon
-            btnFlash.setImageResource(
+            btnFlash.setIconResource(
                 if (state.isFlashOn) R.drawable.ic_flash_off
                 else R.drawable.ic_flash
             )

@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    fun navigateToProductDetail(productId: Long) {
+    fun navigateToProductDetail(productId: String) {
         val bundle = Bundle().apply {
             putLong("productId", productId)
         }

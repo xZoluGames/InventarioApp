@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.inventario.py.R
+import com.inventario.py.data.local.entity.ReportsState
 import com.inventario.py.databinding.FragmentReportsBinding
 import com.inventario.py.ui.adapters.TopProductAdapter
 import com.inventario.py.ui.main.MainActivity

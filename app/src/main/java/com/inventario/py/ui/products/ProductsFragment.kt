@@ -152,7 +152,7 @@ class ProductsFragment : Fragment(), RefreshableFragment {
             btnToggleView.setOnClickListener {
                 isGridView = !isGridView
                 updateLayoutManager()
-                btnToggleView.setImageResource(
+                btnToggleView.setIconResource(
                     if (isGridView) R.drawable.ic_view_list else R.drawable.ic_view_grid
                 )
             }

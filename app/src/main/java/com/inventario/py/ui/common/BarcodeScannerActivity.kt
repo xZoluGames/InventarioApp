@@ -166,7 +166,7 @@ class BarcodeScannerActivity : AppCompatActivity() {
             isFlashOn = !isFlashOn
             camera.cameraControl.enableTorch(isFlashOn)
             
-            binding.btnFlash.setImageResource(
+            binding.btnFlash.setIconResource(
                 if (isFlashOn) R.drawable.ic_flash_off else R.drawable.ic_flash
             )
         }, ContextCompat.getMainExecutor(this))

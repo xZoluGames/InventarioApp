@@ -30,9 +30,9 @@
             android:orientation="vertical"
             android:padding="@dimen/margin_medium">
 
-            <!-- User Profile Card -->
+            <!-- User Profile Card - CAMBIADO de cardProfile a cardUserProfile -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardProfile"
+                android:id="@+id/cardUserProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.Inventario.CardView.Filled"
@@ -46,16 +46,31 @@
                     android:padding="@dimen/padding_medium"
                     android:gravity="center_vertical">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ivUserAvatar"
+                    <!-- Avatar con inicial del usuario -->
+                    <FrameLayout
                         android:layout_width="@dimen/icon_xlarge"
-                        android:layout_height="@dimen/icon_xlarge"
-                        android:src="@drawable/ic_person"
-                        android:scaleType="centerCrop"
-                        android:background="?attr/colorPrimaryContainer"
-                        android:padding="@dimen/padding_medium"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Inventario.Circle"
-                        app:tint="?attr/colorPrimary" />
+                        android:layout_height="@dimen/icon_xlarge">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivUserAvatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="?attr/colorPrimaryContainer"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Inventario.Circle" />
+
+                        <!-- AGREGADO: TextView para la inicial del usuario -->
+                        <TextView
+                            android:id="@+id/tvUserInitial"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textAppearance="?textAppearanceTitleLarge"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold"
+                            tools:text="J" />
+
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -120,9 +135,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:divider="?android:attr/listDivider"
-                    android:showDividers="middle">
+                    android:orientation="vertical">
 
                     <!-- Business Info -->
                     <LinearLayout
@@ -139,7 +152,7 @@
                         <ImageView
                             android:layout_width="@dimen/icon_medium"
                             android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_home"
+                            android:src="@drawable/ic_business"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
 
@@ -173,6 +186,12 @@
                             app:tint="?attr/colorOnSurfaceVariant" />
 
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Categories -->
                     <LinearLayout
@@ -224,6 +243,12 @@
 
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="?attr/colorOutlineVariant" />
+
                     <!-- Suppliers -->
                     <LinearLayout
                         android:id="@+id/itemSuppliers"
@@ -274,7 +299,13 @@
 
                     </LinearLayout>
 
-                    <!-- Users (Owner Only) -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <!-- Users (Owner only) -->
                     <LinearLayout
                         android:id="@+id/itemUsers"
                         android:layout_width="match_parent"
@@ -323,168 +354,6 @@
                             android:src="@drawable/ic_arrow_forward"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- App Settings Section -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"
-                android:layout_marginStart="@dimen/margin_small"
-                android:text="@string/app_settings"
-                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                style="@style/Widget.Inventario.CardView.Outlined">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:divider="?android:attr/listDivider"
-                    android:showDividers="middle">
-
-                    <!-- Dark Mode -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_medium"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/icon_medium"
-                            android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_settings"
-                            android:contentDescription="@null"
-                            app:tint="?attr/colorOnSurfaceVariant" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="@dimen/margin_medium"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dark_mode"
-                                android:textAppearance="@style/TextAppearance.Inventario.Body" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dark_mode_description"
-                                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchDarkMode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-
-                    <!-- Sound Effects -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_medium"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/icon_medium"
-                            android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_settings"
-                            android:contentDescription="@null"
-                            app:tint="?attr/colorOnSurfaceVariant" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="@dimen/margin_medium"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sound_effects"
-                                android:textAppearance="@style/TextAppearance.Inventario.Body" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sound_effects_description"
-                                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchSoundEffects"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
-
-                    </LinearLayout>
-
-                    <!-- Low Stock Notifications -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_medium"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/icon_medium"
-                            android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_warning"
-                            android:contentDescription="@null"
-                            app:tint="?attr/colorOnSurfaceVariant" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="@dimen/margin_medium"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/low_stock_notifications"
-                                android:textAppearance="@style/TextAppearance.Inventario.Body" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/low_stock_notifications_description"
-                                android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchLowStockNotifications"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
 
                     </LinearLayout>
 
@@ -550,53 +419,45 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/TextAppearance.Inventario.Caption"
                                 android:textColor="?attr/colorOnSurfaceVariant"
-                                tools:text="Última sincronización: Hace 5 minutos" />
+                                tools:text="Última sync: Hace 5 min" />
+
+                            <TextView
+                                android:id="@+id/tvPendingChanges"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Inventario.Caption"
+                                android:textColor="@color/warning"
+                                android:visibility="gone"
+                                tools:text="3 cambios pendientes"
+                                tools:visibility="visible" />
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                        <!-- AGREGADO: ProgressBar de sincronización -->
+                        <ProgressBar
+                            android:id="@+id/progressSync"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
 
-                    <!-- Pending Changes -->
-                    <LinearLayout
-                        android:id="@+id/layoutPendingChanges"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_medium"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="@dimen/padding_small"
-                        android:background="@drawable/bg_warning_rounded"
-                        android:visibility="gone"
-                        tools:visibility="visible">
-
-                        <ImageView
-                            android:layout_width="@dimen/icon_small"
-                            android:layout_height="@dimen/icon_small"
-                            android:src="@drawable/ic_warning"
-                            android:contentDescription="@null"
-                            app:tint="@color/warning" />
-
-                        <TextView
-                            android:id="@+id/tvPendingChanges"
-                            android:layout_width="0dp"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSyncNow"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="@dimen/margin_small"
-                            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                            tools:text="5 cambios pendientes de sincronizar" />
+                            android:text="@string/sync_now" />
 
                     </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSyncNow"
-                        style="@style/Widget.Inventario.Button.Outlined"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="1dp"
                         android:layout_marginTop="@dimen/margin_medium"
-                        android:text="@string/sync_now"
-                        app:icon="@drawable/ic_cloud" />
+                        android:background="?attr/colorOutlineVariant" />
 
-                    <!-- Server Configuration -->
+                    <!-- Server Config -->
                     <LinearLayout
                         android:id="@+id/itemServerConfig"
                         android:layout_width="match_parent"
@@ -606,13 +467,12 @@
                         android:gravity="center_vertical"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
-                        android:focusable="true"
-                        android:padding="@dimen/padding_small">
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="@dimen/icon_medium"
                             android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_settings"
+                            android:src="@drawable/ic_cloud"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
 
@@ -635,7 +495,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/TextAppearance.Inventario.Caption"
                                 android:textColor="?attr/colorOnSurfaceVariant"
-                                tools:text="192.168.1.100:3000" />
+                                tools:text="https://api.mitienda.com" />
 
                         </LinearLayout>
 
@@ -652,13 +512,13 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- About Section -->
+            <!-- App Settings Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_marginStart="@dimen/margin_small"
-                android:text="@string/about"
+                android:text="@string/app_settings"
                 android:textAppearance="@style/TextAppearance.Inventario.Caption"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold" />
@@ -672,11 +532,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:divider="?android:attr/listDivider"
-                    android:showDividers="middle">
+                    android:orientation="vertical">
 
-                    <!-- Version -->
+                    <!-- Dark Mode -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -687,7 +545,7 @@
                         <ImageView
                             android:layout_width="@dimen/icon_medium"
                             android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_inventory"
+                            android:src="@drawable/ic_dark_mode"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
 
@@ -696,35 +554,34 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="@dimen/margin_medium"
-                            android:text="@string/version"
+                            android:text="@string/dark_mode"
                             android:textAppearance="@style/TextAppearance.Inventario.Body" />
 
-                        <TextView
-                            android:id="@+id/tvVersion"
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchDarkMode"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.Inventario.Body"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            tools:text="1.0.0" />
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
-                    <!-- Help -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <!-- Sound Effects -->
                     <LinearLayout
-                        android:id="@+id/itemHelp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="@dimen/padding_medium"
-                        android:gravity="center_vertical"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:layout_width="@dimen/icon_medium"
                             android:layout_height="@dimen/icon_medium"
-                            android:src="@drawable/ic_settings"
+                            android:src="@drawable/ic_volume"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
 
@@ -733,17 +590,121 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="@dimen/margin_medium"
-                            android:text="@string/help"
+                            android:text="@string/sound_effects"
                             android:textAppearance="@style/TextAppearance.Inventario.Body" />
 
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchSoundEffects"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="?attr/colorOutlineVariant" />
+
+                    <!-- Low Stock Notifications -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_medium"
+                        android:gravity="center_vertical">
+
                         <ImageView
-                            android:layout_width="@dimen/icon_small"
-                            android:layout_height="@dimen/icon_small"
-                            android:src="@drawable/ic_arrow_forward"
+                            android:layout_width="@dimen/icon_medium"
+                            android:layout_height="@dimen/icon_medium"
+                            android:src="@drawable/ic_warning"
                             android:contentDescription="@null"
                             app:tint="?attr/colorOnSurfaceVariant" />
 
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/margin_medium"
+                            android:text="@string/low_stock_notifications"
+                            android:textAppearance="@style/TextAppearance.Inventario.Body" />
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchLowStockNotifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+
                     </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Help Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginStart="@dimen/margin_small"
+                android:text="@string/help_section"
+                android:textAppearance="@style/TextAppearance.Inventario.Caption"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                style="@style/Widget.Inventario.CardView.Outlined">
+
+                <LinearLayout
+                    android:id="@+id/itemHelp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_medium"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_medium"
+                        android:layout_height="@dimen/icon_medium"
+                        android:src="@drawable/ic_help"
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/margin_medium"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/help_support"
+                            android:textAppearance="@style/TextAppearance.Inventario.Body" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/help_support_description"
+                            android:textAppearance="@style/TextAppearance.Inventario.Caption"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_small"
+                        android:layout_height="@dimen/icon_small"
+                        android:src="@drawable/ic_arrow_forward"
+                        android:contentDescription="@null"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                 </LinearLayout>
 
@@ -752,12 +713,27 @@
             <!-- Logout Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
-                style="@style/Widget.Inventario.Button.Error"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:text="@string/logout"
+                android:textColor="@color/error"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="@color/error"
+                app:strokeColor="@color/error" />
+
+            <!-- Version -->
+            <TextView
+                android:id="@+id/tvVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_marginBottom="@dimen/margin_large"
-                android:text="@string/logout" />
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.Inventario.Caption"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="Versión 1.0.0" />
 
         </LinearLayout>
 

@@ -15,8 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/reports"
-            app:menu="@menu/menu_reports" />
+            app:title="@string/reports" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,7 +35,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/margin_medium">
 
-                <!-- Date Range Selector -->
+                <!-- Date Range Selector Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -55,6 +54,7 @@
                             android:textAppearance="@style/TextAppearance.Inventario.Caption"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
+                        <!-- Date Range Chips -->
                         <HorizontalScrollView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -73,8 +73,8 @@
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/today"
-                                    android:checked="true" />
+                                    android:checked="true"
+                                    android:text="@string/today" />
 
                                 <com.google.android.material.chip.Chip
                                     android:id="@+id/chipWeek"
@@ -101,53 +101,49 @@
 
                         </HorizontalScrollView>
 
-                        <!-- Custom Date Range -->
+                        <!-- Custom Date Range Layout -->
                         <LinearLayout
-                            android:id="@+id/layoutCustomDates"
+                            android:id="@+id/layoutCustomDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/margin_small"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:orientation="vertical"
                             android:visibility="gone"
                             tools:visibility="visible">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/tilStartDate"
-                                style="@style/Widget.Inventario.TextInputLayout"
-                                android:layout_width="0dp"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:hint="@string/start_date"
-                                app:startIconDrawable="@drawable/ic_reports">
+                                android:orientation="horizontal">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etStartDate"
-                                    android:layout_width="match_parent"
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnStartDate"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:focusable="false"
-                                    android:clickable="true" />
+                                    android:layout_weight="1"
+                                    android:layout_marginEnd="@dimen/margin_small"
+                                    android:text="@string/start_date"
+                                    app:icon="@drawable/ic_reports" />
 
-                            </com.google.android.material.textfield.TextInputLayout>
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnEndDate"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/end_date"
+                                    app:icon="@drawable/ic_reports" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/tilEndDate"
-                                style="@style/Widget.Inventario.TextInputLayout"
-                                android:layout_width="0dp"
+                            </LinearLayout>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnApplyDateRange"
+                                style="@style/Widget.Inventario.Button.Primary"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginStart="@dimen/margin_small"
-                                android:hint="@string/end_date"
-                                app:startIconDrawable="@drawable/ic_reports">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etEndDate"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:focusable="false"
-                                    android:clickable="true" />
-
-                            </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_marginTop="@dimen/margin_small"
+                                android:text="@string/apply" />
 
                         </LinearLayout>
 
@@ -160,108 +156,182 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
-                    style="@style/Widget.Inventario.CardView.Filled"
-                    app:cardBackgroundColor="?attr/colorPrimary">
+                    style="@style/Widget.Inventario.CardView.Outlined">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/padding_large">
+                        android:padding="@dimen/padding_medium">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/total_sales"
-                            android:textAppearance="@style/TextAppearance.Inventario.Body"
-                            android:textColor="@android:color/white"
-                            android:alpha="0.8" />
+                            android:text="@string/sales_summary"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tvTotalSales"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_small"
-                            android:textAppearance="@style/TextAppearance.Inventario.Headline"
-                            android:textColor="@android:color/white"
-                            android:textSize="32sp"
-                            tools:text="₲ 15.450.000" />
-
+                        <!-- Total Sales -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_medium"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_medium"
+                                android:layout_height="@dimen/icon_size_medium"
+                                android:src="@drawable/ic_money"
+                                app:tint="@color/success"
+                                android:contentDescription="@null" />
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginStart="@dimen/margin_medium"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_sales"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalSales"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?textAppearanceHeadlineSmall"
+                                    android:textColor="@color/success"
+                                    android:textStyle="bold"
+                                    tools:text="Gs. 5.250.000" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Transaction Count -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_medium"
+                                android:layout_height="@dimen/icon_size_medium"
+                                android:src="@drawable/ic_cart"
+                                app:tint="@color/info"
+                                android:contentDescription="@null" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="@dimen/margin_medium"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/transactions"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="@android:color/white"
-                                    android:alpha="0.8" />
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                                 <TextView
-                                    android:id="@+id/tvTotalTransactions"
+                                    android:id="@+id/tvTransactionCount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Title"
-                                    android:textColor="@android:color/white"
-                                    tools:text="127" />
+                                    android:textAppearance="?textAppearanceTitleLarge"
+                                    android:textStyle="bold"
+                                    tools:text="45 ventas" />
 
                             </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Average Sale -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_medium"
+                                android:layout_height="@dimen/icon_size_medium"
+                                android:src="@drawable/ic_reports"
+                                app:tint="@color/primary"
+                                android:contentDescription="@null" />
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginStart="@dimen/margin_medium"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/average_sale"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="@android:color/white"
-                                    android:alpha="0.8" />
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                                 <TextView
                                     android:id="@+id/tvAverageSale"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Title"
-                                    android:textColor="@android:color/white"
-                                    tools:text="₲ 121.654" />
+                                    android:textAppearance="?textAppearanceTitleLarge"
+                                    android:textStyle="bold"
+                                    tools:text="Gs. 116.667" />
 
                             </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Total Profit -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_medium"
+                                android:layout_height="@dimen/icon_size_medium"
+                                android:src="@drawable/ic_money"
+                                app:tint="@color/success"
+                                android:contentDescription="@null" />
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:layout_marginStart="@dimen/margin_medium"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/profit"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="@android:color/white"
-                                    android:alpha="0.8" />
+                                    android:text="@string/total_profit"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                                 <TextView
                                     android:id="@+id/tvTotalProfit"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Title"
-                                    android:textColor="@android:color/white"
-                                    tools:text="₲ 4.635.000" />
+                                    android:textAppearance="?textAppearanceTitleLarge"
+                                    android:textColor="@color/success"
+                                    android:textStyle="bold"
+                                    tools:text="Gs. 1.500.000" />
 
                             </LinearLayout>
 
@@ -271,97 +341,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Sales Chart -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_medium"
-                    style="@style/Widget.Inventario.CardView.Outlined">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_medium">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sales_chart"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title" />
-
-                        <!-- Chart placeholder - will use MPAndroidChart -->
-                        <FrameLayout
-                            android:id="@+id/chartContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginTop="@dimen/margin_medium">
-
-                            <View
-                                android:id="@+id/salesChart"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-
-                            <TextView
-                                android:id="@+id/tvNoChartData"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="@string/no_data_available"
-                                android:textAppearance="@style/TextAppearance.Inventario.Body"
-                                android:textColor="?attr/colorOnSurfaceVariant"
-                                android:visibility="gone" />
-
-                        </FrameLayout>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Top Products -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_medium"
-                    style="@style/Widget.Inventario.CardView.Outlined">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_medium">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/top_products"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvTopProducts"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_small"
-                            android:nestedScrollingEnabled="false"
-                            tools:listitem="@layout/item_top_product"
-                            tools:itemCount="5" />
-
-                        <TextView
-                            android:id="@+id/tvNoTopProducts"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_medium"
-                            android:gravity="center"
-                            android:text="@string/no_sales_in_period"
-                            android:textAppearance="@style/TextAppearance.Inventario.Body"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:visibility="gone" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Payment Methods -->
+                <!-- Payment Methods Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -378,136 +358,147 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/payment_methods"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title" />
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
 
+                        <!-- Cash -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_medium"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
-                            <!-- Cash -->
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle"
+                                android:backgroundTint="@color/success" />
+
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="@dimen/padding_small">
-
-                                <ImageView
-                                    android:layout_width="@dimen/icon_medium"
-                                    android:layout_height="@dimen/icon_medium"
-                                    android:src="@drawable/ic_money"
-                                    android:contentDescription="@null"
-                                    app:tint="@color/success" />
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/margin_small"
-                                    android:text="@string/cash"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption" />
+                                    android:text="@string/payment_cash"
+                                    android:textAppearance="?textAppearanceBodyMedium" />
 
                                 <TextView
                                     android:id="@+id/tvCashTotal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Body"
-                                    android:textStyle="bold"
-                                    tools:text="₲ 8.500.000" />
-
-                                <TextView
-                                    android:id="@+id/tvCashPercent"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    tools:text="55%" />
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary"
+                                    tools:text="Gs. 3.250.000" />
 
                             </LinearLayout>
 
-                            <!-- Card -->
+                            <TextView
+                                android:id="@+id/tvCashPercentage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceBodyMedium"
+                                android:textStyle="bold"
+                                tools:text="65%" />
+
+                        </LinearLayout>
+
+                        <!-- Card -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle"
+                                android:backgroundTint="@color/info" />
+
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="@dimen/padding_small">
-
-                                <ImageView
-                                    android:layout_width="@dimen/icon_medium"
-                                    android:layout_height="@dimen/icon_medium"
-                                    android:src="@drawable/ic_card"
-                                    android:contentDescription="@null"
-                                    app:tint="?attr/colorPrimary" />
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/margin_small"
-                                    android:text="@string/card"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption" />
+                                    android:text="@string/payment_card"
+                                    android:textAppearance="?textAppearanceBodyMedium" />
 
                                 <TextView
                                     android:id="@+id/tvCardTotal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Body"
-                                    android:textStyle="bold"
-                                    tools:text="₲ 5.200.000" />
-
-                                <TextView
-                                    android:id="@+id/tvCardPercent"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    tools:text="34%" />
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary"
+                                    tools:text="Gs. 1.250.000" />
 
                             </LinearLayout>
 
-                            <!-- Transfer -->
+                            <TextView
+                                android:id="@+id/tvCardPercentage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceBodyMedium"
+                                android:textStyle="bold"
+                                tools:text="25%" />
+
+                        </LinearLayout>
+
+                        <!-- Transfer -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:background="@drawable/bg_circle"
+                                android:backgroundTint="@color/warning" />
+
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="@dimen/padding_small">
-
-                                <ImageView
-                                    android:layout_width="@dimen/icon_medium"
-                                    android:layout_height="@dimen/icon_medium"
-                                    android:src="@drawable/ic_cloud"
-                                    android:contentDescription="@null"
-                                    app:tint="?attr/colorSecondary" />
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/margin_small"
-                                    android:text="@string/transfer"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption" />
+                                    android:text="@string/payment_transfer"
+                                    android:textAppearance="?textAppearanceBodyMedium" />
 
                                 <TextView
                                     android:id="@+id/tvTransferTotal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Body"
-                                    android:textStyle="bold"
-                                    tools:text="₲ 1.750.000" />
-
-                                <TextView
-                                    android:id="@+id/tvTransferPercent"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant"
-                                    tools:text="11%" />
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary"
+                                    tools:text="Gs. 750.000" />
 
                             </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvTransferPercentage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceBodyMedium"
+                                android:textStyle="bold"
+                                tools:text="10%" />
 
                         </LinearLayout>
 
@@ -515,7 +506,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Inventory Summary -->
+                <!-- Inventory Summary Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -532,62 +523,68 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/inventory_summary"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title" />
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_medium"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:baselineAligned="false">
 
+                            <!-- Total Products -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical"
                                 android:gravity="center">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/total_products"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                                 <TextView
                                     android:id="@+id/tvTotalProducts"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Headline"
-                                    android:textColor="?attr/colorPrimary"
-                                    tools:text="245" />
+                                    android:textAppearance="?textAppearanceHeadlineSmall"
+                                    android:textStyle="bold"
+                                    tools:text="125" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_products"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                             </LinearLayout>
 
+                            <!-- Low Stock -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical"
                                 android:gravity="center">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/low_stock"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                                 <TextView
                                     android:id="@+id/tvLowStockCount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Headline"
+                                    android:textAppearance="?textAppearanceHeadlineSmall"
                                     android:textColor="@color/warning"
-                                    tools:text="12" />
+                                    android:textStyle="bold"
+                                    tools:text="8" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/low_stock"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                             </LinearLayout>
 
+                            <!-- Out of Stock -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -596,49 +593,60 @@
                                 android:gravity="center">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/out_of_stock"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                                    android:textColor="?attr/colorOnSurfaceVariant" />
-
-                                <TextView
                                     android:id="@+id/tvOutOfStockCount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.Inventario.Headline"
+                                    android:textAppearance="?textAppearanceHeadlineSmall"
                                     android:textColor="@color/error"
+                                    android:textStyle="bold"
                                     tools:text="3" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/out_of_stock"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
 
                             </LinearLayout>
 
                         </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <!-- Inventory Value -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_medium"
-                            android:text="@string/inventory_value"
-                            android:textAppearance="@style/TextAppearance.Inventario.Caption"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:orientation="vertical"
+                            android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/tvInventoryValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title"
-                            tools:text="₲ 45.780.000" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/inventory_value"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                android:textColor="@color/text_secondary" />
+
+                            <TextView
+                                android:id="@+id/tvInventoryValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceTitleLarge"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold"
+                                tools:text="Gs. 25.500.000" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Export Section -->
+                <!-- Chart Placeholder Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
-                    android:layout_marginBottom="@dimen/margin_large"
                     style="@style/Widget.Inventario.CardView.Outlined">
 
                     <LinearLayout
@@ -650,48 +658,103 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/export_reports"
-                            android:textAppearance="@style/TextAppearance.Inventario.Title" />
+                            android:text="@string/sales_chart"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
 
+                        <!-- Chart Placeholder -->
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_small"
-                            android:text="@string/export_description"
-                            android:textAppearance="@style/TextAppearance.Inventario.Body"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        <LinearLayout
+                            android:id="@+id/tvChartPlaceholder"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_medium"
-                            android:orientation="horizontal">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnExportSales"
-                                style="@style/Widget.Inventario.Button.Outlined"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="@dimen/margin_small"
-                                android:text="@string/sales_report"
-                                app:icon="@drawable/ic_reports" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnExportInventory"
-                                style="@style/Widget.Inventario.Button.Outlined"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginStart="@dimen/margin_small"
-                                android:text="@string/inventory_report"
-                                app:icon="@drawable/ic_inventory" />
-
-                        </LinearLayout>
+                            android:layout_height="200dp"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:gravity="center"
+                            android:text="@string/chart_coming_soon"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            android:textColor="@color/text_hint"
+                            android:background="@color/surface_variant" />
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Top Products Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    style="@style/Widget.Inventario.CardView.Outlined">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_medium">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/top_products"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTopProducts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/item_top_product"
+                            tools:itemCount="5" />
+
+                        <TextView
+                            android:id="@+id/tvNoTopProducts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_large"
+                            android:text="@string/no_top_products"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            android:textColor="@color/text_hint"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Export Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExportSales"
+                        style="@style/Widget.Inventario.Button.Outlined"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:text="@string/export_sales"
+                        app:icon="@drawable/ic_download" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExportInventory"
+                        style="@style/Widget.Inventario.Button.Outlined"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/export_inventory"
+                        app:icon="@drawable/ic_download" />
+
+                </LinearLayout>
+
+                <!-- Spacer -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_large" />
 
             </LinearLayout>
 
@@ -704,16 +767,15 @@
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000"
+        android:background="#80FFFFFF"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true" />
+            android:layout_gravity="center" />
 
     </FrameLayout>
 

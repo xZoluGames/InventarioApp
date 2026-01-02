@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.navigation.fragment.findNavController
 
 @AndroidEntryPoint
 class SalesFragment : Fragment(), RefreshableFragment {
@@ -40,6 +40,8 @@ class SalesFragment : Fragment(), RefreshableFragment {
     private lateinit var salesAdapter: SaleAdapter
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("es", "PY"))
+    private var customStartDate: Date? = null
+    private var customEndDate: Date? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,8 +56,9 @@ class SalesFragment : Fragment(), RefreshableFragment {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupFilters()
+        setupDateButtons()
         setupSwipeRefresh()
-        setupNewSaleButton()
+        setupNewSaleButtons()
         observeState()
     }
 
@@ -82,8 +85,9 @@ class SalesFragment : Fragment(), RefreshableFragment {
             if (checkedIds.isNotEmpty()) {
                 val filter = when (checkedIds.first()) {
                     R.id.chipToday -> DateFilter.TODAY
-                    R.id.chipWeek -> DateFilter.THIS_WEEK
-                    R.id.chipMonth -> DateFilter.THIS_MONTH
+                    R.id.chipYesterday -> DateFilter.YESTERDAY
+                    R.id.chipThisWeek -> DateFilter.THIS_WEEK
+                    R.id.chipThisMonth -> DateFilter.THIS_MONTH
                     R.id.chipYear -> DateFilter.THIS_YEAR
                     R.id.chipAll -> DateFilter.ALL
                     R.id.chipCustom -> {
@@ -93,6 +97,7 @@ class SalesFragment : Fragment(), RefreshableFragment {
                     else -> DateFilter.TODAY
                 }
                 viewModel.setDateFilter(filter)
+                updateDateButtonsVisibility(filter)
             }
         }
 
@@ -113,6 +118,7 @@ class SalesFragment : Fragment(), RefreshableFragment {
                 checkedIds.contains(R.id.chipCash) -> PaymentMethod.CASH
                 checkedIds.contains(R.id.chipCard) -> PaymentMethod.CARD
                 checkedIds.contains(R.id.chipTransfer) -> PaymentMethod.TRANSFER
+                checkedIds.contains(R.id.chipCredit) -> PaymentMethod.CREDIT
                 else -> null
             }
             viewModel.setPaymentMethodFilter(method)
@@ -124,32 +130,113 @@ class SalesFragment : Fragment(), RefreshableFragment {
         }
     }
 
-    private fun clearAllFilters() {
-        binding.chipGroupDateFilter.check(R.id.chipToday)
-        binding.chipGroupStatus.clearCheck()
-        binding.chipGroupPayment.clearCheck()
-        viewModel.setDateFilter(DateFilter.TODAY)
-        viewModel.setStatusFilter(null)
-        viewModel.setPaymentMethodFilter(null)
+    private fun setupDateButtons() {
+        binding.btnStartDate.setOnClickListener {
+            showSingleDatePicker(true)
+        }
+
+        binding.btnEndDate.setOnClickListener {
+            showSingleDatePicker(false)
+        }
+
+        // Initialize date buttons with today's date
+        updateDateButtons()
+    }
+
+    private fun updateDateButtons() {
+        val today = Date()
+        if (customStartDate == null) customStartDate = today
+        if (customEndDate == null) customEndDate = today
+
+        binding.btnStartDate.text = dateFormat.format(customStartDate!!)
+        binding.btnEndDate.text = dateFormat.format(customEndDate!!)
+    }
+
+    private fun updateDateButtonsVisibility(filter: DateFilter) {
+        val isCustom = filter == DateFilter.CUSTOM
+        binding.btnStartDate.isEnabled = isCustom
+        binding.btnEndDate.isEnabled = isCustom
+    }
+
+    private fun showSingleDatePicker(isStartDate: Boolean) {
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(if (isStartDate) R.string.select_start_date else R.string.select_end_date))
+            .setSelection(
+                if (isStartDate) customStartDate?.time ?: Date().time
+                else customEndDate?.time ?: Date().time
+            )
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val selectedDate = Date(selection)
+            if (isStartDate) {
+                customStartDate = selectedDate
+                binding.btnStartDate.text = dateFormat.format(selectedDate)
+            } else {
+                customEndDate = selectedDate
+                binding.btnEndDate.text = dateFormat.format(selectedDate)
+            }
+
+            // Apply custom filter if both dates are set
+            if (customStartDate != null && customEndDate != null) {
+                binding.chipGroupDateFilter.check(R.id.chipCustom)
+                viewModel.setDateFilter(DateFilter.CUSTOM)
+                // Optionally, pass the dates to ViewModel
+                // viewModel.setCustomDateRange(customStartDate!!, customEndDate!!)
+            }
+        }
+
+        datePicker.show(parentFragmentManager, "single_date_picker")
     }
 
     private fun showDateRangePicker() {
         val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
             .setTitleText(getString(R.string.select_date_range))
+            .setSelection(
+                androidx.core.util.Pair(
+                    customStartDate?.time ?: Date().time,
+                    customEndDate?.time ?: Date().time
+                )
+            )
             .build()
 
         dateRangePicker.addOnPositiveButtonClickListener { selection ->
             val startDate = selection.first ?: return@addOnPositiveButtonClickListener
             val endDate = selection.second ?: return@addOnPositiveButtonClickListener
-            
+
+            customStartDate = Date(startDate)
+            customEndDate = Date(endDate)
+
             viewModel.setDateFilter(DateFilter.CUSTOM)
-            // The ViewModel would need a method to set custom date range
-            // For now, we'll handle it through the existing filter
-            
-            binding.chipCustom.text = "${dateFormat.format(Date(startDate))} - ${dateFormat.format(Date(endDate))}"
+
+            // Update date buttons
+            binding.btnStartDate.text = dateFormat.format(customStartDate!!)
+            binding.btnEndDate.text = dateFormat.format(customEndDate!!)
+
+            // Update custom chip text
+            binding.chipCustom.text = "${dateFormat.format(customStartDate!!)} - ${dateFormat.format(customEndDate!!)}"
         }
 
         dateRangePicker.show(parentFragmentManager, "date_range_picker")
+    }
+
+    private fun clearAllFilters() {
+        binding.chipGroupDateFilter.check(R.id.chipToday)
+        binding.chipGroupStatus.check(R.id.chipAllStatus)
+        binding.chipGroupPayment.check(R.id.chipAllPayment)
+
+        viewModel.setDateFilter(DateFilter.TODAY)
+        viewModel.setStatusFilter(null)
+        viewModel.setPaymentMethodFilter(null)
+
+        // Reset custom dates
+        val today = Date()
+        customStartDate = today
+        customEndDate = today
+        updateDateButtons()
+
+        // Reset custom chip text
+        binding.chipCustom.text = getString(R.string.custom)
     }
 
     private fun setupSwipeRefresh() {
@@ -162,10 +249,26 @@ class SalesFragment : Fragment(), RefreshableFragment {
         )
     }
 
-    private fun setupNewSaleButton() {
+    private fun setupNewSaleButtons() {
+        // FAB button
         binding.fabNewSale.setOnClickListener {
-            // Navigate to cart/new sale
+            navigateToNewSale()
+        }
+
+        // Empty state button
+        binding.btnNewSaleEmpty.setOnClickListener {
+            navigateToNewSale()
+        }
+    }
+
+    private fun navigateToNewSale() {
+        try {
             findNavController().navigate(R.id.cartFragment)
+        } catch (e: Exception) {
+            // Fallback navigation
+            (requireActivity() as? MainActivity)?.let {
+                // Alternative navigation method if needed
+            }
         }
     }
 
@@ -188,14 +291,16 @@ class SalesFragment : Fragment(), RefreshableFragment {
     }
 
     private fun updateUI(state: SalesHistoryUiState) {
+        // Update loading state
         binding.swipeRefresh.isRefreshing = state.isLoading
-        
+        binding.progressBar.isVisible = state.isLoading && salesAdapter.itemCount == 0
+
         val sales = state.filteredSales
-        
+
         // Update adapter
         salesAdapter.submitList(sales)
-        
-        // Show empty state
+
+        // Show/hide empty state
         binding.emptyState.isVisible = sales.isEmpty() && !state.isLoading
         binding.recyclerViewSales.isVisible = sales.isNotEmpty()
 
@@ -208,26 +313,38 @@ class SalesFragment : Fragment(), RefreshableFragment {
         }
 
         // Show active filters indicator
-        val hasActiveFilters = state.statusFilter != null || 
-                               state.paymentMethodFilter != null || 
-                               state.dateFilter != DateFilter.TODAY
+        val hasActiveFilters = state.statusFilter != null ||
+                state.paymentMethodFilter != null ||
+                state.dateFilter != DateFilter.TODAY
         binding.btnClearFilters.isVisible = hasActiveFilters
     }
 
     private fun handleEvent(event: SalesHistoryEvent) {
         when (event) {
             is SalesHistoryEvent.SaleCancelled -> {
-                Snackbar.make(binding.root, getString(R.string.sale_cancelled), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.sale_cancelled),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
             is SalesHistoryEvent.Error -> {
-                Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.root,
+                    event.message,
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     private fun showCancelDialog(sale: SaleEntity) {
         if (sale.status != SaleStatus.COMPLETED.name) {
-            Snackbar.make(binding.root, getString(R.string.cannot_cancel_sale), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                getString(R.string.cannot_cancel_sale),
+                Snackbar.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -243,7 +360,8 @@ class SalesFragment : Fragment(), RefreshableFragment {
 
     private fun navigateToSaleDetail(saleId: String) {
         try {
-            val action = SalesFragmentDirections.actionSalesFragmentToSaleDetailFragment(saleId.toLong())
+            val action = SalesFragmentDirections
+                .actionSalesFragmentToSaleDetailFragment(saleId.toLong())
             findNavController().navigate(action)
         } catch (e: Exception) {
             // Fallback navigation
@@ -264,3 +382,5 @@ class SalesFragment : Fragment(), RefreshableFragment {
         _binding = null
     }
 }
+
+

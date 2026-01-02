@@ -99,7 +99,7 @@ class CartViewModel @Inject constructor(
         viewModelScope.launch {
             val product = productRepository.getProductByBarcode(query)
                 ?: productRepository.getProductByIdentifier(query)
-                ?: productRepository.searchProducts(query).firstOrNull()?.firstOrNull()
+                ?: productRepository.searchProducts(query).firstOrNull()
 
             if (product != null) {
                 addToCart(product)
@@ -480,7 +480,13 @@ data class SalesHistoryUiState(
 )
 
 enum class DateFilter {
-    TODAY, THIS_WEEK, THIS_MONTH, THIS_YEAR, ALL, CUSTOM
+    TODAY,
+    YESTERDAY,
+    THIS_WEEK,
+    THIS_MONTH,
+    THIS_YEAR,
+    ALL,
+    CUSTOM
 }
 
 data class SalesStatistics(
