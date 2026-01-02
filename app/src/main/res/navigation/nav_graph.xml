@@ -122,7 +122,7 @@
         tools:layout="@layout/fragment_sale_detail">
         <argument
             android:name="saleId"
-            app:argType="long"/>
+            app:argType="string"/>
     </fragment>
 
     <fragment

@@ -144,6 +144,11 @@ class SettingsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isLowStockNotificationsEnabled = enabled)
     }
 
+    // Alias para compatibilidad con SettingsFragment
+    fun setLowStockNotificationsEnabled(enabled: Boolean) {
+        setLowStockNotifications(enabled)
+    }
+
     fun setServerUrl(url: String) {
         sessionManager.setServerUrl(url)
         _uiState.value = _uiState.value.copy(serverUrl = url)

@@ -120,6 +120,16 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    // Alias para ScannerFragment
+    fun searchAndAddProduct(query: String) {
+        addProductByBarcode(query)
+    }
+
+    // Alias para ScannerFragment - addToCart con firma simplificada
+    fun addToCart(product: ProductEntity, variant: ProductVariantEntity?, quantity: Int) {
+        addProduct(product, variant, quantity)
+    }
+
     fun addProduct(product: ProductEntity, variant: ProductVariantEntity? = null, quantity: Int = 1) {
         viewModelScope.launch {
             val availableStock = variant?.stock ?: product.totalStock

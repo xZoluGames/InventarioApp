@@ -248,7 +248,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     /**
-     * Elimina una variante
+     * Elimina una variante por ID
      */
     fun deleteVariant(variantId: String) {
         viewModelScope.launch {
@@ -265,5 +265,53 @@ class ProductDetailViewModel @Inject constructor(
                 _message.value = "Error al eliminar variante: ${e.message}"
             }
         }
+    }
+
+    // ==================== SOBRECARGAS PARA COMPATIBILIDAD ====================
+
+    /**
+     * Sobrecarga de addVariant para ProductDetailFragment
+     * Usado como: addVariant(name, sku, price, stock)
+     */
+    fun addVariant(name: String, sku: String?, price: Double?, stock: Int) {
+        addVariant(
+            variantType = "CUSTOM",
+            variantLabel = "Variante",
+            variantValue = name,
+            stock = stock,
+            additionalPrice = price?.toLong() ?: 0L,
+            barcode = sku
+        )
+    }
+
+    /**
+     * Sobrecarga de updateVariant que recibe un ProductVariant
+     * Usado como: updateVariant(variant.copy(...))
+     */
+    fun updateVariant(variant: com.inventario.py.data.local.entity.ProductVariant) {
+        updateVariant(
+            variantId = variant.id,
+            variantName = variant.name,
+            priceModifier = variant.additionalPrice,
+            currentStock = variant.stock
+        )
+    }
+
+    /**
+     * Sobrecarga de deleteVariant que recibe un ProductVariant
+     * Usado como: deleteVariant(variant)
+     */
+    fun deleteVariant(variant: com.inventario.py.data.local.entity.ProductVariant) {
+        deleteVariant(variant.id)
+    }
+
+    /**
+     * Sobrecarga de adjustStock con 1 parámetro (solo cantidad)
+     * Asume que es una adición si es positivo, sustracción si negativo
+     */
+    fun adjustStock(quantity: Int) {
+        val isAddition = quantity >= 0
+        val absQuantity = kotlin.math.abs(quantity)
+        adjustStock(absQuantity, "Ajuste manual", isAddition)
     }
 }

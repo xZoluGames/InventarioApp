@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.inventario.py.R
+import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.ProductVariantEntity
+import com.inventario.py.data.local.entity.ProductWithVariants
 import com.inventario.py.data.local.entity.SaleWithDetails
 import com.inventario.py.data.local.entity.createdAt
 import com.inventario.py.data.local.entity.name
@@ -57,17 +60,17 @@ class SaleAdapter(
             with(binding) {
                 // Sale ID
                 tvSaleId.text = "#${sale.id}"
-                
+
                 // Date and time
                 tvDate.text = dateFormat.format(sale.createdAt)
                 tvTime.text = timeFormat.format(sale.createdAt)
-                
+
                 // Total amount
                 tvTotal.text = CurrencyUtils.formatGuarani(sale.totalAmount)
-                
+
                 // Item count
                 tvItemCount.text = "$itemCount ${if (itemCount == 1) "producto" else "productos"}"
-                
+
                 // Payment method icon
                 val paymentIcon = when (sale.paymentMethod) {
                     "CASH" -> R.drawable.ic_money
@@ -76,7 +79,7 @@ class SaleAdapter(
                     else -> R.drawable.ic_money
                 }
                 ivPaymentMethod.setImageResource(paymentIcon)
-                
+
                 // Payment method text
                 tvPaymentMethod.text = when (sale.paymentMethod) {
                     "CASH" -> "Efectivo"
@@ -84,7 +87,7 @@ class SaleAdapter(
                     "TRANSFER" -> "Transferencia"
                     else -> sale.paymentMethod
                 }
-                
+
                 // Status indicator
                 when (sale.status) {
                     "COMPLETED" -> {
@@ -97,11 +100,11 @@ class SaleAdapter(
                         statusIndicator.setBackgroundResource(R.drawable.bg_stock_out)
                     }
                 }
-                
+
                 // Show/hide details
                 if (showDetails) {
                     layoutDetails.visibility = View.VISIBLE
-                    
+
                     // Show first few items
                     val itemsText = saleWithDetails.items.take(3).joinToString("\n") { item ->
                         "${item.quantity}x ${item.productName}"
@@ -114,7 +117,7 @@ class SaleAdapter(
                 } else {
                     layoutDetails.visibility = View.GONE
                 }
-                
+
                 // Seller name (if available)
                 saleWithDetails.seller?.let { seller ->
                     tvSeller.visibility = View.VISIBLE
@@ -133,6 +136,111 @@ class SaleAdapter(
 
         override fun areContentsTheSame(oldItem: SaleWithDetails, newItem: SaleWithDetails): Boolean {
             return oldItem == newItem
+        }
+    }
+}
+/**
+ * EXTENSIONES ADICIONALES PARA COMPATIBILIDAD
+ * Agregar estas extensiones al archivo MissingTypes.kt existente
+ */
+
+// ==================== EXTENSIONES PARA ProductEntity ====================
+
+// Alias para compatibilidad - costPrice es lo mismo que purchasePrice
+val ProductEntity.costPrice: Long get() = this.purchasePrice
+
+// supplier devuelve el nombre del proveedor
+val ProductEntity.supplier: String? get() = this.supplierName
+
+// ==================== EXTENSIONES PARA ProductVariantEntity ====================
+
+// Convertir ProductVariantEntity a ProductVariant (data class UI)
+fun ProductVariantEntity.toProductVariant(): ProductVariant = ProductVariant(
+    id = this.id,
+    productId = this.productId,
+    name = this.variantValue,
+    sku = this.barcode,
+    barcode = this.barcode,
+    additionalPrice = this.additionalPrice,
+    stock = this.stock,
+    isActive = this.isActive
+)
+
+// Lista de conversión
+fun List<ProductVariantEntity>.toProductVariants(): List<ProductVariant> =
+    this.map { it.toProductVariant() }
+
+// ==================== DATA CLASS ProductVariant ACTUALIZADA ====================
+
+/**
+ * Data class para UI - representa una variante de producto
+ * Esta versión incluye todas las propiedades necesarias para ProductDetailFragment
+ */
+data class ProductVariant(
+    val id: String,
+    val productId: String,
+    val name: String,
+    val sku: String? = null,
+    val barcode: String? = null,
+    val additionalPrice: Long = 0,
+    val stock: Int = 0,
+    val isActive: Boolean = true
+) {
+    // Propiedades de compatibilidad
+    val variantName: String get() = name
+    val priceModifier: Long get() = additionalPrice
+    val currentStock: Int get() = stock
+
+    // Método copy con nombres alternativos de parámetros
+    fun copyWith(
+        variantName: String? = null,
+        sku: String? = null,
+        priceModifier: Long? = null,
+        currentStock: Int? = null
+    ): ProductVariant = copy(
+        name = variantName ?: this.name,
+        sku = sku ?: this.sku,
+        additionalPrice = priceModifier ?: this.additionalPrice,
+        stock = currentStock ?: this.stock
+    )
+}
+
+// ==================== EXTENSIONES PARA ProductWithVariants ====================
+
+// Agregar propiedad supplier a ProductWithVariants
+val ProductWithVariants.supplier: String? get() = product.supplierName
+val ProductWithVariants.costPrice: Long get() = product.purchasePrice
+
+// ==================== TOPPRODUCT PARA ADAPTERS ====================
+
+/**
+ * TopProduct en el paquete de adapters (para evitar conflicto de imports)
+ * El adapter espera com.inventario.py.ui.adapters.TopProduct
+ * pero el ViewModel devuelve com.inventario.py.data.local.entity.TopProduct
+ */
+// La conversión se hace en el fragment/adapter
+
+// ==================== DATE RANGE ENUM ====================
+
+enum class DateRange {
+    TODAY,
+    YESTERDAY,
+    THIS_WEEK,
+    WEEK,      // Alias para THIS_WEEK
+    THIS_MONTH,
+    MONTH,     // Alias para THIS_MONTH
+    THIS_YEAR,
+    YEAR,      // Alias para THIS_YEAR
+    CUSTOM,
+    ALL;
+
+    companion object {
+        fun fromString(value: String): DateRange {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                TODAY
+            }
         }
     }
 }

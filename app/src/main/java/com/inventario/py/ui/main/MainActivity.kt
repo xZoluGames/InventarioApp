@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.SyncState
@@ -37,15 +38,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupNavigation()
-        setupBackPressHandler()
+        setupBackPress()
         observeState()
-        
-        // Start initial sync
-        viewModel.syncData()
     }
 
     private fun setupNavigation() {
@@ -53,45 +52,27 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        // Setup bottom navigation with nav controller
         binding.bottomNavigation.setupWithNavController(navController)
 
-        // Listen for destination changes to show/hide bottom nav
+        // Handle navigation visibility
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNavigation.visibility = 
+            binding.bottomNavigation.visibility =
                 if (destination.id in fragmentsWithoutBottomNav) View.GONE else View.VISIBLE
-        }
-
-        // Handle bottom nav item reselection (scroll to top or refresh)
-        binding.bottomNavigation.setOnItemReselectedListener { item ->
-            // Find the current fragment and trigger refresh/scroll to top
-            val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
-            if (currentFragment is RefreshableFragment) {
-                currentFragment.onRefresh()
-            }
         }
     }
 
-    private fun setupBackPressHandler() {
+    private fun setupBackPress() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val currentDestination = navController.currentDestination?.id
-                
-                // If on main screens, ask to exit
-                if (currentDestination == R.id.homeFragment) {
+                if (!navController.navigateUp()) {
                     showExitConfirmation()
-                } else {
-                    // Navigate back normally
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
-                    isEnabled = true
                 }
             }
         })
     }
 
     private fun showExitConfirmation() {
-        com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Salir")
             .setMessage("¿Desea salir de la aplicación?")
             .setPositiveButton("Salir") { _, _ ->
@@ -122,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                
+
                 launch {
                     viewModel.lowStockProducts.collect { count ->
                         updateLowStockBadge(count)
@@ -150,9 +131,12 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    // ==================== NAVIGATION HELPERS ====================
+    // NOTA: Los IDs de producto y venta son String, no Long
+
     fun navigateToProductDetail(productId: String) {
         val bundle = Bundle().apply {
-            putLong("productId", productId)
+            putString("productId", productId)  // Cambiado de putLong a putString
         }
         navController.navigate(R.id.productDetailFragment, bundle)
     }
@@ -175,11 +159,16 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.checkoutFragment)
     }
 
-    fun navigateToSaleDetail(saleId: Long) {
+    fun navigateToSaleDetail(saleId: String) {
         val bundle = Bundle().apply {
-            putLong("saleId", saleId)
+            putString("saleId", saleId)  // Cambiado de putLong a putString
         }
         navController.navigate(R.id.saleDetailFragment, bundle)
+    }
+
+    // Sobrecarga para compatibilidad con código que use Long
+    fun navigateToSaleDetail(saleId: Long) {
+        navigateToSaleDetail(saleId.toString())
     }
 
     fun getCurrentUserId(): Long = viewModel.getCurrentUserId()

@@ -70,7 +70,11 @@ enum class SortOption {
     STOCK_ASC,
     STOCK_DESC,
     DATE_ASC,
-    DATE_DESC
+    DATE_DESC;
+
+    companion object {
+        val entries = values().toList()
+    }
 }
 
 enum class VariantType {
@@ -318,7 +322,7 @@ fun SaleItemEntity.toSaleItem() = SaleItem(
     imageUrl = this.productImageUrl
 )
 
-fun ProductVariantEntity.toProductVariant() = ProductVariant(
+fun ProductVariantEntity.toProductVariant(): ProductVariant = ProductVariant(
     id = this.id,
     productId = this.productId,
     name = this.variantValue,
@@ -326,8 +330,7 @@ fun ProductVariantEntity.toProductVariant() = ProductVariant(
     barcode = this.barcode,
     additionalPrice = this.additionalPrice,
     stock = this.stock,
-    isActive = this.isActive
-)
+    isActive = this.isActive)
 
 fun StockMovementEntity.toStockMovement() = StockMovement(
     id = this.id,
@@ -345,7 +348,8 @@ fun StockMovementEntity.toStockMovement() = StockMovement(
 
 // Lista conversions
 fun List<StockMovementEntity>.toStockMovements() = this.map { it.toStockMovement() }
-fun List<ProductVariantEntity>.toProductVariants() = this.map { it.toProductVariant() }
+fun List<ProductVariantEntity>.toProductVariants(): List<ProductVariant> =
+    this.map { it.toProductVariant() }
 fun List<SaleItemEntity>.toSaleItems() = this.map { it.toSaleItem() }
 
 // ==================== HELPER FUNCTIONS ====================
@@ -361,3 +365,91 @@ typealias ProductId = String
 typealias VariantId = String
 typealias SaleId = String
 typealias UserId = String
+/**
+ * EXTENSIONES ADICIONALES PARA AGREGAR A MissingTypes.kt
+ *
+ * Copiar el contenido de este archivo y pegarlo AL FINAL del archivo
+ * MissingTypes.kt existente en:
+ * app/src/main/java/com/inventario/py/data/local/entity/MissingTypes.kt
+ */
+
+// ==================== EXTENSIONES ADICIONALES PARA ProductEntity ====================
+
+// Alias para compatibilidad - costPrice es lo mismo que purchasePrice
+val ProductEntity.costPrice: Long get() = this.purchasePrice
+
+// supplier devuelve el nombre del proveedor
+val ProductEntity.supplier: String? get() = this.supplierName
+
+// ==================== DATA CLASS ProductVariant MEJORADA ====================
+
+/**
+ * Si ProductVariant ya existe en MissingTypes.kt, reemplazarla con esta versión
+ * que incluye el método copyWith para compatibilidad con ProductDetailFragment
+ */
+/*
+data class ProductVariant(
+    val id: String,
+    val productId: String,
+    val name: String,
+    val sku: String? = null,
+    val barcode: String? = null,
+    val additionalPrice: Long = 0,
+    val stock: Int = 0,
+    val isActive: Boolean = true
+) {
+    // Propiedades de compatibilidad
+    val variantName: String get() = name
+    val priceModifier: Long get() = additionalPrice
+    val currentStock: Int get() = stock
+
+    // Método copy con nombres alternativos de parámetros
+    fun copyWith(
+        variantName: String? = null,
+        sku: String? = null,
+        priceModifier: Long? = null,
+        currentStock: Int? = null
+    ): ProductVariant = copy(
+        name = variantName ?: this.name,
+        sku = sku ?: this.sku,
+        additionalPrice = priceModifier ?: this.additionalPrice,
+        stock = currentStock ?: this.stock
+    )
+}
+*/
+
+// ==================== EXTENSIONES PARA ProductWithVariants ====================
+
+// Agregar propiedad supplier a ProductWithVariants
+val ProductWithVariants.supplier: String? get() = product.supplierName
+val ProductWithVariants.costPrice: Long get() = product.purchasePrice
+
+// ==================== DATE RANGE ENUM (si no existe) ====================
+
+/**
+ * Enum para rangos de fecha en reportes
+ * Agregar solo si no existe DateRange en el proyecto
+ */
+enum class DateRange {
+    TODAY,
+    YESTERDAY,
+    THIS_WEEK,
+    WEEK,      // Alias para THIS_WEEK
+    THIS_MONTH,
+    MONTH,     // Alias para THIS_MONTH
+    THIS_YEAR,
+    YEAR,      // Alias para THIS_YEAR
+    CUSTOM,
+    ALL;
+
+    companion object {
+        fun fromString(value: String): DateRange {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                TODAY
+            }
+        }
+    }
+}
+
