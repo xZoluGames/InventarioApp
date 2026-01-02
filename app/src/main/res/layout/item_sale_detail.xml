@@ -46,7 +46,15 @@
             android:visibility="gone"
             tools:text="Color: Rojo"
             tools:visibility="visible" />
-
+        <!-- Agregar este TextView después de tvVariantInfo -->
+        <TextView
+            android:id="@+id/tvQuantityPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_secondary"
+            tools:text="2 x Gs. 50.000" />
         <TextView
             android:id="@+id/tvUnitPrice"
             android:layout_width="wrap_content"

@@ -147,13 +147,13 @@
         app:icon="@drawable/ic_barcode_small"
         app:iconTint="@android:color/white"
         app:strokeColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@id/layoutResult"
+        app:layout_constraintBottom_toTopOf="@id/cardScanResult"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Scan Result Card -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/layoutResult"
+        android:id="@+id/cardScanResult"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_medium"
@@ -248,7 +248,7 @@
                     android:textAppearance="@style/TextAppearance.Inventario.Title" />
 
                 <TextView
-                    android:id="@+id/tvScannedBarcode"
+                    android:id="@+id/tvBarcodeNotFound"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.Inventario.Body"
@@ -257,7 +257,14 @@
                     tools:text="7891234567890" />
 
             </LinearLayout>
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddProduct"
+                style="@style/Widget.Inventario.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/add_product"
+                app:icon="@drawable/ic_add" />
             <!-- Action Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
