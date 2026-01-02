@@ -1,17 +1,16 @@
 package com.inventario.py.ui.adapters
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.MovementType
 import com.inventario.py.data.local.entity.StockMovementEntity
 import com.inventario.py.databinding.ItemStockMovementBinding
-
+import com.inventario.py.utils.DateUtils
 
 class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapter.MovementViewHolder>(
     MovementDiffCallback()
@@ -36,36 +35,42 @@ class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapt
 
         fun bind(movement: StockMovementEntity) {
             val context = binding.root.context
-            val movementTypeEnum = movement.movementType
+
+            // Parse movement type from String
+            val movementType = try {
+                MovementType.valueOf(movement.movementType.uppercase())
+            } catch (e: Exception) {
+                MovementType.ADJUSTMENT
+            }
 
             // Set movement type text and colors
-            val (typeText, iconRes, colorRes) = when (movementTypeEnum) {
-                MovementType.IN.name -> Triple(
+            val (typeText, iconRes, colorRes) = when (movementType) {
+                MovementType.IN -> Triple(
                     context.getString(R.string.stock_in),
                     R.drawable.ic_arrow_up,
                     R.color.success
                 )
-                MovementType.OUT.name -> Triple(
+                MovementType.OUT -> Triple(
                     context.getString(R.string.stock_out),
                     R.drawable.ic_arrow_down,
                     R.color.error
                 )
-                MovementType.ADJUSTMENT.name -> Triple(
+                MovementType.ADJUSTMENT -> Triple(
                     context.getString(R.string.adjustment),
                     R.drawable.ic_edit,
                     R.color.warning
                 )
-                MovementType.SALE.name -> Triple(
+                MovementType.SALE -> Triple(
                     context.getString(R.string.sale),
                     R.drawable.ic_cart,
                     R.color.primary
                 )
-                MovementType.RETURN.name -> Triple(
+                MovementType.RETURN -> Triple(
                     context.getString(R.string.return_item),
                     R.drawable.ic_return,
                     R.color.info
                 )
-                MovementType.TRANSFER.name -> Triple(
+                MovementType.TRANSFER -> Triple(
                     context.getString(R.string.transfer),
                     R.drawable.ic_transfer,
                     R.color.secondary
@@ -85,18 +90,17 @@ class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapt
                 tvDate.text = DateUtils.formatRelative(movement.createdAt)
 
                 // Quantity with sign
-                val quantityText = when {
-                    movement.quantity > 0 && movementTypeEnum != MovementType.OUT.name -> "+${movement.quantity}"
-                    movement.quantity < 0 -> movement.quantity.toString()
-                    movementTypeEnum == MovementType.OUT -> "-${kotlin.math.abs(movement.quantity)}"
+                val quantityText = when (movementType) {
+                    MovementType.IN, MovementType.RETURN -> "+${movement.quantity}"
+                    MovementType.OUT, MovementType.SALE -> "-${kotlin.math.abs(movement.quantity)}"
                     else -> movement.quantity.toString()
                 }
                 tvQuantity.text = quantityText
 
                 // Quantity color
-                val quantityColor = when (movementTypeEnum) {
-                    MovementType.IN.name, MovementType.RETURN.name -> R.color.success
-                    MovementType.OUT.name, MovementType.SALE.name -> R.color.error
+                val quantityColor = when (movementType) {
+                    MovementType.IN, MovementType.RETURN -> R.color.success
+                    MovementType.OUT, MovementType.SALE -> R.color.error
                     else -> R.color.text_primary
                 }
                 tvQuantity.setTextColor(ContextCompat.getColor(context, quantityColor))

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
+    android:layout_marginBottom="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="1dp"
-    style="@style/Widget.Material3.CardView.Outlined">
+    app:strokeColor="@color/outline"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,73 +17,90 @@
         android:padding="12dp"
         android:gravity="center_vertical">
 
+        <!-- Color Indicator (for COLOR type variants) -->
+        <View
+            android:id="@+id/viewVariantColor"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/bg_circle"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:backgroundTint="@color/primary" />
+
         <!-- Variant Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginStart="12dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvVariantName"
+                android:id="@+id/tvVariantType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?textAppearanceTitleSmall"
-                android:textColor="@color/text_primary"
-                tools:text="Color: Rojo" />
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="Color" />
 
             <TextView
-                android:id="@+id/tvSku"
+                android:id="@+id/tvVariantValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="?textAppearanceBodySmall"
-                android:textColor="@color/text_hint"
-                tools:text="SKU: PRD-001-RED" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?textAppearanceBodyMedium"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold"
-                    tools:text="+Gs. 10.000" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="•"
-                    android:textColor="@color/text_hint" />
-
-                <TextView
-                    android:id="@+id/tvStock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textAppearance="?textAppearanceBodyMedium"
-                    android:textColor="@color/text_secondary"
-                    tools:text="Stock: 15" />
-
-            </LinearLayout>
+                android:textAppearance="?textAppearanceBodyMedium"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                tools:text="Rojo" />
 
         </LinearLayout>
 
-        <!-- Edit Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEdit"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:icon="@drawable/ic_edit"
-            app:iconTint="@color/primary" />
+        <!-- Stock -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvStock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceTitleMedium"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                tools:text="25" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stock"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="@color/text_hint" />
+
+        </LinearLayout>
+
+        <!-- Additional Price -->
+        <TextView
+            android:id="@+id/tvAdditionalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textAppearance="?textAppearanceBodyMedium"
+            android:textColor="@color/success"
+            android:visibility="gone"
+            tools:text="+Gs. 5.000"
+            tools:visibility="visible" />
+
+        <!-- Actions Menu -->
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/more_options"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/text_secondary" />
 
     </LinearLayout>
 

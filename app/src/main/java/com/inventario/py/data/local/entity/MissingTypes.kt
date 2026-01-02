@@ -279,8 +279,7 @@ val SaleEntity.createdAt: Long get() = this.soldAt
 val SaleEntity.discount: Long get() = this.totalDiscount
 
 // Para StockMovementEntity
-val StockMovementEntity.movementType: MovementType
-    get() = MovementType.fromString(this.type)
+fun StockMovementEntity.getMovementType(): MovementType = MovementType.fromString(this.movementType)
 
 // Para UserEntity
 val UserEntity.name: String get() = this.fullName

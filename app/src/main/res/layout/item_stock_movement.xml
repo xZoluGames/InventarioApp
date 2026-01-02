@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,12 +20,13 @@
             android:background="@drawable/bg_circle" />
 
         <ImageView
-            android:id="@+id/ivIcon"
+            android:id="@+id/ivMovementType"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_arrow_up"
-            app:tint="@android:color/white" />
+            app:tint="@android:color/white"
+            android:contentDescription="@null" />
 
     </FrameLayout>
 
@@ -57,7 +57,7 @@
             tools:text="Compra a proveedor" />
 
         <TextView
-            android:id="@+id/tvDateTime"
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -65,16 +65,44 @@
             android:textColor="@color/text_hint"
             tools:text="25/12/2024 14:30" />
 
+        <TextView
+            android:id="@+id/tvDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_hint"
+            tools:text="25/12/2024 14:30" />
+
     </LinearLayout>
 
-    <!-- Quantity -->
-    <TextView
-        android:id="@+id/tvQuantity"
+    <!-- Right side - Quantity and Stock Change -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceTitleMedium"
-        android:textStyle="bold"
-        tools:text="+10"
-        tools:textColor="@color/success" />
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <!-- Quantity -->
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:textStyle="bold"
+            tools:text="+10"
+            tools:textColor="@color/success" />
+
+        <!-- Stock Change -->
+        <TextView
+            android:id="@+id/tvStockChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="?textAppearanceBodySmall"
+            android:textColor="@color/text_hint"
+            tools:text="10 → 20" />
+
+    </LinearLayout>
 
 </LinearLayout>

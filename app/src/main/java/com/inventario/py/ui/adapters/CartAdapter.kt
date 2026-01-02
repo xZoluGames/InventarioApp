@@ -44,12 +44,12 @@ class CartAdapter(
                 }
             }
             
-            binding.btnDelete.setOnClickListener {
+         /*   binding.btnDelete.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onDeleteClick(getItem(position))
                 }
-            }
+            }*/
             
             binding.btnDecrease.setOnClickListener {
                 val position = adapterPosition
@@ -88,10 +88,10 @@ class CartAdapter(
                 
                 // Variant info
                 if (variant != null) {
-                    tvVariant.visibility = View.VISIBLE
-                    tvVariant.text = variant.variantName
+                    tvVariantName.visibility = View.VISIBLE
+                    tvVariantName.text = variant.variantName
                 } else {
-                    tvVariant.visibility = View.GONE
+                    tvVariantName.visibility = View.GONE
                 }
                 
                 // Price

@@ -600,4 +600,12 @@
     <string name="no_sales_description">No hay ventas registradas en este período</string>
     <!-- Reports -->
     <string name="payment_methods">Métodos de Pago</string>
+    <!-- Stock Movements - Faltantes -->
+    <string name="return_item">Devolución</string>
+    <string name="no_reason">Sin motivo especificado</string>
+
+    <!-- Additional missing strings -->
+    <string name="units_sold">Unidades vendidas</string>
+    <string name="percentage_of_sales">del total</string>
+    <string name="more_options">Más opciones</string>
 </resources>
