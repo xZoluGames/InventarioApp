@@ -4,6 +4,7 @@ import com.inventario.py.data.local.dao.CartDao
 import com.inventario.py.data.local.dao.ProductDao
 import com.inventario.py.data.local.entity.CartItemEntity
 import com.inventario.py.data.local.entity.CartItemWithProduct
+import com.inventario.py.data.local.entity.name
 import com.inventario.py.data.local.entity.priceModifier
 import com.inventario.py.utils.SessionManager
 import kotlinx.coroutines.Dispatchers

@@ -59,12 +59,4 @@ data class BusinessInfoEntity(
     val updatedAt: Long = System.currentTimeMillis()
 )
 
-/**
- * Data class for cart items with product info (used for display)
- * This is NOT an Entity, just a data holder
- */
-data class CartItemWithProduct(
-    val cartItem: CartItemEntity,
-    val product: ProductEntity,
-    val variant: ProductVariantEntity?
-)
+
