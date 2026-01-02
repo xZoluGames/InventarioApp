@@ -47,27 +47,27 @@ class VariantAdapter(
 
         fun bind(variant: ProductVariant) {
             with(binding) {
-                tvVariantName.text = variant.variantName
+                tvVariantName.text = variant.name
                 
                 // SKU
                 tvSku.text = variant.sku ?: "Sin SKU"
                 
                 // Price
-                if (variant.priceModifier != null) {
-                    tvPrice.text = CurrencyUtils.formatGuarani(variant.priceModifier)
+                if (variant.additionalPrice > 0) {
+                    tvPrice.text = CurrencyUtils.formatGuarani(variant.additionalPrice)
                 } else {
                     tvPrice.text = "Precio base"
                 }
                 
                 // Stock
-                tvStock.text = "${variant.currentStock} unidades"
+                tvStock.text = "${variant.stock} unidades"
                 
                 // Stock status color
                 when {
-                    variant.currentStock <= 0 -> {
+                    variant.stock <= 0 -> {
                         viewVariantColor.setBackgroundResource(R.drawable.bg_stock_out)
                     }
-                    variant.currentStock <= 5 -> {
+                    variant.stock <= 5 -> {
                         viewVariantColor.setBackgroundResource(R.drawable.bg_stock_low)
                     }
                     else -> {

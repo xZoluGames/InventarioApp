@@ -149,14 +149,13 @@ class SessionManager @Inject constructor(
     fun isLoggedIn(): Boolean {
         return prefs.getBoolean(KEY_IS_LOGGED_IN, false) && getAuthToken() != null
     }
-    
-    val isLoggedIn: Boolean get() = isLoggedIn()
+
     
     // ==================== ROLE CHECK ====================
     
     fun isOwner(): Boolean = getUserRole() == UserRole.OWNER.name
     
-    val isOwner: Boolean get() = isOwner()
+
     
     fun isAdmin(): Boolean {
         val role = getUserRole()

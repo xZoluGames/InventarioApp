@@ -138,7 +138,8 @@ class SettingsFragment : Fragment() {
                 tvUserRole.text = when (user.role) {
                     UserRole.OWNER.name -> getString(R.string.role_owner)
                     UserRole.EMPLOYEE.name -> getString(R.string.role_employee)
-                }
+                    else -> {}
+                } as CharSequence?
                 tvUserEmail.text = user.email
                 tvUserInitial.text = user.name.firstOrNull()?.uppercase() ?: "U"
             }

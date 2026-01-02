@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -22,6 +21,8 @@ import com.inventario.py.ui.main.MainActivity
 import com.inventario.py.ui.main.RefreshableFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.appcompat.widget.SearchView
+import com.inventario.py.data.local.entity.SortOption
 
 @AndroidEntryPoint
 class ProductsFragment : Fragment(), RefreshableFragment {

@@ -64,11 +64,8 @@ class SalesFragment : Fragment(), RefreshableFragment {
 
     private fun setupRecyclerView() {
         salesAdapter = SaleAdapter(
-            onSaleClick = { sale ->
-                navigateToSaleDetail(sale.id)
-            },
-            onCancelClick = { sale ->
-                showCancelDialog(sale)
+            onItemClick = { saleWithDetails ->
+                navigateToSaleDetail(saleWithDetails.sale.id)
             }
         )
 
@@ -298,7 +295,13 @@ class SalesFragment : Fragment(), RefreshableFragment {
         val sales = state.filteredSales
 
         // Update adapter
-        salesAdapter.submitList(sales)
+        salesAdapter.submitList(sales.map { saleEntity ->
+            com.inventario.py.data.local.entity.SaleWithDetails(
+                sale = saleEntity,
+                items = emptyList(), // O cargar los items si están disponibles en el state
+                seller = null // O el vendedor si está disponible en el state
+            )
+        })
 
         // Show/hide empty state
         binding.emptyState.isVisible = sales.isEmpty() && !state.isLoading
@@ -361,7 +364,7 @@ class SalesFragment : Fragment(), RefreshableFragment {
     private fun navigateToSaleDetail(saleId: String) {
         try {
             val action = SalesFragmentDirections
-                .actionSalesFragmentToSaleDetailFragment(saleId.toLong())
+                .actionSalesFragmentToSaleDetailFragment(saleId.toLong().toString())
             findNavController().navigate(action)
         } catch (e: Exception) {
             // Fallback navigation

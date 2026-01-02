@@ -30,6 +30,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.inventario.py.data.local.entity.category
+import com.inventario.py.data.local.entity.costPrice
+import com.inventario.py.data.local.entity.currentStock
+import com.inventario.py.data.local.entity.minStock
+import com.inventario.py.data.local.entity.supplier
+import com.inventario.py.data.local.entity.toProductVariant
+
 @AndroidEntryPoint
 class ProductDetailFragment : Fragment() {
 
@@ -263,7 +270,7 @@ class ProductDetailFragment : Fragment() {
                 cardVariants.visibility = View.GONE
             } else {
                 cardVariants.visibility = View.VISIBLE
-                variantAdapter.submitList(product.variants)
+                variantAdapter.submitList(product.variants.map { it.toProductVariant() })
             }
             
             // Supplier info - only for owner
@@ -321,8 +328,7 @@ class ProductDetailFragment : Fragment() {
                 
                 if (quantity > 0) {
                     viewModel.adjustStock(
-                        quantity = if (isIncrease) quantity else -quantity,
-                        reason = reason
+                        quantity = if (isIncrease) quantity else -quantity
                     )
                 }
             }
@@ -336,7 +342,7 @@ class ProductDetailFragment : Fragment() {
         val etSku = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etSku)
         val etPrice = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etPrice)
         val etStock = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etStock)
-        
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Agregar Variante")
             .setView(dialogView)
@@ -345,7 +351,7 @@ class ProductDetailFragment : Fragment() {
                 val sku = etSku.text.toString()
                 val price = etPrice.text.toString().toDoubleOrNull()
                 val stock = etStock.text.toString().toIntOrNull() ?: 0
-                
+
                 if (name.isNotEmpty()) {
                     viewModel.addVariant(name, sku, price, stock)
                 }
@@ -360,13 +366,13 @@ class ProductDetailFragment : Fragment() {
         val etSku = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etSku)
         val etPrice = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etPrice)
         val etStock = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etStock)
-        
+
         // Pre-fill values
-        etName.setText(variant.variantName)
+        etName.setText(variant.name)
         etSku.setText(variant.sku)
-        variant.priceModifier?.let { etPrice.setText(it.toString()) }
-        etStock.setText(variant.currentStock.toString())
-        
+        if (variant.additionalPrice > 0) { etPrice.setText(variant.additionalPrice.toString()) }
+        etStock.setText(variant.stock.toString())
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Editar Variante")
             .setView(dialogView)
@@ -374,14 +380,15 @@ class ProductDetailFragment : Fragment() {
                 val name = etName.text.toString()
                 val sku = etSku.text.toString()
                 val price = etPrice.text.toString().toDoubleOrNull()
-                val stock = etStock.text.toString().toIntOrNull() ?: variant.currentStock
-                
+                val stock = etStock.text.toString().toIntOrNull() ?: variant.stock
+                val priceModifier = (price ?: 0.0).toLong()
+
                 if (name.isNotEmpty()) {
                     viewModel.updateVariant(variant.copy(
-                        variantName = name,
+                        name = name,
                         sku = sku,
-                        priceModifier = price,
-                        currentStock = stock
+                        additionalPrice = priceModifier,
+                        stock = stock
                     ))
                 }
             }
@@ -395,7 +402,7 @@ class ProductDetailFragment : Fragment() {
     private fun showDeleteVariantConfirmation(variant: ProductVariant) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Eliminar Variante")
-            .setMessage("¿Está seguro de eliminar la variante '${variant.variantName}'?")
+            .setMessage("¿Está seguro de eliminar la variante '${variant.name}'?")
             .setPositiveButton("Eliminar") { _, _ ->
                 viewModel.deleteVariant(variant)
             }
@@ -416,7 +423,7 @@ class ProductDetailFragment : Fragment() {
 
     private fun navigateToEdit() {
         val bundle = Bundle().apply {
-            putLong("productId", args.productId)
+            putString("productId", args.productId)
         }
         findNavController().navigate(R.id.addProductFragment, bundle)
     }

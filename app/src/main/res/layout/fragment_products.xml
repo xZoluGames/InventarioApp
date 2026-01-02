@@ -64,34 +64,15 @@
             android:layout_margin="@dimen/margin_medium"
             style="@style/Widget.Inventario.CardView.Filled">
 
-            <LinearLayout
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="@dimen/padding_small">
-
-                <ImageView
-                    android:layout_width="@dimen/icon_size_small"
-                    android:layout_height="@dimen/icon_size_small"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/text_hint"
-                    android:contentDescription="@null" />
-
-                <EditText
-                    android:id="@+id/searchView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:background="@null"
-                    android:hint="@string/search_products"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAppearance="?textAppearanceBodyMedium" />
-
-            </LinearLayout>
+                app:queryHint="@string/search_products"
+                app:iconifiedByDefault="false"
+                app:searchIcon="@drawable/ic_search"
+                app:closeIcon="@drawable/ic_close"
+                app:queryBackground="@null" />
 
         </com.google.android.material.card.MaterialCardView>
 

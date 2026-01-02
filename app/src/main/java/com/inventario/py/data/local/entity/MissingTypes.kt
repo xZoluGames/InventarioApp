@@ -193,9 +193,18 @@ data class ProductVariant(
     val stock: Int = 0,
     val isActive: Boolean = true
 ) {
-    val variantName: String get() = name
-    val priceModifier: Long get() = additionalPrice
-    val currentStock: Int get() = stock
+
+    fun copyWith(
+        variantName: String? = null,
+        sku: String? = null,
+        priceModifier: Long? = null,
+        currentStock: Int? = null
+    ): ProductVariant = copy(
+        name = variantName ?: this.name,
+        sku = sku ?: this.sku,
+        additionalPrice = priceModifier ?: this.additionalPrice,
+        stock = currentStock ?: this.stock
+    )
 }
 
 data class StockMovement(
@@ -387,36 +396,8 @@ val ProductEntity.supplier: String? get() = this.supplierName
  * Si ProductVariant ya existe en MissingTypes.kt, reemplazarla con esta versión
  * que incluye el método copyWith para compatibilidad con ProductDetailFragment
  */
-/*
-data class ProductVariant(
-    val id: String,
-    val productId: String,
-    val name: String,
-    val sku: String? = null,
-    val barcode: String? = null,
-    val additionalPrice: Long = 0,
-    val stock: Int = 0,
-    val isActive: Boolean = true
-) {
-    // Propiedades de compatibilidad
-    val variantName: String get() = name
-    val priceModifier: Long get() = additionalPrice
-    val currentStock: Int get() = stock
 
-    // Método copy con nombres alternativos de parámetros
-    fun copyWith(
-        variantName: String? = null,
-        sku: String? = null,
-        priceModifier: Long? = null,
-        currentStock: Int? = null
-    ): ProductVariant = copy(
-        name = variantName ?: this.name,
-        sku = sku ?: this.sku,
-        additionalPrice = priceModifier ?: this.additionalPrice,
-        stock = currentStock ?: this.stock
-    )
-}
-*/
+
 
 // ==================== EXTENSIONES PARA ProductWithVariants ====================
 

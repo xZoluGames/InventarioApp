@@ -58,7 +58,7 @@ class ReportsFragment : Fragment(), RefreshableFragment {
 
     private fun setupAdapter() {
         topProductAdapter = TopProductAdapter { topProduct ->
-            (activity as? MainActivity)?.navigateToProductDetail(topProduct.productId)
+            (activity as? MainActivity)?.navigateToProductDetail(topProduct.productId.toString())
         }
         
         binding.rvTopProducts.apply {
@@ -108,7 +108,7 @@ class ReportsFragment : Fragment(), RefreshableFragment {
             // Start date picker
             btnStartDate.setOnClickListener {
                 showDatePicker { date ->
-                    viewModel.setCustomStartDate(date)
+                    viewModel.setCustomStartDate(date.time)
                     btnStartDate.text = dateFormat.format(date)
                 }
             }
@@ -116,7 +116,7 @@ class ReportsFragment : Fragment(), RefreshableFragment {
             // End date picker
             btnEndDate.setOnClickListener {
                 showDatePicker { date ->
-                    viewModel.setCustomEndDate(date)
+                    viewModel.setCustomEndDate(date.time)
                     btnEndDate.text = dateFormat.format(date)
                 }
             }
@@ -221,7 +221,17 @@ class ReportsFragment : Fragment(), RefreshableFragment {
             } else {
                 rvTopProducts.visibility = View.VISIBLE
                 tvNoTopProducts.visibility = View.GONE
-                topProductAdapter.submitList(state.topProducts)
+                topProductAdapter.submitList(state.topProducts.mapIndexed { index, tp ->
+                    com.inventario.py.ui.adapters.TopProduct(
+                        rank = index + 1,
+                        productId = tp.productId.toLongOrNull() ?: 0L,
+                        productName = tp.productName,
+                        imageUrl = tp.imageUrl,
+                        quantitySold = tp.totalSold,
+                        revenue = tp.totalRevenue.toDouble(),
+                        percentageOfTotal = tp.percentage.toDouble()
+                    )
+                })
             }
             
             // Chart placeholder - would integrate with MPAndroidChart
