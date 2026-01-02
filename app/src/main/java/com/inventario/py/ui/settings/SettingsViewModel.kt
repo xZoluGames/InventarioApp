@@ -1,7 +1,6 @@
 package com.inventario.py.ui.settings
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.UserEntity
@@ -12,7 +11,13 @@ import com.inventario.py.data.repository.SyncRepository
 import com.inventario.py.utils.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -61,6 +66,14 @@ class SettingsViewModel @Inject constructor(
 
     private val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
+    companion object {
+        const val KEY_DARK_MODE = "dark_mode"
+        const val KEY_SOUND_ENABLED = "sound_enabled"
+        const val KEY_LOW_STOCK_NOTIFICATIONS = "low_stock_notifications"
+        const val KEY_SERVER_URL = "server_url"
+        const val KEY_LAST_SYNC = "last_sync"
+    }
+
     init {
         loadCurrentUser()
         loadSettings()
@@ -82,8 +95,9 @@ class SettingsViewModel @Inject constructor(
         val isDarkMode = prefs.getBoolean(KEY_DARK_MODE, false)
         val isSoundEnabled = prefs.getBoolean(KEY_SOUND_ENABLED, true)
         val isLowStockNotifications = prefs.getBoolean(KEY_LOW_STOCK_NOTIFICATIONS, true)
-        val serverUrl = prefs.getString(KEY_SERVER_URL, "") ?: ""
-        
+        val serverUrl = sessionManager.getServerUrl()
+        val lastSyncTime = prefs.getLong(KEY_LAST_SYNC, 0).takeIf { it > 0 }
+
         // Get app version
         val appVersion = try {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.0.0"
@@ -96,31 +110,18 @@ class SettingsViewModel @Inject constructor(
             isSoundEnabled = isSoundEnabled,
             isLowStockNotificationsEnabled = isLowStockNotifications,
             serverUrl = serverUrl,
-            appVersion = appVersion
+            appVersion = appVersion,
+            lastSyncTime = lastSyncTime
         )
     }
 
     private fun observeSyncStatus() {
         viewModelScope.launch {
-            // Observe pending sync count
             syncRepository.getPendingSyncCount().collectLatest { count ->
-                val status = when {
-                    count > 0 -> SyncStatus.PENDING
-                    !isNetworkAvailable() -> SyncStatus.OFFLINE
-                    else -> SyncStatus.SYNCED
-                }
                 _uiState.value = _uiState.value.copy(
                     pendingChangesCount = count,
-                    syncStatus = status
+                    syncStatus = if (count > 0) SyncStatus.PENDING else SyncStatus.SYNCED
                 )
-            }
-        }
-
-        viewModelScope.launch {
-            // Get last sync time
-            val lastSync = prefs.getLong(KEY_LAST_SYNC, 0L)
-            if (lastSync > 0) {
-                _uiState.value = _uiState.value.copy(lastSyncTime = lastSync)
             }
         }
     }
@@ -128,13 +129,6 @@ class SettingsViewModel @Inject constructor(
     fun setDarkMode(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_DARK_MODE, enabled).apply()
         _uiState.value = _uiState.value.copy(isDarkMode = enabled)
-        
-        // Apply theme
-        AppCompatDelegate.setDefaultNightMode(
-            if (enabled) AppCompatDelegate.MODE_NIGHT_YES 
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
-        
         viewModelScope.launch {
             _events.emit(SettingsEvent.ThemeChanged)
         }
@@ -145,40 +139,38 @@ class SettingsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isSoundEnabled = enabled)
     }
 
-    fun setLowStockNotificationsEnabled(enabled: Boolean) {
+    fun setLowStockNotifications(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_LOW_STOCK_NOTIFICATIONS, enabled).apply()
         _uiState.value = _uiState.value.copy(isLowStockNotificationsEnabled = enabled)
     }
 
     fun setServerUrl(url: String) {
-        prefs.edit().putString(KEY_SERVER_URL, url).apply()
+        sessionManager.setServerUrl(url)
         _uiState.value = _uiState.value.copy(serverUrl = url)
     }
 
     fun syncNow() {
         viewModelScope.launch {
-            if (_uiState.value.isSyncing) return@launch
-            
             _uiState.value = _uiState.value.copy(isSyncing = true)
             _events.emit(SettingsEvent.SyncStarted)
-            
+
             try {
                 val result = syncRepository.syncAll()
-                
-                if (result.isSuccess) {
-                    prefs.edit().putLong(KEY_LAST_SYNC, System.currentTimeMillis()).apply()
+                result.onSuccess {
+                    val now = System.currentTimeMillis()
+                    prefs.edit().putLong(KEY_LAST_SYNC, now).apply()
                     _uiState.value = _uiState.value.copy(
                         isSyncing = false,
-                        syncStatus = SyncStatus.SYNCED,
-                        lastSyncTime = System.currentTimeMillis()
+                        lastSyncTime = now,
+                        syncStatus = SyncStatus.SYNCED
                     )
                     _events.emit(SettingsEvent.SyncCompleted)
-                } else {
+                }.onFailure { error ->
                     _uiState.value = _uiState.value.copy(
                         isSyncing = false,
                         syncStatus = SyncStatus.ERROR
                     )
-                    _events.emit(SettingsEvent.SyncError(result.exceptionOrNull()?.message ?: "Error desconocido"))
+                    _events.emit(SettingsEvent.SyncError(error.message ?: "Error de sincronización"))
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
@@ -193,61 +185,44 @@ class SettingsViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            
             try {
-                // Clear session
-                sessionManager.clearSession()
-                
-                // Clear user from repository
                 authRepository.logout()
-                
                 _events.emit(SettingsEvent.LogoutSuccess)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false)
                 _events.emit(SettingsEvent.Error("Error al cerrar sesión: ${e.message}"))
+            } finally {
+                _uiState.value = _uiState.value.copy(isLoading = false)
             }
         }
     }
 
-    fun exportBackup() {
+    fun changePassword(currentPassword: String, newPassword: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            try {
+                val result = authRepository.changePassword(currentPassword, newPassword)
+                result.onSuccess {
+                    _events.emit(SettingsEvent.Error("Contraseña cambiada exitosamente"))
+                }.onFailure { error ->
+                    _events.emit(SettingsEvent.Error(error.message ?: "Error al cambiar contraseña"))
+                }
+            } catch (e: Exception) {
+                _events.emit(SettingsEvent.Error(e.message ?: "Error al cambiar contraseña"))
+            } finally {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
+    }
+
+    fun clearCache() {
         viewModelScope.launch {
             try {
-                // Export local database backup
-                syncRepository.exportLocalBackup()
-                _events.emit(SettingsEvent.SyncCompleted) // Reuse event for success notification
+                // Limpiar caché de imágenes y datos temporales
+                context.cacheDir.deleteRecursively()
+                _events.emit(SettingsEvent.Error("Caché limpiada exitosamente"))
             } catch (e: Exception) {
-                _events.emit(SettingsEvent.Error("Error al exportar respaldo: ${e.message}"))
+                _events.emit(SettingsEvent.Error("Error al limpiar caché: ${e.message}"))
             }
         }
-    }
-
-    fun importBackup(filePath: String) {
-        viewModelScope.launch {
-            try {
-                _uiState.value = _uiState.value.copy(isLoading = true)
-                
-                syncRepository.importLocalBackup(filePath)
-                
-                _uiState.value = _uiState.value.copy(isLoading = false)
-                _events.emit(SettingsEvent.SyncCompleted)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false)
-                _events.emit(SettingsEvent.Error("Error al importar respaldo: ${e.message}"))
-            }
-        }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        return network != null
-    }
-
-    companion object {
-        private const val KEY_DARK_MODE = "dark_mode"
-        private const val KEY_SOUND_ENABLED = "sound_enabled"
-        private const val KEY_LOW_STOCK_NOTIFICATIONS = "low_stock_notifications"
-        private const val KEY_SERVER_URL = "server_url"
-        private const val KEY_LAST_SYNC = "last_sync_time"
     }
 }

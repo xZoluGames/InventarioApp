@@ -252,5 +252,5 @@ class ReportsFragment : Fragment(), RefreshableFragment {
 }
 
 enum class DateRange {
-    TODAY, WEEK, MONTH, CUSTOM
+    TODAY, WEEK, MONTH, CUSTOM, YEAR
 }

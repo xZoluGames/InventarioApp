@@ -3,7 +3,9 @@ package com.inventario.py.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.ProductWithVariants
 import com.inventario.py.data.local.entity.SaleEntity
+import com.inventario.py.data.local.entity.SaleWithDetails
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
 import com.inventario.py.data.repository.SyncRepository
@@ -22,10 +24,15 @@ data class DashboardState(
     val todaySalesCount: Int = 0,
     val monthSalesTotal: Long = 0L,
     val monthSalesCount: Int = 0,
-    val lowStockProducts: List<ProductEntity> = emptyList(),
-    val recentSales: List<SaleEntity> = emptyList(),
+    val lowStockProducts: List<ProductWithVariants> = emptyList(),
+    val recentSales: List<SaleWithDetails> = emptyList(),
     val pendingSyncCount: Int = 0,
-    val error: String? = null
+    val error: String? = null,
+    // Propiedades adicionales para compatibilidad
+    val todaySales: Long = 0L,
+    val todayTransactions: Int = 0,
+    val activeProducts: Int = 0,
+    val outOfStockCount: Int = 0
 )
 
 @HiltViewModel
@@ -44,6 +51,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadDashboardData()
+        observePendingSync()
     }
 
     fun getUserName(): String {
@@ -52,109 +60,109 @@ class HomeViewModel @Inject constructor(
 
     fun loadDashboardData() {
         viewModelScope.launch {
+            _isLoading.value = true
             _dashboardState.value = _dashboardState.value.copy(isLoading = true)
-            
+
             try {
-                // Get today's date range
-                val calendar = Calendar.getInstance()
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                val startOfDay = calendar.timeInMillis
-                
-                calendar.set(Calendar.HOUR_OF_DAY, 23)
-                calendar.set(Calendar.MINUTE, 59)
-                calendar.set(Calendar.SECOND, 59)
-                calendar.set(Calendar.MILLISECOND, 999)
-                val endOfDay = calendar.timeInMillis
-
-                // Month range
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                val startOfMonth = calendar.timeInMillis
-
-                // Collect data
-                launch {
-                    productRepository.getAllProducts().collect { products ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            totalProducts = products.size
-                        )
-                    }
+                // Load product count
+                productRepository.getProductCount().collectLatest { count ->
+                    _dashboardState.value = _dashboardState.value.copy(
+                        totalProducts = count,
+                        activeProducts = count
+                    )
                 }
-
-                launch {
-                    productRepository.getLowStockProducts().collect { lowStock ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            lowStockCount = lowStock.size,
-                            lowStockProducts = lowStock.take(5)
-                        )
-                    }
-                }
-
-                launch {
-                    salesRepository.getDailySalesTotal(startOfDay).collect { total ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            todaySalesTotal = total ?: 0L
-                        )
-                    }
-                }
-
-                launch {
-                    salesRepository.getDailySalesCount(startOfDay).collect { count ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            todaySalesCount = count
-                        )
-                    }
-                }
-
-                launch {
-                    salesRepository.getMonthlySalesTotal(startOfMonth).collect { total ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            monthSalesTotal = total ?: 0L
-                        )
-                    }
-                }
-
-                launch {
-                    salesRepository.getMonthlySalesCount(startOfMonth).collect { count ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            monthSalesCount = count
-                        )
-                    }
-                }
-
-                launch {
-                    salesRepository.getRecentSales(5).collect { sales ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            recentSales = sales
-                        )
-                    }
-                }
-
-                launch {
-                    syncRepository.getPendingChangesCount().collect { count ->
-                        _dashboardState.value = _dashboardState.value.copy(
-                            pendingSyncCount = count
-                        )
-                    }
-                }
-
-                _dashboardState.value = _dashboardState.value.copy(isLoading = false)
-                
             } catch (e: Exception) {
                 _dashboardState.value = _dashboardState.value.copy(
-                    isLoading = false,
                     error = e.message
+                )
+            }
+        }
+
+        // Load low stock products
+        viewModelScope.launch {
+            productRepository.getLowStockProducts().collectLatest { products ->
+                val productsWithVariants = products.map { product ->
+                    ProductWithVariants(product = product, variants = emptyList())
+                }
+                _dashboardState.value = _dashboardState.value.copy(
+                    lowStockCount = products.size,
+                    lowStockProducts = productsWithVariants
+                )
+            }
+        }
+
+        // Load out of stock count
+        viewModelScope.launch {
+            productRepository.getOutOfStockProducts().collectLatest { products ->
+                _dashboardState.value = _dashboardState.value.copy(
+                    outOfStockCount = products.size
+                )
+            }
+        }
+
+        // Load recent sales
+        viewModelScope.launch {
+            salesRepository.getRecentSales(10).collectLatest { sales ->
+                val salesWithDetails = sales.map { sale ->
+                    SaleWithDetails(sale = sale, items = emptyList(), seller = null)
+                }
+                _dashboardState.value = _dashboardState.value.copy(
+                    recentSales = salesWithDetails
+                )
+            }
+        }
+
+        // Load today's sales
+        viewModelScope.launch {
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            val todayStart = calendar.timeInMillis
+
+            salesRepository.getSalesByDateRange(todayStart, System.currentTimeMillis()).collectLatest { sales ->
+                val completedSales = sales.filter { it.status == SaleEntity.STATUS_COMPLETED }
+                val totalSales = completedSales.sumOf { it.total }
+                _dashboardState.value = _dashboardState.value.copy(
+                    todaySalesTotal = totalSales,
+                    todaySalesCount = completedSales.size,
+                    todaySales = totalSales,
+                    todayTransactions = completedSales.size
+                )
+            }
+        }
+
+        _isLoading.value = false
+        _dashboardState.value = _dashboardState.value.copy(isLoading = false)
+    }
+
+    private fun observePendingSync() {
+        viewModelScope.launch {
+            syncRepository.getPendingSyncCount().collectLatest { count ->
+                _dashboardState.value = _dashboardState.value.copy(
+                    pendingSyncCount = count
                 )
             }
         }
     }
 
-    fun refreshData() {
-        loadDashboardData()
+    /**
+     * Sincroniza ahora los datos pendientes
+     */
+    fun syncNow() {
+        viewModelScope.launch {
+            try {
+                syncRepository.syncAll()
+            } catch (e: Exception) {
+                _dashboardState.value = _dashboardState.value.copy(
+                    error = "Error de sincronización: ${e.message}"
+                )
+            }
+        }
+    }
+
+    fun clearError() {
+        _dashboardState.value = _dashboardState.value.copy(error = null)
     }
 }

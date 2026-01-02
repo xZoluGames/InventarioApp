@@ -3,12 +3,15 @@ package com.inventario.py.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.SyncState
 import com.inventario.py.data.local.entity.UserEntity
 import com.inventario.py.data.local.entity.UserRole
 import com.inventario.py.data.local.entity.totalAmount
 import com.inventario.py.data.repository.AuthRepository
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
+import com.inventario.py.data.repository.SyncRepository
+import com.inventario.py.utils.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,14 +46,25 @@ data class MainUiState(
 class MainViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val productRepository: ProductRepository,
-    private val salesRepository: SalesRepository
+    private val salesRepository: SalesRepository,
+    private val syncRepository: SyncRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    // Estado de sincronización
+    private val _syncState = MutableStateFlow<SyncState>(SyncState.Idle)
+    val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
+
+    // Productos con bajo stock (count)
+    private val _lowStockProducts = MutableStateFlow(0)
+    val lowStockProducts: StateFlow<Int> = _lowStockProducts.asStateFlow()
+
     init {
         loadUserAndData()
+        observeLowStockProducts()
     }
 
     private fun loadUserAndData() {
@@ -67,67 +81,74 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadDashboardData() {
+    private fun observeLowStockProducts() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            
-            try {
-                // Obtener fechas para consultas
-                val calendar = Calendar.getInstance()
-                val today = calendar.timeInMillis
-                
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                val startOfDay = calendar.timeInMillis
-                
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
-                val startOfMonth = calendar.timeInMillis
-
-                // Combinar flujos de datos
-                combine(
-                    productRepository.getAllProducts(),
-                    productRepository.getLowStockProducts(),
-                    salesRepository.getSalesByDateRange(startOfDay, today),
-                    salesRepository.getSalesByDateRange(startOfMonth, today)
-                ) { allProducts, lowStock, todaySales, monthSales ->
-                    
-                    val todayTotal = todaySales.sumOf { it.totalAmount }
-                    val todayProfit = todaySales.sumOf { it.totalAmount - (it.totalAmount * 0.7).toLong() } // Estimación
-                    val monthTotal = monthSales.sumOf { it.totalAmount }
-                    val monthProfit = monthSales.sumOf { it.totalAmount - (it.totalAmount * 0.7).toLong() }
-
-                    DashboardStats(
-                        totalProducts = allProducts.size,
-                        lowStockProducts = lowStock.size,
-                        todaySales = todayTotal,
-                        todayTransactions = todaySales.size,
-                        monthSales = monthTotal,
-                        monthTransactions = monthSales.size,
-                        todayProfit = todayProfit,
-                        monthProfit = monthProfit
-                    ) to lowStock
-                }.collectLatest { (stats, lowStock) ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        stats = stats,
-                        lowStockProducts = lowStock.take(5)
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false)
+            productRepository.getLowStockProducts().collectLatest { products ->
+                _lowStockProducts.value = products.size
+                _uiState.value = _uiState.value.copy(
+                    lowStockProducts = products,
+                    stats = _uiState.value.stats.copy(lowStockProducts = products.size)
+                )
             }
         }
     }
 
-    fun refreshData() {
-        loadDashboardData()
+    private fun loadDashboardData() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            try {
+                // Load products count
+                productRepository.getProductCount().collectLatest { count ->
+                    _uiState.value = _uiState.value.copy(
+                        stats = _uiState.value.stats.copy(totalProducts = count)
+                    )
+                }
+            } catch (e: Exception) {
+                // Handle error
+            } finally {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
+
+        // Load recent products
+        viewModelScope.launch {
+            productRepository.getRecentProducts(10).collectLatest { products ->
+                _uiState.value = _uiState.value.copy(recentProducts = products)
+            }
+        }
     }
 
-    fun logout() {
+    /**
+     * Sincroniza datos con el servidor
+     */
+    fun syncData() {
         viewModelScope.launch {
-            authRepository.logout()
+            _syncState.value = SyncState.Syncing
+            try {
+                val result = syncRepository.syncAll()
+                result.onSuccess {
+                    _syncState.value = SyncState.Success
+                }.onFailure { error ->
+                    _syncState.value = SyncState.Error(error.message ?: "Error de sincronización")
+                }
+            } catch (e: Exception) {
+                _syncState.value = SyncState.Error(e.message ?: "Error de sincronización")
+            }
         }
+    }
+
+    /**
+     * Obtiene el ID del usuario actual
+     */
+    fun getCurrentUserId(): Long {
+        return sessionManager.getUserId()?.toLongOrNull() ?: 0L
+    }
+
+    /**
+     * Verifica si el usuario actual es dueño
+     */
+    fun isOwner(): Boolean {
+        return sessionManager.isOwner()
     }
 }
