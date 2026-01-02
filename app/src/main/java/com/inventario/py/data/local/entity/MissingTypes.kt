@@ -3,7 +3,7 @@ package com.inventario.py.data.local.entity
 import com.inventario.py.utils.CurrencyUtils
 
 /**
- * ARCHIVO DE TIPOS Y EXTENSIONES - CORREGIDO
+ * ARCHIVO DE TIPOS Y EXTENSIONES - VERSIÓN CORREGIDA
  */
 
 // ==================== ENUMS ====================
@@ -13,9 +13,9 @@ enum class UserRole {
     ADMIN,
     SELLER,
     VIEWER;
-    
+
     companion object {
-        val EMPLOYEE = SELLER // Alias para compatibilidad
+        val EMPLOYEE = SELLER
     }
 }
 
@@ -26,7 +26,7 @@ enum class PaymentMethod {
     CREDIT,
     QR,
     MIXED;
-    
+
     companion object {
         fun fromString(value: String): PaymentMethod {
             return try {
@@ -43,7 +43,7 @@ enum class SaleStatus {
     COMPLETED,
     CANCELLED,
     REFUNDED;
-    
+
     companion object {
         fun fromString(value: String): SaleStatus {
             return try {
@@ -79,7 +79,17 @@ enum class VariantType {
     CAPACITY,
     TYPE,
     QUALITY,
-    CUSTOM
+    CUSTOM;
+
+    companion object {
+        fun fromString(value: String): VariantType {
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                CUSTOM
+            }
+        }
+    }
 }
 
 enum class DateFilter {
@@ -98,7 +108,7 @@ enum class MovementType {
     SALE,
     RETURN,
     TRANSFER;
-    
+
     companion object {
         fun fromString(value: String): MovementType {
             return try {
@@ -143,9 +153,13 @@ data class ProductWithVariants(
     val barcode: String? get() = product.barcode
     val identifier: String get() = product.identifier
     val categoryId: String? get() = product.categoryId
-    val lowStockThreshold: Int get() = product.lowStockThreshold
-    val minStock: Int get() = product.lowStockThreshold
+    val lowStockThreshold: Int get() = product.minStockAlert
+    val minStock: Int get() = product.minStockAlert
     val isActive: Boolean get() = product.isActive
+    val description: String? get() = product.description
+
+    fun isLowStock(): Boolean = totalStock <= lowStockThreshold
+    fun isOutOfStock(): Boolean = totalStock == 0
 }
 
 data class SaleWithDetails(
@@ -160,6 +174,7 @@ data class SaleWithDetails(
     val discount: Long get() = sale.totalDiscount
     val paymentMethod: String get() = sale.paymentMethod
     val status: String get() = sale.status
+    val saleNumber: String get() = sale.saleNumber
 }
 
 data class SaleItem(
@@ -211,8 +226,10 @@ data class ReportsState(
     val cashSales: Long = 0,
     val cardSales: Long = 0,
     val transferSales: Long = 0,
+    val qrSales: Long = 0,
     val topProducts: List<TopProduct> = emptyList(),
     val dailySales: Map<String, Long> = emptyMap(),
+    val paymentMethodBreakdown: Map<PaymentMethod, Long> = emptyMap(),
     val error: String? = null
 )
 
@@ -225,34 +242,54 @@ data class TopProduct(
     val percentage: Float = 0f
 )
 
+data class CartItemWithProduct(
+    val cartItem: CartItemEntity,
+    val product: ProductEntity,
+    val variant: ProductVariantEntity? = null
+) {
+    val id: String get() = cartItem.id
+    val productId: String get() = cartItem.productId
+    val productName: String get() = cartItem.productName
+    val quantity: Int get() = cartItem.quantity
+    val unitPrice: Long get() = cartItem.unitPrice
+    val subtotal: Long get() = cartItem.subtotal
+    val imageUrl: String? get() = cartItem.imageUrl
+    val variantDescription: String? get() = cartItem.variantDescription
+    val currentStock: Int get() = variant?.stock ?: product.totalStock
+}
+
 // ==================== EXTENSION PROPERTIES ====================
+
+// Para ProductEntity
+val ProductEntity.lowStockThreshold: Int get() = this.minStockAlert
+val ProductEntity.category: String? get() = this.categoryId
+val ProductEntity.minStock: Int get() = this.minStockAlert
 
 // Para ProductVariantEntity
 val ProductVariantEntity.priceModifier: Long get() = this.additionalPrice
 val ProductVariantEntity.currentStock: Int get() = this.stock
-val ProductVariantEntity.variantName: String get() = this.name
+val ProductVariantEntity.variantName: String get() = this.variantValue
+val ProductVariantEntity.name: String get() = this.variantValue
+val ProductVariantEntity.sku: String? get() = this.barcode
+val ProductVariantEntity.type: String get() = this.variantType
 
-// Para SaleEntity  
+// Para SaleEntity
 val SaleEntity.totalAmount: Long get() = this.total
 val SaleEntity.createdAt: Long get() = this.soldAt
 val SaleEntity.discount: Long get() = this.totalDiscount
 
 // Para StockMovementEntity
-val StockMovementEntity.movementType: MovementType 
+val StockMovementEntity.movementType: MovementType
     get() = MovementType.fromString(this.type)
 
 // Para UserEntity
 val UserEntity.name: String get() = this.fullName
 
-// Para ProductEntity
-val ProductEntity.category: String? get() = this.categoryId
-val ProductEntity.minStock: Int get() = this.lowStockThreshold
+// Para CartItemEntity
+val CartItemEntity.currentStock: Int get() = 0 // Se debe obtener del producto
 
 // ==================== FORMAT EXTENSIONS ====================
 
-/**
- * Extensiones de formato para usar en todo el proyecto
- */
 fun Long.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
 fun Int.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
 fun Double.formatGuarani(): String = CurrencyUtils.formatGuarani(this)
@@ -273,8 +310,8 @@ fun SaleItemEntity.toSaleItem() = SaleItem(
 fun ProductVariantEntity.toProductVariant() = ProductVariant(
     id = this.id,
     productId = this.productId,
-    name = this.name,
-    sku = this.sku,
+    name = this.variantValue,
+    sku = this.barcode,
     barcode = this.barcode,
     additionalPrice = this.additionalPrice,
     stock = this.stock,
@@ -305,3 +342,11 @@ fun List<SaleItemEntity>.toSaleItems() = this.map { it.toSaleItem() }
 fun String.toPaymentMethod(): PaymentMethod = PaymentMethod.fromString(this)
 fun String.toSaleStatus(): SaleStatus = SaleStatus.fromString(this)
 fun String.toMovementType(): MovementType = MovementType.fromString(this)
+fun String.toVariantType(): VariantType = VariantType.fromString(this)
+
+// ==================== TYPE ALIASES ====================
+
+typealias ProductId = String
+typealias VariantId = String
+typealias SaleId = String
+typealias UserId = String

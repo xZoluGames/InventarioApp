@@ -1,96 +1,121 @@
 package com.inventario.py.ui.adapters
 
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ListAdapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.inventario.py.R
-import com.inventario.py.data.local.entity.StockMovement
+import com.inventario.py.data.local.entity.MovementType
+import com.inventario.py.data.local.entity.StockMovementEntity
 import com.inventario.py.databinding.ItemStockMovementBinding
-import java.text.SimpleDateFormat
-import java.util.*
 
-class StockMovementAdapter : ListAdapter<StockMovement, StockMovementAdapter.ViewHolder>(
-    StockMovementDiffCallback()
+
+class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapter.MovementViewHolder>(
+    MovementDiffCallback()
 ) {
 
-    private val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("es", "PY"))
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovementViewHolder {
         val binding = ItemStockMovementBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
-        return ViewHolder(binding)
+        return MovementViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MovementViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(
+    inner class MovementViewHolder(
         private val binding: ItemStockMovementBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(movement: StockMovement) {
+        fun bind(movement: StockMovementEntity) {
             val context = binding.root.context
-            
+            val movementTypeEnum = movement.movementType
+
+            // Set movement type text and colors
+            val (typeText, iconRes, colorRes) = when (movementTypeEnum) {
+                MovementType.IN.name -> Triple(
+                    context.getString(R.string.stock_in),
+                    R.drawable.ic_arrow_up,
+                    R.color.success
+                )
+                MovementType.OUT.name -> Triple(
+                    context.getString(R.string.stock_out),
+                    R.drawable.ic_arrow_down,
+                    R.color.error
+                )
+                MovementType.ADJUSTMENT.name -> Triple(
+                    context.getString(R.string.adjustment),
+                    R.drawable.ic_edit,
+                    R.color.warning
+                )
+                MovementType.SALE.name -> Triple(
+                    context.getString(R.string.sale),
+                    R.drawable.ic_cart,
+                    R.color.primary
+                )
+                MovementType.RETURN.name -> Triple(
+                    context.getString(R.string.return_item),
+                    R.drawable.ic_return,
+                    R.color.info
+                )
+                MovementType.TRANSFER.name -> Triple(
+                    context.getString(R.string.transfer),
+                    R.drawable.ic_transfer,
+                    R.color.secondary
+                )
+            }
+
             with(binding) {
                 // Movement type
-                val (typeText, typeIcon, isPositive) = when (movement.movementType) {
-                    "SALE" -> Triple("Venta", R.drawable.ic_cart, false)
-                    "PURCHASE" -> Triple("Compra", R.drawable.ic_add, true)
-                    "ADJUSTMENT_IN" -> Triple("Ajuste entrada", R.drawable.ic_add, true)
-                    "ADJUSTMENT_OUT" -> Triple("Ajuste salida", R.drawable.ic_remove, false)
-                    "RETURN" -> Triple("Devolución", R.drawable.ic_back, true)
-                    "DAMAGE" -> Triple("Daño/Pérdida", R.drawable.ic_warning, false)
-                    else -> Triple(movement.movementType, R.drawable.ic_inventory, true)
-                }
-                
                 tvMovementType.text = typeText
-                ivMovementType.setImageResource(typeIcon)
-                
+                ivMovementType.setImageResource(iconRes)
+                ivMovementType.setColorFilter(ContextCompat.getColor(context, colorRes))
+
+                // Reason
+                tvReason.text = movement.reason ?: context.getString(R.string.no_reason)
+
+                // Date
+                tvDate.text = DateUtils.formatRelative(movement.createdAt)
+
                 // Quantity with sign
-                val quantityText = if (isPositive) {
-                    "+${movement.quantity}"
-                } else {
-                    "-${movement.quantity}"
+                val quantityText = when {
+                    movement.quantity > 0 && movementTypeEnum != MovementType.OUT.name -> "+${movement.quantity}"
+                    movement.quantity < 0 -> movement.quantity.toString()
+                    movementTypeEnum == MovementType.OUT -> "-${kotlin.math.abs(movement.quantity)}"
+                    else -> movement.quantity.toString()
                 }
                 tvQuantity.text = quantityText
-                
-                // Color based on movement direction
-                val quantityColor = if (isPositive) {
-                    ContextCompat.getColor(context, R.color.stock_ok)
-                } else {
-                    ContextCompat.getColor(context, R.color.stock_out)
+
+                // Quantity color
+                val quantityColor = when (movementTypeEnum) {
+                    MovementType.IN.name, MovementType.RETURN.name -> R.color.success
+                    MovementType.OUT.name, MovementType.SALE.name -> R.color.error
+                    else -> R.color.text_primary
                 }
-                tvQuantity.setTextColor(quantityColor)
-                
-                // Icon background color
-                val iconBgColor = if (isPositive) {
-                    R.drawable.bg_stock_ok
-                } else {
-                    R.drawable.bg_stock_out
-                }
-                viewIconBg.setBackgroundResource(iconBgColor)
-                
-                // Reason
-                tvReason.text = movement.reason ?: "Sin descripción"
-                
-                // Date and time
-                tvDateTime.text = dateTimeFormat.format(movement.createdAt)
+                tvQuantity.setTextColor(ContextCompat.getColor(context, quantityColor))
+
+                // Stock change
+                tvStockChange.text = "${movement.previousStock} → ${movement.newStock}"
             }
         }
     }
 
-    class StockMovementDiffCallback : DiffUtil.ItemCallback<StockMovement>() {
-        override fun areItemsTheSame(oldItem: StockMovement, newItem: StockMovement): Boolean {
-            return oldItem.id == newItem.id
-        }
+    class MovementDiffCallback : DiffUtil.ItemCallback<StockMovementEntity>() {
+        override fun areItemsTheSame(
+            oldItem: StockMovementEntity,
+            newItem: StockMovementEntity
+        ): Boolean = oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: StockMovement, newItem: StockMovement): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(
+            oldItem: StockMovementEntity,
+            newItem: StockMovementEntity
+        ): Boolean = oldItem == newItem
     }
 }
