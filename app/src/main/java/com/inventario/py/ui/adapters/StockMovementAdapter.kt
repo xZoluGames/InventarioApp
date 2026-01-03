@@ -75,6 +75,11 @@ class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapt
                     R.drawable.ic_transfer,
                     R.color.secondary
                 )
+                MovementType.CANCELLATION -> Triple(
+                    context.getString(R.string.cancellation),
+                    R.drawable.ic_close,  // O usa ic_close si no existe
+                    R.color.error
+                )
             }
 
             with(binding) {
@@ -93,6 +98,7 @@ class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapt
                 val quantityText = when (movementType) {
                     MovementType.IN, MovementType.RETURN -> "+${movement.quantity}"
                     MovementType.OUT, MovementType.SALE -> "-${kotlin.math.abs(movement.quantity)}"
+                    MovementType.CANCELLATION -> "+${movement.quantity}"
                     else -> movement.quantity.toString()
                 }
                 tvQuantity.text = quantityText
@@ -101,6 +107,7 @@ class StockMovementAdapter : ListAdapter<StockMovementEntity, StockMovementAdapt
                 val quantityColor = when (movementType) {
                     MovementType.IN, MovementType.RETURN -> R.color.success
                     MovementType.OUT, MovementType.SALE -> R.color.error
+                    MovementType.CANCELLATION -> R.color.success
                     else -> R.color.text_primary
                 }
                 tvQuantity.setTextColor(ContextCompat.getColor(context, quantityColor))

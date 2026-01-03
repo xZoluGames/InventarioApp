@@ -165,7 +165,7 @@ class SaleDetailFragment : Fragment() {
             chipStatus.setChipBackgroundColorResource(statusColor)
 
             // Fecha y hora
-            tvDateTime.text = dateFormat.format(Date(sale.soldAt))
+            tvDate.text = dateFormat.format(Date(sale.soldAt))
 
             // Vendedor
             tvSeller.text = sale.soldByName

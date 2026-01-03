@@ -177,16 +177,16 @@ class AddProductFragment : Fragment() {
     private fun setupClickListeners() {
         with(binding) {
             // Imagen
-            cardProductImage.setOnClickListener {
+            ivProductImage.setOnClickListener {
                 showImagePickerDialog()
             }
 
-            btnChangeImage.setOnClickListener {
+            fabAddImage.setOnClickListener {
                 showImagePickerDialog()
             }
 
             // Escanear código de barras
-            btnScanBarcode.setOnClickListener {
+            tilBarcode.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_add_to_scanner,
                     Bundle().apply {
@@ -259,7 +259,7 @@ class AddProductFragment : Fragment() {
             layoutVariants.isVisible = state.variants.isNotEmpty()
 
             // Solo mostrar proveedor para dueño
-            val isOwner = (activity as? MainActivity)?.isOwner() ?: false
+            val isOwner = (activity as? MainActivity)?.isOwner() == true
             layoutSupplier.isVisible = isOwner
             tilPurchasePrice.isVisible = isOwner
         }

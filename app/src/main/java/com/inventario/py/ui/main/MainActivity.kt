@@ -135,7 +135,9 @@ class MainActivity : AppCompatActivity() {
             is SyncState.Error -> {
                 Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry) {
+
                         viewModel.syncNow()
+
                     }
                     .show()
             }

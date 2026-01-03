@@ -147,7 +147,7 @@ class CheckoutViewModel @Inject constructor(
                         unitPrice = unitPrice,
                         discount = 0L,
                         subtotal = unitPrice * cartItem.cartItem.quantity,
-                        costPrice = cartItem.product.purchasePrice
+                        purchasePrice = cartItem.product.purchasePrice
                     )
                 }
 
@@ -171,7 +171,7 @@ class CheckoutViewModel @Inject constructor(
                         reason = "Venta #$saleNumber",
                         referenceType = "SALE",
                         referenceId = saleId,
-                        performedBy = userId
+                        createdBy  = userId
                     )
                     productRepository.saveStockMovement(movement)
                 }

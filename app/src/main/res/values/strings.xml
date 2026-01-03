@@ -456,7 +456,9 @@
 
     <!-- Scanner -->
     <string name="scanner_hint">Apunta la cámara al código de barras</string>
-
+    <string name="cancellation">Cancelación</string>
+    <string name="sale_number_format">Venta #%s</string>
+    <string name="items_count">%d artículos</string>
     <!-- Add Product -->
     <string name="tap_to_add_image">Toca para agregar imagen</string>
     <string name="basic_information">Información Básica</string>
@@ -747,4 +749,10 @@
     <string name="cancel_reason">Motivo de cancelación</string>
     <string name="cannot_cancel_completed">No se puede cancelar una venta completada hace más de 24 horas</string>
     <string name="duplicate_sale_confirm">¿Desea agregar estos productos al carrito?</string>
+
+
+    <string name="payment_details">Detalles del Pago</string>
+
+    <string name="unknown">Desconocido</string>
+
 </resources>

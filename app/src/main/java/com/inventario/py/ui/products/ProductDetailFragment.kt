@@ -75,7 +75,7 @@ class ProductDetailFragment : Fragment() {
                 menuInflater.inflate(R.menu.menu_product_detail, menu)
                 
                 // Hide edit/delete for non-owners if needed
-                val isOwner = (activity as? MainActivity)?.isOwner() ?: false
+                val isOwner = (activity as? MainActivity)?.isOwner() == true
                 menu.findItem(R.id.action_delete)?.isVisible = isOwner
             }
 
@@ -193,7 +193,7 @@ class ProductDetailFragment : Fragment() {
 
     private fun updateUI(state: ProductDetailState) {
         val product = state.product ?: return
-        val isOwner = (activity as? MainActivity)?.isOwner() ?: false
+        val isOwner = (activity as? MainActivity)?.isOwner() == true
         
         with(binding) {
             // Toolbar title
@@ -323,7 +323,7 @@ class ProductDetailFragment : Fragment() {
             .setView(dialogView)
             .setPositiveButton("Guardar") { _, _ ->
                 val quantity = etQuantity.text.toString().toIntOrNull() ?: 0
-                val reason = etReason.text.toString()
+                etReason.text.toString()
                 val isIncrease = rgType.checkedRadioButtonId == R.id.rbIncrease
                 
                 if (quantity > 0) {

@@ -130,7 +130,7 @@ class SaleDetailViewModel @Inject constructor(
                 reason = "Cancelación de venta",
                 referenceType = "SALE_CANCELLATION",
                 referenceId = currentSaleId,
-                performedBy = userId,
+                createdBy = userId,
             )
             productRepository.saveStockMovement(movement)
         }

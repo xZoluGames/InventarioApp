@@ -190,7 +190,7 @@ class AddProductViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
 
             try {
-                val userId = sessionManager.getUserId()
+                sessionManager.getUserId()
                 val supplierEntity = supplierId?.let { productRepository.getSupplierById(it) }
 
                 if (editingProductId != null) {

@@ -20,7 +20,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Loading -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!-- Content Layout -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -58,19 +68,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?textAppearanceHeadlineLarge"
-                        android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        tools:text="₲ 45.500" />
+                        android:textStyle="bold"
+                        tools:text="₲ 450.000" />
 
-                    <!-- Payment Method Chip -->
+                    <!-- Status Chip -->
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chipPaymentMethod"
-                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:id="@+id/chipStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
-                        app:chipBackgroundColor="@android:color/white"
-                        tools:text="Efectivo" />
+                        android:textColor="@android:color/black"
+                        app:chipBackgroundColor="@android:color/transparent"
+                        app:chipStrokeColor="@android:color/white"
+                        app:chipStrokeWidth="1dp"
+                        tools:text="Completada" />
+
+                    <TextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:textAppearance="?textAppearanceBodySmall"
+                        android:textColor="@android:color/white"
+                        android:alpha="0.8"
+                        tools:text="25/12/2024 14:30" />
 
                 </LinearLayout>
 
@@ -89,65 +111,18 @@
                     android:orientation="vertical"
                     android:padding="@dimen/padding_medium">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sale_information"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textStyle="bold" />
-
-                    <!-- Date -->
+                    <!-- Seller -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="@dimen/margin_medium">
-
-                        <ImageView
-                            android:layout_width="@dimen/icon_size_medium"
-                            android:layout_height="@dimen/icon_size_medium"
-                            android:src="@drawable/ic_reports"
-                            app:tint="@color/text_secondary"
-                            android:contentDescription="@null" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginStart="@dimen/margin_medium">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/date_time"
-                                android:textAppearance="?textAppearanceBodySmall"
-                                android:textColor="@color/text_secondary" />
-
-                            <TextView
-                                android:id="@+id/tvDateTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?textAppearanceBodyMedium"
-                                tools:text="25 de Diciembre, 2024 - 14:30" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Sold By -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="@dimen/margin_medium">
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:layout_width="@dimen/icon_size_medium"
                             android:layout_height="@dimen/icon_size_medium"
                             android:src="@drawable/ic_person"
-                            app:tint="@color/text_secondary"
+                            app:tint="@color/primary"
                             android:contentDescription="@null" />
 
                         <LinearLayout
@@ -164,7 +139,7 @@
                                 android:textColor="@color/text_secondary" />
 
                             <TextView
-                                android:id="@+id/tvSoldBy"
+                                android:id="@+id/tvSeller"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?textAppearanceBodyMedium"
@@ -174,22 +149,20 @@
 
                     </LinearLayout>
 
-                    <!-- Customer (for credit sales) -->
+                    <!-- Payment Method -->
                     <LinearLayout
-                        android:id="@+id/layoutCustomer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="@dimen/margin_medium"
-                        android:visibility="gone"
-                        tools:visibility="visible">
+                        android:layout_marginTop="@dimen/margin_medium">
 
                         <ImageView
+                            android:id="@+id/ivPaymentIcon"
                             android:layout_width="@dimen/icon_size_medium"
                             android:layout_height="@dimen/icon_size_medium"
-                            android:src="@drawable/ic_person"
-                            app:tint="@color/warning"
+                            android:src="@drawable/ic_cash"
+                            app:tint="@color/success"
                             android:contentDescription="@null" />
 
                         <LinearLayout
@@ -201,20 +174,73 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/customer"
+                                android:text="@string/payment_method"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 android:textColor="@color/text_secondary" />
 
                             <TextView
-                                android:id="@+id/tvCustomer"
+                                android:id="@+id/tvPaymentMethod"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?textAppearanceBodyMedium"
-                                tools:text="María García (Fiado)" />
+                                tools:text="Efectivo" />
 
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <!-- Customer (for credit sales) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardCustomer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="@color/warning_light"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp"
+                        tools:visibility="visible">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/padding_medium">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_medium"
+                                android:layout_height="@dimen/icon_size_medium"
+                                android:src="@drawable/ic_person"
+                                app:tint="@color/warning"
+                                android:contentDescription="@null" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginStart="@dimen/margin_medium">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/customer"
+                                    android:textAppearance="?textAppearanceBodySmall"
+                                    android:textColor="@color/text_secondary" />
+
+                                <TextView
+                                    android:id="@+id/tvCustomerName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?textAppearanceBodyMedium"
+                                    android:textStyle="bold"
+                                    tools:text="María García" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 
@@ -233,15 +259,32 @@
                     android:orientation="vertical"
                     android:padding="@dimen/padding_medium">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/products_sold"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/products_sold"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvItemsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?textAppearanceBodySmall"
+                            android:textColor="@color/text_secondary"
+                            tools:text="3 artículos" />
+
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvProducts"
+                        android:id="@+id/rvItems"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
@@ -274,7 +317,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?textAppearanceBodyMedium"
-                            tools:text="₲ 50.000" />
+                            tools:text="₲ 450.000" />
 
                     </LinearLayout>
 
@@ -306,7 +349,7 @@
 
                     </LinearLayout>
 
-                    <!-- Total -->
+                    <!-- Total in products card -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -323,11 +366,13 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvTotalBottom"
+                            android:id="@+id/tvTotalProducts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.Inventario.Price"
-                            tools:text="₲ 45.500" />
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="@color/primary"
+                            android:textStyle="bold"
+                            tools:text="₲ 450.000" />
 
                     </LinearLayout>
 
@@ -335,15 +380,88 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Notes (if any) -->
+            <!-- Payment Details Card (for cash payments) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutPaymentDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:visibility="gone"
+                style="@style/Widget.Inventario.CardView.Outlined"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_medium">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_details"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_medium">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/amount_received"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            android:textColor="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvAmountPaid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            tools:text="₲ 500.000" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_small">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/change"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            android:textColor="@color/text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?textAppearanceBodyMedium"
+                            android:textColor="@color/success"
+                            tools:text="₲ 50.000" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+            <!-- Notes Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardNotes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:visibility="gone"
-                tools:visibility="visible"
-                style="@style/Widget.Inventario.CardView.Outlined">
+                style="@style/Widget.Inventario.CardView.Outlined"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -370,47 +488,88 @@
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Actions -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/margin_large">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPrint"
-                    style="@style/Widget.Inventario.Button.Outlined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:text="@string/print"
-                    app:icon="@drawable/ic_add" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnShare"
-                    style="@style/Widget.Inventario.Button.Outlined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:text="@string/share"
-                    app:icon="@drawable/ic_add" />
-
-            </LinearLayout>
-
-            <!-- Delete Button (Owner only) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelete"
-                style="@style/Widget.Inventario.Button.Error"
+            <!-- Cancellation Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCancellation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_medium"
-                android:text="@string/delete_sale"
-                app:icon="@drawable/ic_add"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/error_light"
+                app:strokeColor="@color/error"
+                app:strokeWidth="1dp"
+                style="@style/Widget.Inventario.CardView.Outlined"
+                tools:visibility="visible">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_medium">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_cancel"
+                            app:tint="@color/error"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_small"
+                            android:text="@string/sale_cancelled"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textColor="@color/error"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="@string/reason"
+                        android:textAppearance="?textAppearanceBodySmall"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvCancellationReason"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?textAppearanceBodyMedium"
+                        tools:text="Producto agotado" />
+
+                    <TextView
+                        android:id="@+id/tvCancelledAt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:textAppearance="?textAppearanceBodySmall"
+                        android:textColor="@color/text_secondary"
+                        tools:text="Cancelada el 25/12/2024 15:30" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Duplicate Sale Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDuplicateSale"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:text="@string/duplicate_sale"
+                app:icon="@drawable/ic_copy" />
+
+            <!-- Spacer -->
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_large" />
@@ -418,22 +577,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Loading Overlay -->
-    <FrameLayout
-        android:id="@+id/loadingOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80FFFFFF"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

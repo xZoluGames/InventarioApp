@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.inventario.py.R
-import com.inventario.py.data.local.entity.SaleItem
+import com.inventario.py.ui.sales.SaleItem
 import com.inventario.py.databinding.ItemSaleDetailBinding
 import com.inventario.py.utils.CurrencyUtils
 

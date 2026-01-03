@@ -151,4 +151,5 @@ class MainViewModel @Inject constructor(
     fun isOwner(): Boolean {
         return sessionManager.isOwner()
     }
+    fun syncNow() = syncData()
 }
