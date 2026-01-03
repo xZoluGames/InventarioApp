@@ -281,7 +281,7 @@ class SettingsFragment : Fragment() {
 
     private fun showServerConfigDialog() {
         val input = android.widget.EditText(requireContext()).apply {
-            hint = "https://tu-servidor.com/api"
+            hint = "https://inventariopy.ddns.net/api"
             setText(viewModel.uiState.value.serverUrl)
             setPadding(48, 32, 48, 32)
         }

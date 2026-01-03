@@ -31,7 +31,7 @@ class SessionManager @Inject constructor(
         private const val KEY_CURRENT_USER = "current_user"
         private const val KEY_SERVER_URL = "server_url"
         private const val KEY_TOKEN_EXPIRY = "token_expiry"
-        private const val DEFAULT_SERVER_URL = "https://api.inventario.py"
+        private const val DEFAULT_SERVER_URL = "https://inventariopy.ddns.net"
     }
     
     private val gson = Gson()
