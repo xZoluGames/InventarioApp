@@ -80,7 +80,9 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
+    fun isLoggedIn(): Boolean {
+        return sessionManager.isLoggedIn()
+    }
     private fun observeLowStockProducts() {
         viewModelScope.launch {
             productRepository.getLowStockProducts().collectLatest { products ->

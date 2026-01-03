@@ -158,7 +158,27 @@ class AddProductViewModel @Inject constructor(
             variants = _uiState.value.variants.filter { it.id != variant.id }
         )
     }
-
+    fun setBarcode(barcode: String) {
+        // Establecer el barcode escaneado
+        _uiState.value = _uiState.value.copy(
+            product = _uiState.value.product?.copy(
+                product = _uiState.value.product?.product?.copy(barcode = barcode)
+                    ?: ProductEntity(
+                        id = Generators.generateId(),
+                        name = "",
+                        barcode = barcode,
+                        identifier = Generators.generateIdentifier(),
+                        totalStock = 0,
+                        minStockAlert = 5,
+                        salePrice = 0,
+                        purchasePrice = 0,
+                        isActive = true,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+            )
+        )
+    }
     fun saveProduct(
         name: String,
         description: String?,

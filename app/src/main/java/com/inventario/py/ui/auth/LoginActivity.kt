@@ -78,32 +78,70 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun attemptLogin() {
-        val email = binding.etEmail.text.toString().trim()
+        val input = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString()
-        
+
         // Validate inputs
         var isValid = true
-        
-        if (email.isEmpty()) {
-            binding.tilEmail.error = "Ingrese su correo electrónico"
-            isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.tilEmail.error = "Correo electrónico inválido"
+
+        if (input.isEmpty()) {
+            binding.tilEmail.error = "Ingrese su usuario o correo"
             isValid = false
         }
-        
+        // Acepta tanto usuario simple como email
+        // No validamos formato, el servidor decidirá si es válido
+
         if (password.isEmpty()) {
             binding.tilPassword.error = "Ingrese su contraseña"
             isValid = false
-        } else if (password.length < 6) {
-            binding.tilPassword.error = "La contraseña debe tener al menos 6 caracteres"
+        } else if (password.length < 4) {
+            binding.tilPassword.error = "La contraseña debe tener al menos 4 caracteres"
             isValid = false
         }
-        
+
         if (isValid) {
-            viewModel.login(email, password)
+            // Detectar si es email o usuario
+            val isEmail = input.contains("@")
+
+            if (isEmail) {
+                // TODO: Login con email
+                // loginWithEmail(input, password)
+                viewModel.login(input, password)
+            } else {
+                // Login con username
+                viewModel.login(input, password)
+            }
         }
     }
+
+// ==================== FUNCIONES PARA LOGIN CON EMAIL (FUTURO) ====================
+
+    /*
+    private fun loginWithEmail(email: String, password: String) {
+        // Validar formato de email
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.tilEmail.error = "Correo electrónico inválido"
+            return
+        }
+
+        // Llamar al ViewModel con método específico para email
+        // viewModel.loginWithEmail(email, password)
+        viewModel.login(email, password)
+    }
+
+    private fun validateEmailFormat(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun getLoginType(input: String): LoginType {
+        return if (input.contains("@")) LoginType.EMAIL else LoginType.USERNAME
+    }
+
+    enum class LoginType {
+        USERNAME,
+        EMAIL
+    }
+    */
 
     private fun observeState() {
         lifecycleScope.launch {

@@ -18,7 +18,8 @@ import com.inventario.py.data.local.entity.SyncState
 import com.inventario.py.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
+import com.inventario.py.ui.auth.LoginActivity
+import android.content.Intent
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +38,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        if (!viewModel.isLoggedIn()) {
+            navigateToLogin()
+            return
+        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -46,7 +50,12 @@ class MainActivity : AppCompatActivity() {
         setupFab()
         observeState()
     }
-
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
     private fun setupNavigation() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment

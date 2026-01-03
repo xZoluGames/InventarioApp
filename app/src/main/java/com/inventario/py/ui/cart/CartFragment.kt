@@ -44,7 +44,7 @@ class CartFragment : Fragment(), RefreshableFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        setupToolbar()
         setupAdapter()
         setupSwipeToDelete()
         setupClickListeners()
@@ -131,7 +131,11 @@ class CartFragment : Fragment(), RefreshableFragment {
             }
         }
     }
-
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
     private fun showClearCartConfirmation() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Vaciar Carrito")
