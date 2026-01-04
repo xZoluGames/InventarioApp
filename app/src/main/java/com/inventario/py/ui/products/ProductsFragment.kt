@@ -22,6 +22,7 @@ import com.inventario.py.ui.main.RefreshableFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import androidx.appcompat.widget.SearchView
+import androidx.navigation.fragment.findNavController
 import com.inventario.py.data.local.entity.SortOption
 
 @AndroidEntryPoint
@@ -146,7 +147,7 @@ class ProductsFragment : Fragment(), RefreshableFragment {
             
             // FAB - Add product
             fabAddProduct.setOnClickListener {
-              //  (activity as? MainActivity)?.navigateToAddProduct()
+                findNavController().navigate(R.id.addProductFragment)
             }
             
             // Toggle view mode

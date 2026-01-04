@@ -94,7 +94,12 @@ interface ProductDao {
 
     @Query("UPDATE products SET isActive = 0, updatedAt = :updatedAt WHERE id = :productId")
     suspend fun softDeleteProduct(productId: String, updatedAt: Long = System.currentTimeMillis())
-
+    @Query("UPDATE products SET syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :productId")
+    suspend fun updateSyncStatus(
+        productId: String,
+        syncStatus: Int,
+        updatedAt: Long = System.currentTimeMillis()
+    )
     @Delete
     suspend fun deleteProduct(product: ProductEntity)
 
@@ -140,7 +145,12 @@ interface ProductDao {
     suspend fun deleteVariant(variant: ProductVariantEntity)
 
     // ==================== MOVIMIENTOS DE STOCK ====================
-
+    @Query("UPDATE product_variants SET syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :variantId")
+    suspend fun updateVariantSyncStatus(
+        variantId: String,
+        syncStatus: Int,
+        updatedAt: Long = System.currentTimeMillis()
+    )
     @Query("SELECT * FROM stock_movements WHERE productId = :productId ORDER BY createdAt DESC")
     fun getStockMovementsByProduct(productId: String): Flow<List<StockMovementEntity>>
 
@@ -183,7 +193,12 @@ interface ProductDao {
     suspend fun deleteCategory(category: CategoryEntity)
 
     // ==================== PROVEEDORES ====================
-
+    @Query("UPDATE categories SET syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :categoryId")
+    suspend fun updateCategorySyncStatus(
+        categoryId: String,
+        syncStatus: Int,
+        updatedAt: Long = System.currentTimeMillis()
+    )
     @Query("SELECT * FROM suppliers WHERE isActive = 1 ORDER BY name ASC")
     fun getAllSuppliers(): Flow<List<SupplierEntity>>
 
@@ -212,7 +227,12 @@ interface ProductDao {
     suspend fun deleteSupplier(supplier: SupplierEntity)
 
     // ==================== IMÁGENES ====================
-
+    @Query("UPDATE suppliers SET syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :supplierId")
+    suspend fun updateSupplierSyncStatus(
+        supplierId: String,
+        syncStatus: Int,
+        updatedAt: Long = System.currentTimeMillis()
+    )
     @Query("SELECT * FROM product_images WHERE productId = :productId ORDER BY sortOrder")
     fun getImagesByProduct(productId: String): Flow<List<ProductImageEntity>>
 

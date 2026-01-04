@@ -224,13 +224,12 @@ class ProductDetailFragment : Fragment() {
             if (isOwner) {
                 layoutCostPrice.visibility = View.VISIBLE
                 tvCostPrice.text = CurrencyUtils.formatGuarani(product.product.costPrice)
-                
-                // Calculate profit margin
-                val margin = if (product.product.costPrice > 0) {
-                    ((product.product.salePrice - product.product.costPrice) / product.product.costPrice) * 100
-                } else {
-                    0.0
-                }
+
+// Calculate profit margin - CORREGIDO: usar CurrencyUtils
+                val margin = CurrencyUtils.calculateMargin(
+                    product.product.salePrice,
+                    product.product.costPrice
+                )
                 tvProfitMargin.text = String.format("%.1f%%", margin)
             } else {
                 layoutCostPrice.visibility = View.GONE

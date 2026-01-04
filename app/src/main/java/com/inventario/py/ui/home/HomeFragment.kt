@@ -106,7 +106,7 @@ class HomeFragment : Fragment(), RefreshableFragment {
             }
             
             btnAddProduct.setOnClickListener {
-            //    (activity as? MainActivity)?.navigateToAddProduct()
+                findNavController().navigate(R.id.addProductFragment)
             }
             
             btnViewReports.setOnClickListener {

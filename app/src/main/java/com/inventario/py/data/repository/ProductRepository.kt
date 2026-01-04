@@ -1,5 +1,6 @@
 package com.inventario.py.data.repository
 
+import android.util.Log
 import com.inventario.py.data.local.dao.ProductDao
 import com.inventario.py.data.local.entity.*
 import com.inventario.py.data.remote.api.InventarioApi
@@ -18,6 +19,11 @@ class ProductRepository @Inject constructor(
     private val api: InventarioApi,
     private val sessionManager: SessionManager
 ) {
+
+    companion object {
+        private const val TAG = "ProductRepository"
+    }
+
     // ==================== PRODUCTOS ====================
 
     fun getAllProducts(): Flow<List<ProductEntity>> = productDao.getAllProducts()
@@ -69,9 +75,12 @@ class ProductRepository @Inject constructor(
             syncStatus = ProductEntity.SYNC_STATUS_PENDING,
             updatedAt = System.currentTimeMillis()
         ))
-        return 1L // Room no devuelve el ID para String PK
+        return 1L
     }
 
+    /**
+     * Crea un nuevo producto - intenta enviar a API primero, luego guarda localmente
+     */
     suspend fun createProduct(
         name: String,
         description: String?,
@@ -86,13 +95,16 @@ class ProductRepository @Inject constructor(
         supplierName: String?,
         quality: String?,
         imageUrl: String?
-    ): ProductEntity {
-        val product = ProductEntity(
-            id = Generators.generateId(),
+    ): ProductEntity = withContext(Dispatchers.IO) {
+        val generatedId = Generators.generateId()
+        val generatedIdentifier = identifier ?: Generators.generateIdentifier()
+
+        // Crear request para API
+        val request = CreateProductRequest(
             name = name,
             description = description,
             barcode = barcode,
-            identifier = identifier ?: Generators.generateIdentifier(),
+            identifier = generatedIdentifier,
             categoryId = categoryId,
             totalStock = totalStock,
             minStockAlert = minStockAlert,
@@ -101,21 +113,108 @@ class ProductRepository @Inject constructor(
             supplierId = supplierId,
             supplierName = supplierName,
             quality = quality,
-            imageUrl = imageUrl,
-            createdBy = sessionManager.getUserId(),
-            syncStatus = ProductEntity.SYNC_STATUS_PENDING
+            variants = null
         )
-        productDao.insertProduct(product)
-        return product
+
+        try {
+            // Intentar enviar a API
+            Log.d(TAG, "Creating product on server: $name")
+            val response = api.createProduct(request)
+
+            if (response.isSuccessful && response.body()?.data != null) {
+                // Producto creado en servidor, guardar localmente con estado SYNCED
+                val serverProduct = response.body()!!.data!!
+                val localProduct = serverProduct.toEntity()
+                productDao.insertProduct(localProduct)
+                Log.d(TAG, "Product created successfully: ${localProduct.id}")
+                return@withContext localProduct
+            } else {
+                // Error del servidor, guardar localmente como PENDING
+                val errorMsg = response.errorBody()?.string() ?: response.message()
+                Log.e(TAG, "Server error: $errorMsg")
+                throw Exception(errorMsg)
+            }
+        } catch (e: Exception) {
+            // Sin conexión o error, guardar localmente como PENDING
+            Log.e(TAG, "Error creating on server: ${e.message}, saving locally")
+            val product = ProductEntity(
+                id = generatedId,
+                name = name,
+                description = description,
+                barcode = barcode,
+                identifier = generatedIdentifier,
+                categoryId = categoryId,
+                totalStock = totalStock,
+                minStockAlert = minStockAlert,
+                salePrice = salePrice,
+                purchasePrice = purchasePrice,
+                supplierId = supplierId,
+                supplierName = supplierName,
+                quality = quality,
+                imageUrl = imageUrl,
+                createdBy = sessionManager.getUserId(),
+                syncStatus = ProductEntity.SYNC_STATUS_PENDING
+            )
+            productDao.insertProduct(product)
+            return@withContext product
+        }
     }
 
-    suspend fun updateProduct(product: ProductEntity) {
-        productDao.updateProduct(product.copy(
-            syncStatus = ProductEntity.SYNC_STATUS_PENDING,
-            updatedAt = System.currentTimeMillis()
-        ))
+    /**
+     * Actualiza un producto existente - intenta enviar a API primero
+     */
+    suspend fun updateProduct(product: ProductEntity) = withContext(Dispatchers.IO) {
+        try {
+            Log.d(TAG, "Updating product on server: ${product.id}")
+
+            // Crear DTO para enviar al servidor
+            val productDto = ProductDto(
+                id = product.id,
+                name = product.name,
+                description = product.description,
+                barcode = product.barcode,
+                identifier = product.identifier,
+                imageUrl = product.imageUrl,
+                categoryId = product.categoryId,
+                subcategoryId = product.subcategoryId,
+                totalStock = product.totalStock,
+                minStockAlert = product.minStockAlert,
+                isStockAlertEnabled = product.isStockAlertEnabled,
+                salePrice = product.salePrice,
+                purchasePrice = product.purchasePrice,
+                supplierId = product.supplierId,
+                supplierName = product.supplierName,
+                quality = product.quality,
+                isActive = product.isActive,
+                createdAt = product.createdAt,
+                updatedAt = System.currentTimeMillis(),
+                createdBy = product.createdBy,
+                variants = null,
+                images = null
+            )
+
+            val response = api.updateProduct(product.id, productDto)
+            if (response.isSuccessful) {
+                productDao.updateProduct(product.copy(
+                    syncStatus = ProductEntity.SYNC_STATUS_SYNCED,
+                    updatedAt = System.currentTimeMillis()
+                ))
+                Log.d(TAG, "Product updated successfully: ${product.id}")
+            } else {
+                throw Exception(response.message())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating on server: ${e.message}, saving locally as pending")
+            productDao.updateProduct(product.copy(
+                syncStatus = ProductEntity.SYNC_STATUS_PENDING,
+                updatedAt = System.currentTimeMillis()
+            ))
+        }
     }
 
+    /**
+     * Actualiza el stock de un producto
+     */
     suspend fun updateStock(productId: String, newStock: Int) {
         productDao.updateStock(productId, newStock, syncStatus = ProductEntity.SYNC_STATUS_PENDING)
     }
@@ -127,12 +226,28 @@ class ProductRepository @Inject constructor(
         productDao.updateStock(productId, newStock, syncStatus = ProductEntity.SYNC_STATUS_PENDING)
     }
 
-    suspend fun deleteProduct(productId: String) {
-        productDao.softDeleteProduct(productId)
+    /**
+     * Elimina un producto - intenta eliminar de API primero
+     */
+    suspend fun deleteProduct(productId: String) = withContext(Dispatchers.IO) {
+        try {
+            Log.d(TAG, "Deleting product from server: $productId")
+            val response = api.deleteProduct(productId)
+            if (response.isSuccessful) {
+                productDao.softDeleteProduct(productId)
+                Log.d(TAG, "Product deleted successfully: $productId")
+            } else {
+                throw Exception(response.message())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting from server: ${e.message}, marking as deleted locally")
+            // Marcar para eliminar en sincronización posterior
+            productDao.softDeleteProduct(productId)
+        }
     }
 
     suspend fun deleteProduct(product: ProductEntity) {
-        productDao.softDeleteProduct(product.id)
+        deleteProduct(product.id)
     }
 
     // ==================== VARIANTES ====================
@@ -143,9 +258,6 @@ class ProductRepository @Inject constructor(
     suspend fun getVariantsByProductSync(productId: String): List<ProductVariantEntity> =
         productDao.getVariantsByProductSync(productId)
 
-    /**
-     * Alias para getVariantsByProductSync
-     */
     suspend fun getVariantsByProductId(productId: String): List<ProductVariantEntity> =
         productDao.getVariantsByProductSync(productId)
 
@@ -160,17 +272,6 @@ class ProductRepository @Inject constructor(
             syncStatus = 1,
             updatedAt = System.currentTimeMillis()
         ))
-        // Actualizar stock total del producto
-        updateProductTotalStock(variant.productId)
-    }
-
-    /**
-     * Guarda múltiples variantes
-     */
-    suspend fun saveVariants(variants: List<ProductVariantEntity>) {
-        variants.forEach { variant ->
-            saveVariant(variant)
-        }
     }
 
     suspend fun createVariant(
@@ -179,9 +280,9 @@ class ProductRepository @Inject constructor(
         variantLabel: String,
         variantValue: String,
         stock: Int,
-        additionalPrice: Long = 0,
-        barcode: String? = null
-    ): ProductVariantEntity {
+        additionalPrice: Long,
+        barcode: String?
+    ): ProductVariantEntity = withContext(Dispatchers.IO) {
         val variant = ProductVariantEntity(
             id = Generators.generateId(),
             productId = productId,
@@ -193,31 +294,53 @@ class ProductRepository @Inject constructor(
             barcode = barcode,
             syncStatus = 1
         )
+
+        try {
+            val request = CreateVariantRequest(
+                variantType = variantType,
+                variantLabel = variantLabel,
+                variantValue = variantValue,
+                stock = stock,
+                additionalPrice = additionalPrice,
+                barcode = barcode
+            )
+
+            val response = api.createVariant(productId, request)
+            if (response.isSuccessful && response.body()?.data != null) {
+                val serverVariant = response.body()!!.data!!.toEntity()
+                productDao.insertVariant(serverVariant)
+                return@withContext serverVariant
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error creating variant on server: ${e.message}")
+        }
+
+        // Si falla la API, guardar localmente
         productDao.insertVariant(variant)
-        updateProductTotalStock(productId)
-        return variant
+        return@withContext variant
     }
 
-    suspend fun updateVariantStock(variantId: String, stock: Int) {
+    suspend fun updateVariantStock(variantId: String, newStock: Int) {
+        productDao.updateVariantStock(variantId, newStock)
+
+        // Actualizar stock total del producto
         val variant = productDao.getVariantById(variantId)
         variant?.let {
-            productDao.updateVariantStock(variantId, stock)
-            updateProductTotalStock(it.productId)
+            val totalStock = productDao.getTotalVariantStock(it.productId) ?: 0
+            productDao.updateStock(it.productId, totalStock)
         }
     }
 
     suspend fun deleteVariant(variant: ProductVariantEntity) {
-        productDao.deleteVariantById(variant.id)
-        updateProductTotalStock(variant.productId)
-    }
-
-    suspend fun deleteVariantsByProduct(productId: String) {
-        productDao.deleteVariantsByProduct(productId)
-    }
-
-    private suspend fun updateProductTotalStock(productId: String) {
-        val totalStock = productDao.getTotalVariantStock(productId) ?: 0
-        productDao.updateStock(productId, totalStock)
+        try {
+            val response = api.deleteVariant(variant.id)
+            if (response.isSuccessful) {
+                productDao.deleteVariant(variant)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting variant from server: ${e.message}")
+            productDao.deleteVariant(variant)
+        }
     }
 
     // ==================== MOVIMIENTOS DE STOCK ====================
@@ -351,5 +474,47 @@ class ProductRepository @Inject constructor(
             reason = reason
         )
         productDao.insertPriceHistory(history)
+    }
+
+    // ==================== SINCRONIZACIÓN ====================
+
+    /**
+     * Sincroniza productos desde el servidor
+     */
+    suspend fun syncFromServer(): Result<Int> = withContext(Dispatchers.IO) {
+        try {
+            var totalSynced = 0
+            var page = 1
+            var hasMore = true
+
+            while (hasMore) {
+                val response = api.getProducts(page = page, limit = 100)
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+                    val products = body.data.map { it.toEntity() }
+                    productDao.insertProducts(products)
+                    totalSynced += products.size
+
+                    // También guardar variantes
+                    body.data.forEach { productDto ->
+                        productDto.variants?.let { variants ->
+                            val variantEntities = variants.map { it.toEntity() }
+                            productDao.insertVariants(variantEntities)
+                        }
+                    }
+
+                    hasMore = page < body.totalPages
+                    page++
+                } else {
+                    hasMore = false
+                }
+            }
+
+            Log.d(TAG, "Synced $totalSynced products from server")
+            Result.success(totalSynced)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error syncing from server: ${e.message}")
+            Result.failure(e)
+        }
     }
 }

@@ -27,7 +27,14 @@ interface SyncQueueDao {
     
     @Query("UPDATE sync_queue SET status = 'FAILED', errorMessage = :error, retryCount = retryCount + 1 WHERE id = :id")
     suspend fun markAsFailed(id: Long, error: String)
-    
+    @Query("SELECT * FROM sync_queue WHERE status = 'FAILED' ORDER BY createdAt ASC")
+    suspend fun getFailedItems(): List<SyncQueueEntity>
+
+    @Query("UPDATE sync_queue SET status = 'PENDING', errorMessage = NULL WHERE id = :id")
+    suspend fun resetToPending(id: Long)
+
+    @Query("DELETE FROM sync_queue")
+    suspend fun clearAll()
     @Query("DELETE FROM sync_queue WHERE status = 'SYNCED' AND syncedAt < :before")
     suspend fun deleteOldSynced(before: Long)
     

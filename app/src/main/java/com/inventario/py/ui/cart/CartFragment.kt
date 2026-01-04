@@ -116,8 +116,9 @@ class CartFragment : Fragment(), RefreshableFragment {
             // Proceed to checkout
             btnCheckout.setOnClickListener {
                 if (viewModel.cartItems.value.isNotEmpty()) {
-
-                    //findNavController().navigate(R.id.checkoutFragment)
+                    findNavController().navigate(R.id.checkoutFragment)
+                } else {
+                    Snackbar.make(binding.root, "El carrito está vacío", Snackbar.LENGTH_SHORT).show()
                 }
             }
             
