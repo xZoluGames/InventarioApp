@@ -10,6 +10,7 @@ import com.inventario.py.data.local.entity.SortOption
 import com.inventario.py.data.local.entity.StockFilter
 import com.inventario.py.data.local.entity.SupplierEntity
 import com.inventario.py.data.local.entity.VariantType
+import com.inventario.py.data.repository.CartRepository
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
 import com.inventario.py.utils.Generators
@@ -51,7 +52,7 @@ sealed class ProductEvent {
 @HiltViewModel
 class ProductsViewModel @Inject constructor(
     private val productRepository: ProductRepository,
-    private val salesRepository: SalesRepository
+    private val salesRepository: CartRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductsUiState())

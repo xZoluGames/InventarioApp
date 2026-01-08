@@ -12,7 +12,10 @@ interface CartDao {
     
     @Query("SELECT * FROM cart_items WHERE addedBy = :userId AND productId = :productId AND (variantId = :variantId OR (variantId IS NULL AND :variantId IS NULL))")
     suspend fun getCartItem(userId: String, productId: String, variantId: String?): CartItemEntity?
-    
+
+    @Query("SELECT * FROM cart_items WHERE addedBy = :userId ORDER BY addedAt DESC")
+    suspend fun getCartItemsForUserSync(userId: String): List<CartItemEntity>
+
     @Query("SELECT * FROM cart_items WHERE id = :id")
     suspend fun getCartItemById(id: String): CartItemEntity?
     

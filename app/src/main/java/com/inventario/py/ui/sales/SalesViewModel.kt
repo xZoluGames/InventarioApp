@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.*
 import com.inventario.py.data.repository.AuthRepository
+import com.inventario.py.data.repository.CartRepository
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
 import com.inventario.py.utils.Generators
@@ -12,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.UUID
 import javax.inject.Inject
 
 // Estado del carrito
@@ -49,6 +49,7 @@ sealed class SalesEvent {
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val productRepository: ProductRepository,
+    private val cartRepository: CartRepository,
     private val salesRepository: SalesRepository,
     private val authRepository: AuthRepository,
     private val sessionManager: SessionManager
@@ -80,14 +81,14 @@ class CartViewModel @Inject constructor(
 
     private fun observeCart() {
         viewModelScope.launch {
-            salesRepository.getCartItems().collectLatest { items ->
-                _cartItems.value = items
+            cartRepository.getCartItems().collectLatest { items ->  // ✅
+                _cartItems.value = items.map { it.cartItem }  // Extraer CartItemEntity
                 updateCartState(items)
             }
         }
     }
 
-    private fun updateCartState(items: List<CartItemEntity>) {
+    private fun updateCartState(items: List<CartItemWithProduct>) {
         val subtotal = items.sumOf { it.subtotal }
         val discount = _uiState.value.discount
         val total = subtotal - discount
@@ -114,7 +115,7 @@ class CartViewModel @Inject constructor(
                 return@launch
             }
 
-            salesRepository.addToCart(product, null, 1)
+            cartRepository.addToCart(product, null, 1)
             _events.emit(SalesEvent.ProductAdded(product))
             _uiState.value = _uiState.value.copy(lastScannedBarcode = barcode)
         }
@@ -138,7 +139,7 @@ class CartViewModel @Inject constructor(
                 return@launch
             }
 
-            salesRepository.addToCart(product, variant, quantity)
+            cartRepository.addToCart(product, variant, quantity)
             _events.emit(SalesEvent.ProductAdded(product))
         }
     }
@@ -146,16 +147,16 @@ class CartViewModel @Inject constructor(
     fun updateQuantity(cartItem: CartItemWithProduct, newQuantity: Int) {
         viewModelScope.launch {
             if (newQuantity <= 0) {
-                salesRepository.removeFromCart(cartItem.id)
+                cartRepository.removeFromCart(cartItem.id)
             } else {
-                salesRepository.updateCartItemQuantity(cartItem.id, newQuantity)
+                cartRepository.updateQuantity(cartItem.id, newQuantity)
             }
         }
     }
 
     fun removeFromCart(cartItem: CartItemWithProduct) {
         viewModelScope.launch {
-            salesRepository.removeFromCart(cartItem.id)
+            cartRepository.removeFromCart(cartItem.id)
         }
     }
 
@@ -164,14 +165,14 @@ class CartViewModel @Inject constructor(
             // Re-agregar el item al carrito
             val product = productRepository.getProductById(cartItem.productId)
             if (product != null) {
-                salesRepository.addToCart(product, null, cartItem.quantity)
+                cartRepository.addToCart(product, null, cartItem.quantity)
             }
         }
     }
 
     fun clearCart() {
         viewModelScope.launch {
-            salesRepository.clearCart()
+            cartRepository.clearCart()
             _events.emit(SalesEvent.CartCleared)
         }
     }
@@ -223,7 +224,7 @@ class CartViewModel @Inject constructor(
                 )
 
                 // Obtener items del carrito
-                val cartItems = salesRepository.getCartItemsSync()
+                val cartItems = cartRepository.getCartItemsSync()
                 val saleItems = cartItems.map { item ->
                     val product = productRepository.getProductById(item.productId)
                     SaleItemEntity(
@@ -257,7 +258,7 @@ class CartViewModel @Inject constructor(
                 }
 
                 // Limpiar carrito
-                salesRepository.clearCart()
+                cartRepository.clearCart()
 
                 _uiState.value = _uiState.value.copy(isProcessing = false)
                 _events.emit(SalesEvent.SaleCompleted(sale))

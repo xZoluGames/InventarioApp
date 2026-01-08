@@ -7,46 +7,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SalesDao {
 
-    // ==================== CARRITO ====================
-
-    @Query("SELECT * FROM cart_items WHERE addedBy = :userId ORDER BY addedAt DESC")
-    fun getCartItems(userId: String): Flow<List<CartItemEntity>>
-
-    @Query("SELECT * FROM cart_items WHERE addedBy = :userId")
-    suspend fun getCartItemsSync(userId: String): List<CartItemEntity>
-
-    @Query("SELECT * FROM cart_items WHERE id = :id")
-    suspend fun getCartItemById(id: String): CartItemEntity?
-
-    @Query("SELECT * FROM cart_items WHERE productId = :productId AND (variantId = :variantId OR (:variantId IS NULL AND variantId IS NULL)) AND addedBy = :userId LIMIT 1")
-    suspend fun getCartItemByProductAndVariant(productId: String, variantId: String?, userId: String): CartItemEntity?
-
-    @Query("SELECT SUM(subtotal) FROM cart_items WHERE addedBy = :userId")
-    fun getCartTotal(userId: String): Flow<Long?>
-
-    @Query("SELECT COUNT(*) FROM cart_items WHERE addedBy = :userId")
-    fun getCartItemCount(userId: String): Flow<Int>
-
-    @Query("SELECT SUM(quantity) FROM cart_items WHERE addedBy = :userId")
-    fun getCartTotalQuantity(userId: String): Flow<Int?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCartItem(item: CartItemEntity)
-
-    @Update
-    suspend fun updateCartItem(item: CartItemEntity)
-
-    @Query("UPDATE cart_items SET quantity = :quantity, subtotal = :subtotal WHERE id = :itemId")
-    suspend fun updateCartItemQuantity(itemId: String, quantity: Int, subtotal: Long)
-
-    @Delete
-    suspend fun deleteCartItem(item: CartItemEntity)
-
-    @Query("DELETE FROM cart_items WHERE id = :itemId")
-    suspend fun deleteCartItemById(itemId: String)
-
-    @Query("DELETE FROM cart_items WHERE addedBy = :userId")
-    suspend fun clearCart(userId: String)
 
     // ==================== VENTAS ====================
 

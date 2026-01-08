@@ -6,6 +6,7 @@ import com.inventario.py.data.local.entity.ProductEntity
 import com.inventario.py.data.local.entity.ProductVariantEntity
 import com.inventario.py.data.local.entity.ProductWithVariants
 import com.inventario.py.data.local.entity.StockMovementEntity
+import com.inventario.py.data.repository.CartRepository
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
 import com.inventario.py.utils.Generators
@@ -33,7 +34,7 @@ sealed class ProductDetailEvent {
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val productRepository: ProductRepository,
-    private val salesRepository: SalesRepository,
+    private val salesRepository: CartRepository,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 

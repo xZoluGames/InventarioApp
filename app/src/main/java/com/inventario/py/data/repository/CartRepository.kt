@@ -4,6 +4,8 @@ import com.inventario.py.data.local.dao.CartDao
 import com.inventario.py.data.local.dao.ProductDao
 import com.inventario.py.data.local.entity.CartItemEntity
 import com.inventario.py.data.local.entity.CartItemWithProduct
+import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.ProductVariantEntity
 import com.inventario.py.data.local.entity.name
 import com.inventario.py.data.local.entity.priceModifier
 import com.inventario.py.utils.SessionManager
@@ -89,7 +91,24 @@ class CartRepository @Inject constructor(
             cartDao.insert(cartItem)
         }
     }
-    
+    /**
+     * Add product to cart (versión con ProductEntity para compatibilidad)
+     * Usado por: ProductDetailViewModel, SalesViewModel
+     */
+    suspend fun addToCart(
+        product: ProductEntity,
+        variant: ProductVariantEntity? = null,
+        quantity: Int = 1
+    ) = addToCart(product.id, variant?.id, quantity)
+
+    /**
+     * Get cart items as simple entities (para SalesViewModel legacy)
+     */
+    suspend fun getCartItemsSync(): List<CartItemEntity> = withContext(Dispatchers.IO) {
+        val userId = sessionManager.getUserId() ?: "default"
+        // Necesitamos agregar este método a CartDao o usar el existente
+        cartDao.getCartItemsForUserSync(userId)
+    }
     /**
      * Update item quantity
      */
