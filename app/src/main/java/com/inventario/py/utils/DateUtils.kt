@@ -133,4 +133,9 @@ object DateUtils {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
+
 }
+fun Long.toDisplayDate(): String = DateUtils.formatDateOnly(this)
+fun Long.toDisplayTime(): String = DateUtils.formatTimeOnly(this)
+fun Long.toDisplayDateTime(): String = DateUtils.formatFull(this)
+fun Long.toRelativeTime(): String = DateUtils.formatRelative(this)

@@ -1,5 +1,6 @@
 package com.inventario.py.utils
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -20,11 +21,11 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
-import java.util.*
-import android.content.BroadcastReceiver
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
+
 // ==================== CONSTANTES ====================
 
 object Constants {
@@ -49,77 +50,11 @@ object Constants {
     const val SCAN_MODE_ADD_TO_CART = "add_to_cart"
 }
 
-// ==================== EXTENSIONES DE FORMATO ====================
 
-/**
- * Formatea un número Long a formato de moneda Guaraní
- * Ejemplo: 1500000 -> "Gs. 1.500.000"
- */
-fun Long.toGuaraniFormat(): String {
-    val symbols = DecimalFormatSymbols(Locale("es", "PY")).apply {
-        groupingSeparator = '.'
-        decimalSeparator = ','
-    }
-    val formatter = DecimalFormat("#,###", symbols)
-    return "${Constants.CURRENCY_SYMBOL} ${formatter.format(this)}"
-}
 
-/**
- * Formatea para input (sin símbolo)
- */
-fun Long.toGuaraniInputFormat(): String {
-    val symbols = DecimalFormatSymbols(Locale("es", "PY")).apply {
-        groupingSeparator = '.'
-    }
-    val formatter = DecimalFormat("#,###", symbols)
-    return formatter.format(this)
-}
 
-/**
- * Parsea un string formateado a Long
- */
-fun String.parseGuaraniToLong(): Long {
-    return try {
-        this.replace(".", "")
-            .replace(",", "")
-            .replace(Constants.CURRENCY_SYMBOL, "")
-            .replace(" ", "")
-            .toLongOrNull() ?: 0L
-    } catch (e: Exception) {
-        0L
-    }
-}
 
-/**
- * Formato de fecha para mostrar
- */
-fun Long.toDisplayDate(): String {
-    return SimpleDateFormat(Constants.DATE_FORMAT_DISPLAY, Locale("es", "PY"))
-        .format(Date(this))
-}
 
-fun Long.toDisplayTime(): String {
-    return SimpleDateFormat(Constants.DATE_FORMAT_TIME, Locale("es", "PY"))
-        .format(Date(this))
-}
-
-fun Long.toDisplayDateTime(): String {
-    return SimpleDateFormat(Constants.DATE_FORMAT_FULL, Locale("es", "PY"))
-        .format(Date(this))
-}
-
-fun Long.toRelativeTime(): String {
-    val now = System.currentTimeMillis()
-    val diff = now - this
-    
-    return when {
-        diff < 60_000 -> "Hace un momento"
-        diff < 3600_000 -> "Hace ${diff / 60_000} min"
-        diff < 86400_000 -> "Hace ${diff / 3600_000} horas"
-        diff < 604800_000 -> "Hace ${diff / 86400_000} días"
-        else -> toDisplayDate()
-    }
-}
 
 // ==================== EXTENSIONES DE VIEW ====================
 

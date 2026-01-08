@@ -1,6 +1,7 @@
 package com.inventario.py.utils
 
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -28,13 +29,26 @@ object CurrencyUtils {
     fun formatGs(amount: Int): String {
         return "Gs. ${decimalFormat.format(amount)}"
     }
-    
+    fun formatForInput(amount: Long): String {
+        return decimalFormat.format(amount)
+    }
+
+    fun formatForInput(amount: Int): String {
+        return decimalFormat.format(amount)
+    }
     // ==================== ALIASES para compatibilidad ====================
     
     fun formatGuarani(amount: Long): String = formatGs(amount)
     fun formatGuarani(amount: Double): String = formatGs(amount)
     fun formatGuarani(amount: Int): String = formatGs(amount)
-    
+    fun Long.toGuaraniFormat(): String {
+        val symbols = DecimalFormatSymbols(Locale("es", "PY")).apply {
+            groupingSeparator = '.'
+            decimalSeparator = ','
+        }
+        val formatter = DecimalFormat("#,###", symbols)
+        return "${Constants.CURRENCY_SYMBOL} ${formatter.format(this)}"
+    }
     // ==================== Otros métodos ====================
     
     fun formatNumber(amount: Long): String {

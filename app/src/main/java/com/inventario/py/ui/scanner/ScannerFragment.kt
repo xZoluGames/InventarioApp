@@ -18,21 +18,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.inventario.py.R
 import com.inventario.py.data.local.entity.ProductEntity
+import com.inventario.py.data.local.entity.lowStockThreshold
 import com.inventario.py.databinding.FragmentScannerBinding
-import com.inventario.py.ui.main.MainActivity
 import com.inventario.py.ui.sales.CartViewModel
-import com.inventario.py.utils.toGuaraniFormat
+import com.inventario.py.utils.CurrencyUtils.toGuaraniFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.inventario.py.data.local.entity.lowStockThreshold
 
 @AndroidEntryPoint
 class ScannerFragment : Fragment() {

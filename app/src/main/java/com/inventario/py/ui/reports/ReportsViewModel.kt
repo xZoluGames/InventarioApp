@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.inventario.py.data.local.entity.*
 import com.inventario.py.data.repository.ProductRepository
 import com.inventario.py.data.repository.SalesRepository
-import com.inventario.py.utils.toGuaraniFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

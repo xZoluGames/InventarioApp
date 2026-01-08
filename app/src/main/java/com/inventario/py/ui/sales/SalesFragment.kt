@@ -23,7 +23,7 @@ import com.inventario.py.databinding.FragmentSalesBinding
 import com.inventario.py.ui.adapters.SaleAdapter
 import com.inventario.py.ui.main.MainActivity
 import com.inventario.py.ui.main.RefreshableFragment
-import com.inventario.py.utils.toGuaraniFormat
+import com.inventario.py.utils.CurrencyUtils.toGuaraniFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
